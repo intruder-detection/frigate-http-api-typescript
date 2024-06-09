@@ -22,7 +22,7 @@ export class FrigateHTTPAPI {
             contentType: 'application/json',
           },
           timeout: environment.DEFAULT_TIMEOUT,
-          transitional: {clarifyTimeoutError: true},
+          transitional: { clarifyTimeoutError: true },
         },
       );
       return rxp.data;
