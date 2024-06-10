@@ -3,20 +3,11 @@ import { environment } from '../environment';
 
 export class FrigateHTTPAPI {
   private async post<T>(
-    cmd: string,
-    param?: {
-      [key: string]: any;
-    },
+    endpoint: string,
   ): Promise<T> {
     try {
       const rxp = await axios.post<T>(
-        environment.FRIGATE_HTTP_URL,
-        [
-          {
-            cmd,
-            param,
-          },
-        ],
+        `${environment.FRIGATE_HTTP_URL}/${endpoint}`,
         {
           headers: {
             contentType: 'application/json',
@@ -27,7 +18,7 @@ export class FrigateHTTPAPI {
       );
       return rxp.data;
     } catch (e: unknown) {
-      throw new Error(`Failed to run command ${cmd}. ${e}`);
+      throw new Error(`Failed to run command ${endpoint}. ${e}`);
     }
   }
 }

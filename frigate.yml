@@ -1,0 +1,1272 @@
+openapi: 3.0.0
+info:
+  title: Frigate HTTP API
+  version: 1.0.0
+servers:
+  - url: http://192.168.1.243:5000
+tags:
+  - name: Management & Information
+    description: Management & Information
+  - name: Camera Media
+    description: Camera Media
+paths:
+  /api/config:
+    get:
+      tags:
+        - Management & Information
+      summary: Get Configuration
+      description: A JSON representation of your configuration
+      responses:
+        '200':
+          description: Configuration response
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/restart:
+    post:
+      tags:
+        - Management & Information
+      summary: Restart Frigate
+      description: Restarts Frigate process
+      responses:
+        '200':
+          description: Successfully restarted
+  /api/stats:
+    get:
+      tags:
+        - Management & Information
+      summary: Get Stats
+      description: Contains some granular debug info that can be used for sensors in Home Assistant
+      responses:
+        '200':
+          description: Stats response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cameras:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        camera_fps:
+                          type: number
+                        detection_fps:
+                          type: number
+                        capture_pid:
+                          type: integer
+                        pid:
+                          type: integer
+                        process_fps:
+                          type: number
+                        skipped_fps:
+                          type: number
+                  detection_fps:
+                    type: number
+                  detectors:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        detection_start:
+                          type: number
+                        inference_speed:
+                          type: number
+                        pid:
+                          type: integer
+                  service:
+                    type: object
+                    properties:
+                      uptime:
+                        type: integer
+                      version:
+                        type: string
+                      latest_version:
+                        type: string
+                      storage:
+                        type: object
+                        additionalProperties:
+                          type: object
+                          properties:
+                            total:
+                              type: integer
+                            used:
+                              type: integer
+                            free:
+                              type: integer
+                            mnt_type:
+                              type: string
+                  cpu_usages:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        cmdline:
+                          type: string
+                        cpu:
+                          type: string
+                        cpu_average:
+                          type: string
+                        mem:
+                          type: string
+                  gpu_usages:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        gpu:
+                          type: string
+                        mem:
+                          type: string
+  /api/version:
+    get:
+      tags:
+        - Management & Information
+      summary: Get Version Info
+      description: Version info
+      responses:
+        '200':
+          description: Version info response
+  /api/ffprobe:
+    get:
+      tags:
+        - Management & Information
+      summary: Get ffprobe Output
+      description: Get ffprobe output for camera feed paths
+      parameters:
+        - name: paths
+          in: query
+          description: Comma separated list of camera paths
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ffprobe output response
+  /api/{camera_name}/ptz/info:
+    get:
+      tags:
+        - Management & Information
+      summary: Get PTZ Info
+      description: Get PTZ info for the camera
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: PTZ info response
+  /api/{camera_name}:
+    get:
+      tags:
+        - Camera Media
+      summary: Get MJPEG Stream
+      description: An MJPEG stream for debugging
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: fps
+          in: query
+          schema:
+            type: integer
+        - name: h
+          in: query
+          schema:
+            type: integer
+        - name: bbox
+          in: query
+          schema:
+            type: integer
+        - name: timestamp
+          in: query
+          schema:
+            type: integer
+        - name: zones
+          in: query
+          schema:
+            type: integer
+        - name: mask
+          in: query
+          schema:
+            type: integer
+        - name: motion
+          in: query
+          schema:
+            type: integer
+        - name: regions
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: MJPEG stream response
+  /api/{camera_name}/latest.jpg:
+    get:
+      tags:
+        - Camera Media
+      summary: Get Latest Frame
+      description: The most recent frame that Frigate has finished processing
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: h
+          in: query
+          schema:
+            type: integer
+        - name: bbox
+          in: query
+          schema:
+            type: integer
+        - name: timestamp
+          in: query
+          schema:
+            type: integer
+        - name: zones
+          in: query
+          schema:
+            type: integer
+        - name: mask
+          in: query
+          schema:
+            type: integer
+        - name: motion
+          in: query
+          schema:
+            type: integer
+        - name: regions
+          in: query
+          schema:
+            type: integer
+        - name: quality
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Latest frame response
+  /api/{camera_name}/{label}/thumbnail.jpg:
+    get:
+      tags:
+        - Camera Media
+      summary: Get Thumbnail
+      description: Returns the thumbnail from the latest event for the given camera and label combo
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: label
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Thumbnail response
+  /api/{camera_name}/{label}/clip.mp4:
+    get:
+      tags:
+        - Camera Media
+      summary: Get Clip
+      description: Returns the clip from the latest event for the given camera and label combo
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: label
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Clip response
+  /api/{camera_name}/{label}/snapshot.jpg:
+    get:
+      tags:
+        - Camera Media
+      summary: Get Snapshot
+      description: Returns the snapshot image from the latest event for the given camera and label combo
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: label
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Snapshot response
+  /api/{camera_name}/grid.jpg:
+    get:
+      tags:
+        - Camera Media
+      summary: Get Grid Image
+      description: Returns the latest camera image with the regions grid overlaid
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: color
+          in: query
+          schema:
+            type: string
+        - name: font_scale
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Grid image response
+  /clips/{camera}-{id}.jpg:
+    get:
+      tags:
+        - Camera Media
+      summary: Get Snapshot by Event ID
+      description: JPG snapshot for the given camera and event id
+      parameters:
+        - name: camera
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Snapshot response
+  /api/events:
+    get:
+      tags:
+        - Events
+      summary: Get Events
+      description: Events from the database
+      parameters:
+        - name: before
+          in: query
+          schema:
+            type: integer
+        - name: after
+          in: query
+          schema:
+            type: integer
+        - name: cameras
+          in: query
+          schema:
+            type: string
+        - name: labels
+          in: query
+          schema:
+            type: string
+        - name: zones
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: has_snapshot
+          in: query
+          schema:
+            type: integer
+        - name: has_clip
+          in: query
+          schema:
+            type: integer
+        - name: include_thumbnails
+          in: query
+          schema:
+            type: integer
+        - name: in_progress
+          in: query
+          schema:
+            type: integer
+        - name: time_range
+          in: query
+          schema:
+            type: string
+        - name: timezone
+          in: query
+          schema:
+            type: string
+        - name: min_score
+          in: query
+          schema:
+            type: number
+        - name: max_score
+          in: query
+          schema:
+            type: number
+        - name: is_submitted
+          in: query
+          schema:
+            type: integer
+        - name: min_length
+          in: query
+          schema:
+            type: number
+        - name: max_length
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Events response
+  /api/events/summary:
+    get:
+      tags:
+        - Events
+      summary: Get Events Summary
+      description: Returns summary data for events in the database
+      responses:
+        '200':
+          description: Events summary response
+  /api/events/{id}:
+    get:
+      tags:
+        - Events
+      summary: Get Event by ID
+      description: Returns data for a single event
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event response
+    delete:
+      tags:
+        - Events
+      summary: Delete Event by ID
+      description: Permanently deletes the event along with any clips/snapshots
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event deleted response
+  /api/events/{id}/retain:
+    post:
+      tags:
+        - Events
+      summary: Retain Event by ID
+      description: Sets retain to true for the event id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event retained response
+    delete:
+      tags:
+        - Events
+      summary: Remove Retain for Event by ID
+      description: Sets retain to false for the event id (event may be deleted quickly after removing)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event retain removed response
+  /api/events/{id}/plus:
+    post:
+      tags:
+        - Events
+      summary: Submit Event to Frigate+
+      description: Submits the snapshot of the event to Frigate+ for labeling
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: include_annotation
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event submitted response
+  /api/events/{id}/false_positive:
+    put:
+      tags:
+        - Events
+      summary: Mark Event as False Positive
+      description: Submits the snapshot of the event to Frigate+ for labeling and adds the detection as a false positive
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event marked as false positive response
+  /api/events/{id}/sub_label:
+    post:
+      tags:
+        - Events
+      summary: Set Sub Label for Event
+      description: Set a sub label for an event
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subLabel:
+                  type: string
+                subLabelScore:
+                  type: number
+      responses:
+        '200':
+          description: Sub label set response
+  /api/events/{id}/thumbnail.jpg:
+    get:
+      tags:
+        - Events
+      summary: Get Event Thumbnail
+      description: Returns a thumbnail for the event id optimized for notifications
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: format
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event thumbnail response
+  /api/events/{id}/clip.mp4:
+    get:
+      tags:
+        - Events
+      summary: Get Event Clip
+      description: Returns the clip for the event id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event clip response
+  /api/events/{id}/snapshot-clean.png:
+    get:
+      tags:
+        - Events
+      summary: Get Clean Snapshot
+      description: Returns the clean snapshot image for the event id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: download
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Clean snapshot response
+  /api/events/{id}/snapshot.jpg:
+    get:
+      tags:
+        - Events
+      summary: Get Event Snapshot
+      description: Returns the snapshot image for the event id. Works while the event is in progress and after completion.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: h
+          in: query
+          schema:
+            type: integer
+          description: Height in pixels
+        - name: bbox
+          in: query
+          schema:
+            type: integer
+          description: Show bounding boxes for detected objects (0 or 1)
+        - name: timestamp
+          in: query
+          schema:
+            type: integer
+          description: Print the timestamp in the upper left (0 or 1)
+        - name: crop
+          in: query
+          schema:
+            type: integer
+          description: Crop the snapshot to the (0 or 1)
+        - name: quality
+          in: query
+          schema:
+            type: integer
+          description: Jpeg encoding quality (0-100). Defaults to 70.
+        - name: download
+          in: query
+          schema:
+            type: boolean
+          description: Download the image
+      responses:
+        '200':
+          description: Snapshot image response
+  /api/events/{camera_name}/{label}/create:
+    post:
+      tags:
+        - Events
+      summary: Create Manual Event
+      description: Create a manual event with a given label to capture a specific event besides an object being detected.
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: label
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sub_label:
+                  type: string
+                  description: Add sub label to event
+                duration:
+                  type: integer
+                  description: "Predetermined length of event (default: 30 seconds) or can be null for indeterminate length event"
+                include_recording:
+                  type: boolean
+                  description: Whether the event should save recordings along with the snapshot that is taken
+                draw:
+                  type: object
+                  properties:
+                    boxes:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          box:
+                            type: array
+                            items:
+                              type: number
+                            description: Box consists of x, y, width, height which are on a scale between 0 - 1
+                          color:
+                            type: array
+                            items:
+                              type: integer
+                            description: Color of the box, default is red
+                          score:
+                            type: integer
+                            description: Optional score associated with the box
+      responses:
+        '200':
+          description: Successfully created event response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  event_id:
+                    type: string
+                    description: Event ID
+                  message:
+                    type: string
+                    description: Success message
+                  success:
+                    type: boolean
+                    description: Success status
+  /api/events/{event_id}/end:
+    put:
+      tags:
+        - Events
+      summary: End Manual Event
+      description: End a specific manual event without a predetermined length.
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event ended response
+  /api/events/{id}/preview.gif:
+    get:
+      tags:
+        - Previews
+      summary: Get Event Preview Gif
+      description: Gif covering the first 20 seconds of a specific event.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Preview gif response
+  /api/preview/{camera}/start/{start-timestamp}/end/{end-timestamp}:
+    get:
+      tags:
+        - Previews
+      summary: Get Preview Metadata
+      description: Metadata about previews for this time range.
+      parameters:
+        - name: camera
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: start-timestamp
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: end-timestamp
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Preview metadata response
+  /api/preview/{year}-{month}/{day}/{hour}/{camera}/{timezone}:
+    get:
+      tags:
+        - Previews
+      summary: Get Hourly Preview Metadata
+      description: Metadata about previews for this hour.
+      parameters:
+        - name: year
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: month
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: day
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: hour
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: camera
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: timezone
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Hourly preview metadata response
+  /api/preview/{file_name}/thumbnail.jpg:
+    get:
+      tags:
+        - Previews
+      summary: Get Specific Preview Frame
+      description: Specific preview frame from preview cache.
+      parameters:
+        - name: file_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Preview frame response
+  /{camera}/start/{start-timestamp}/end/{end-timestamp}/preview.gif:
+    get:
+      tags:
+        - Previews
+      summary: Get Preview Gif
+      description: Gif made from preview video/frames during this time range.
+      parameters:
+        - name: camera
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: start-timestamp
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: end-timestamp
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Preview gif response
+  /vod/{year}-{month}-{day}-{hour}-{camera}/master.m3u8:
+    get:
+      tags:
+        - Recordings
+      summary: Get HLS VOD URL for Hour
+      description: HTTP Live Streaming Video on Demand URL for the specified hour and camera. Can be viewed in an application like VLC.
+      parameters:
+        - name: year
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: month
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: day
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: hour
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: camera
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: HLS VOD URL response
+  /vod/event/{event-id}/index.m3u8:
+    get:
+      tags:
+        - Recordings
+      summary: Get HLS VOD URL for Event
+      description: HTTP Live Streaming Video on Demand URL for the specified event. Can be viewed in an application like VLC.
+      parameters:
+        - name: event-id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: HLS VOD URL response
+  /vod/{camera}/start/{start-timestamp}/end/{end-timestamp}/index.m3u8:
+    get:
+      tags:
+        - Recordings
+      summary: Get HLS VOD URL for Time Range
+      description: HTTP Live Streaming Video on Demand URL for the camera with the specified time range. Can be viewed in an application like VLC.
+      parameters:
+        - name: camera
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: start-timestamp
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: end-timestamp
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: HLS VOD URL response
+  /api/export/{camera}/start/{start-timestamp}/end/{end-timestamp}:
+    post:
+      tags:
+        - Recordings
+      summary: Export Recordings
+      description: Export recordings from start-timestamp to end-timestamp for camera as a single mp4 file. These recordings will be exported to the /media/frigate/exports folder. It is also possible to export this recording as a time-lapse.
+      parameters:
+        - name: camera
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: start-timestamp
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: end-timestamp
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                playback:
+                  type: string
+                  description: "Playback factor: realtime or timelapse_25x"
+      responses:
+        '200':
+          description: Export response
+  /api/export/{export_name}:
+    delete:
+      tags:
+        - Recordings
+      summary: Delete Export
+      description: Delete an export from disk.
+      parameters:
+        - name: export_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Export deleted response
+  /api/export/{export_name_current}/{export_name_new}:
+    patch:
+      tags:
+        - Recordings
+      summary: Rename Export
+      description: Renames an export.
+      parameters:
+        - name: export_name_current
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: export_name_new
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Export renamed response
+  /api/{camera_name}/recordings/summary:
+    get:
+      tags:
+        - Recordings
+      summary: Get Hourly Summary of Recordings
+      description: Hourly summary of recordings data for a camera.
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Hourly summary response
+  /api/{camera_name}/recordings:
+    get:
+      tags:
+        - Recordings
+      summary: Get Recording Segment Details
+      description: Get recording segment details for the given timestamp range.
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: after
+          in: query
+          schema:
+            type: integer
+          description: Unix timestamp for beginning of range
+        - name: before
+          in: query
+          schema:
+            type: integer
+          description: Unix timestamp for end of range
+      responses:
+        '200':
+          description: Recording segment details response
+  /api/{camera_name}/recordings/{frame_time}/snapshot.png:
+    get:
+      tags:
+        - Recordings
+      summary: Get Recording Snapshot
+      description: Returns the snapshot image from the specific point in that camera's recordings.
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: frame_time
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Recording snapshot response
+  /api/review:
+    get:
+      tags:
+        - Reviews
+      summary: Get Reviews
+      description: Reviews from the database. Accepts the following query string parameters.
+      parameters:
+        - name: before
+          in: query
+          schema:
+            type: integer
+          description: Epoch time
+        - name: after
+          in: query
+          schema:
+            type: integer
+          description: Epoch time
+        - name: cameras
+          in: query
+          schema:
+            type: string
+          description: Comma-separated list of cameras
+        - name: labels
+          in: query
+          schema:
+            type: string
+          description: Comma-separated list of labels
+        - name: reviewed
+          in: query
+          schema:
+            type: integer
+          description: Include items that have been reviewed (0 or 1)
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          description: Limit the number of events returned
+        - name: severity
+          in: query
+          schema:
+            type: string
+          description: Limit items to severity (alert, detection, significant_motion)
+      responses:
+        '200':
+          description: Reviews response
+  /api/review/summary:
+    get:
+      tags:
+        - Reviews
+      summary: Get Reviews Summary
+      description: Summary of reviews for the last 30 days. Accepts the following query string parameters.
+      parameters:
+        - name: cameras
+          in: query
+          schema:
+            type: string
+          description: Comma-separated list of cameras
+        - name: labels
+          in: query
+          schema:
+            type: string
+          description: Comma-separated list of labels
+        - name: timezone
+          in: query
+          schema:
+            type: string
+          description: Timezone name
+      responses:
+        '200':
+          description: Reviews summary response
+  /api/reviews/viewed:
+    post:
+      tags:
+        - Reviews
+      summary: Mark Reviews as Viewed
+      description: Mark item(s) as reviewed.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                  description: Comma-separated list of review IDs
+      responses:
+        '200':
+          description: Reviews marked as viewed response
+  /api/review/{id}/viewed:
+    delete:
+      tags:
+        - Reviews
+      summary: Unmark Review as Viewed
+      description: Mark an item as not reviewed.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Review unmarked as viewed response
+  /api/reviews/delete:
+    post:
+      tags:
+        - Reviews
+      summary: Delete Reviews
+      description: Delete review items.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                  description: Comma-separated list of review IDs
+      responses:
+        '200':
+          description: Reviews deleted response
+  /review/activity/motion:
+    get:
+      tags:
+        - Reviews
+      summary: Get Motion Activity
+      description: Get the motion activity for camera(s) during a specified time period.
+      parameters:
+        - name: before
+          in: query
+          schema:
+            type: integer
+          description: Epoch time
+        - name: after
+          in: query
+          schema:
+            type: integer
+          description: Epoch time
+        - name: cameras
+          in: query
+          schema:
+            type: string
+          description: Comma-separated list of cameras
+      responses:
+        '200':
+          description: Motion activity response
+  /review/activity/audio:
+    get:
+      tags:
+        - Reviews
+      summary: Get Audio Activity
+      description: Get the audio activity for camera(s) during a specified time period.
+      parameters:
+        - name: before
+          in: query
+          schema:
+            type: integer
+          description: Epoch time
+        - name: after
+          in: query
+          schema:
+            type: integer
+          description: Epoch time
+        - name: cameras
+          in: query
+          schema:
+            type: string
+          description: Comma-separated list of cameras
+      responses:
+        '200':
+          description: Audio activity response
+  /api/timeline:
+    get:
+      tags:
+        - Timeline
+      summary: Get Timeline of Events
+      description: Timeline of key moments of an event(s) from the database. Accepts the following query string parameters.
+      parameters:
+        - name: camera
+          in: query
+          schema:
+            type: string
+          description: Name of camera
+        - name: source_id
+          in: query
+          schema:
+            type: string
+          description: ID of tracked object
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          description: Limit the number of events returned
+      responses:
+        '200':
+          description: Timeline response
+
