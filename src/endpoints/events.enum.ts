@@ -6,4 +6,10 @@ export enum Events {
   IdPlus = 'events/<id>/plus',
   IdFalsePositive = 'events/<id>/false_positive',
   SubLabel = 'events/<id>/sub_label',
+  ThumbnailJPG = 'events/<id>/thumbnail.jpg',
+  ClipMp4 = 'events/<id>/clip.mp4',
+  SnapshotCleanMp4 = 'events/<id>/snapshot-clean.png',
+  SnapshotJPG = 'events/<id>/snapshot.jpg',
+  CreateLabel = 'events/<camera_name>/<label>/create',
+  EndEvent = 'events/<event_id>/end',
 }
