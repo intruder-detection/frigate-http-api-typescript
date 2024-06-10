@@ -5,7 +5,6 @@ import * as path from 'node:path';
 import * as fs from 'node:fs';
 import * as Stream from 'node:stream';
 import { Events } from '../src/endpoints/events.enum';
-import { DeleteResponse } from '../src/endpoints/responses/delete-response.interface';
 
 const defaultCameraName = 'reolink_duo_2_wifi';
 
@@ -82,6 +81,7 @@ async function media() {
     },
     'stream',
   );
+
   // void writeMPEGStreamToDisk(debugStream);
 
   async function latestJPGForMultipleQualities(outputDir: string = '/tmp/test_stream') {
@@ -112,26 +112,41 @@ async function media() {
   }
 
   async function thumbnailJPG(outputDir: string = '/tmp/test_stream') {
-    const thumbnailJPG = await FrigateHTTPAPI.get(Media.ThumbnailJPG, {
-      ...cameraNameUrlParams,
-      label: 'person'
-    }, undefined, 'arraybuffer');
+    const thumbnailJPG = await FrigateHTTPAPI.get(
+      Media.ThumbnailJPG,
+      {
+        ...cameraNameUrlParams,
+        label: 'person',
+      },
+      undefined,
+      'arraybuffer',
+    );
     fs.writeFileSync(path.join(outputDir, 'thumbnail.jpg'), thumbnailJPG);
   }
 
   async function clipMP4(outputDir: string = '/tmp/test_stream') {
-    const clipMP4 = await FrigateHTTPAPI.get(Media.ClipMP4, {
-      ...cameraNameUrlParams,
-      label: 'person'
-    }, undefined, 'arraybuffer');
+    const clipMP4 = await FrigateHTTPAPI.get(
+      Media.ClipMP4,
+      {
+        ...cameraNameUrlParams,
+        label: 'person',
+      },
+      undefined,
+      'arraybuffer',
+    );
     fs.writeFileSync(path.join(outputDir, 'clip.mp4'), clipMP4);
   }
 
   async function snapshotJPG(outputDir: string = '/tmp/test_stream') {
-    const snapshotJPG = await FrigateHTTPAPI.get(Media.SnapshotJPG, {
-      ...cameraNameUrlParams,
-      label: 'person'
-    }, undefined, 'arraybuffer');
+    const snapshotJPG = await FrigateHTTPAPI.get(
+      Media.SnapshotJPG,
+      {
+        ...cameraNameUrlParams,
+        label: 'person',
+      },
+      undefined,
+      'arraybuffer',
+    );
     fs.writeFileSync(path.join(outputDir, 'snapshot.jpg'), snapshotJPG);
   }
 
@@ -141,10 +156,15 @@ async function media() {
   }
 
   async function cameraAndEventJGPSnapShot(outputDir: string = '/tmp/test_stream') {
-    const cameraAndEventJGPSnapShot = await FrigateHTTPAPI.get(Media.CameraAndEventJGPSnapShot, {
-      ...cameraNameUrlParams,
-      event_id: defaultEventId,
-    }, undefined, 'arraybuffer');
+    const cameraAndEventJGPSnapShot = await FrigateHTTPAPI.get(
+      Media.CameraAndEventJGPSnapShot,
+      {
+        ...cameraNameUrlParams,
+        event_id: defaultEventId,
+      },
+      undefined,
+      'arraybuffer',
+    );
     fs.writeFileSync(path.join(outputDir, 'camera_and_event_snapshot.jpg'), cameraAndEventJGPSnapShot);
   }
 
@@ -169,7 +189,7 @@ async function media() {
 
 async function events() {
   const events = await FrigateHTTPAPI.get(Events.Events, undefined, {
-    limit: 5
+    limit: 5,
   });
   console.log(events[0].id);
 
@@ -191,15 +211,33 @@ async function events() {
   });
   console.log(retainById);
 
-  const submitForFrigatePlus = await FrigateHTTPAPI.post(Events.SubmitForFrigatePlus, {
-    event_id: defaultEventId,
-  },  { include_annotation: 1 });
-  console.log(submitForFrigatePlus);
+  // Frigate+
+  // const submitForFrigatePlus = await FrigateHTTPAPI.post(
+  //   Events.SubmitForFrigatePlus,
+  //   {
+  //     event_id: defaultEventId,
+  //   },
+  //   { include_annotation: 1 },
+  // );
+  // console.log(submitForFrigatePlus);
+  //
+  // const submitForFrigatePlusFalsePositive = await FrigateHTTPAPI.post(Events.SubmitForFrigatePlusFalsePositive, {
+  //   event_id: defaultEventId,
+  // });
+  // console.log(submitForFrigatePlusFalsePositive);
 
-  const submitForFrigatePlusFalsePositive = await FrigateHTTPAPI.post(Events.SubmitForFrigatePlusFalsePositive, {
-    event_id: defaultEventId,
-  });
-  console.log(submitForFrigatePlusFalsePositive);
+  const subLabel = await FrigateHTTPAPI.post(
+    Events.SubLabel,
+    {
+      event_id: defaultEventId,
+    },
+    undefined,
+    {
+      subLabel: 'random',
+      subLabelScore: 0.99,
+    },
+  );
+  console.log(subLabel);
 }
 
 async function main() {

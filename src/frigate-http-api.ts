@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, ResponseType } from 'axios';
 import { environment } from '../environment';
 import { queryStringify } from './utils/querystring.utils';
-import { FrigateApiDeleteEndpointsMapping, FrigateApiEndpointsMapping, FrigateApiPostEndpointsMapping } from './endpoints/endpoint-types.types';
+import { FrigateApiDeleteEndpointsMapping, FrigateApiGetEndpointsMapping, FrigateApiPostEndpointsMapping } from './endpoints/endpoint-types.types';
 import { interpolateURLParams } from './utils/interpolate-url-params.utils';
 
 export class FrigateHTTPAPI {
@@ -21,15 +21,15 @@ export class FrigateHTTPAPI {
     return `${this.frigateAPIURL}/${endpointWithReplacedParams}${queryParams ? `?${queryStringify(queryParams as any)}` : ''}`;
   }
 
-  static async get<E extends keyof FrigateApiEndpointsMapping>(
+  static async get<E extends keyof FrigateApiGetEndpointsMapping>(
     endpoint: E,
-    urlParams?: FrigateApiEndpointsMapping[typeof endpoint]['urlParams'],
-    queryParams?: FrigateApiEndpointsMapping[typeof endpoint]['queryParams'],
+    urlParams?: FrigateApiGetEndpointsMapping[typeof endpoint]['urlParams'],
+    queryParams?: FrigateApiGetEndpointsMapping[typeof endpoint]['queryParams'],
     responseType?: ResponseType,
-  ): Promise<FrigateApiEndpointsMapping[typeof endpoint]['response']> {
+  ): Promise<FrigateApiGetEndpointsMapping[typeof endpoint]['response']> {
     const url = this.getURL(endpoint, urlParams, queryParams);
     try {
-      const rxp = await axios.get<FrigateApiEndpointsMapping[typeof endpoint]['response']>(
+      const rxp = await axios.get<FrigateApiGetEndpointsMapping[typeof endpoint]['response']>(
         url,
         responseType
           ? {
@@ -63,7 +63,7 @@ export class FrigateHTTPAPI {
     endpoint: E,
     urlParams?: FrigateApiPostEndpointsMapping[typeof endpoint]['urlParams'],
     queryParams?: FrigateApiPostEndpointsMapping[typeof endpoint]['queryParams'],
-    body?: FrigateApiPostEndpointsMapping[typeof endpoint]['response'],
+    body?: FrigateApiPostEndpointsMapping[typeof endpoint]['body'],
   ): Promise<FrigateApiPostEndpointsMapping[typeof endpoint]['response']> {
     try {
       const rxp = await axios.post<FrigateApiPostEndpointsMapping[typeof endpoint]['response']>(
