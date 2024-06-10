@@ -13,6 +13,7 @@ export class FrigateHTTPAPI {
     },
     timeout: environment.DEFAULT_TIMEOUT,
     transitional: { clarifyTimeoutError: true },
+    responseType: 'json',
   };
 
   static getURL<E extends keyof FrigateApiEndpointsMapping>(
@@ -28,11 +29,15 @@ export class FrigateHTTPAPI {
     endpoint: E,
     urlParams?: FrigateApiEndpointsMapping[typeof endpoint]['urlParams'],
     queryParams?: FrigateApiEndpointsMapping[typeof endpoint]['queryParams'],
+    isStream: boolean = false,
   ): Promise<FrigateApiEndpointsMapping[typeof endpoint]['response']> {
     try {
       const rxp = await axios.get<FrigateApiEndpointsMapping[typeof endpoint]['response']>(
         this.getURL(endpoint, urlParams, queryParams),
-        this.defaultRequestConfig,
+        isStream ? {
+          ...this.defaultRequestConfig,
+          responseType: 'stream',
+        } : this.defaultRequestConfig ,
       );
       return rxp.data;
     } catch (e: unknown) {

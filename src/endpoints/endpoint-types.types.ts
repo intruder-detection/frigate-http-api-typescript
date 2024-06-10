@@ -4,6 +4,9 @@ import { StatsResponse } from './responses/app/stats.interface';
 import { ConfigResponse } from './responses/app/config.interface';
 import { FFprobeResponse } from './responses/app/ffprobe.interface';
 import { RestartResponse } from './responses/app/restart.interface';
+import { Media } from './media';
+import { MJPEGDebugStream } from './query-params/media/mjpeg-stream.interface';
+import * as Stream from 'node:stream';
 
 /**
  * API Functions Mapping.
@@ -43,6 +46,14 @@ export interface FrigateApiEndpointsMapping {
     };
     queryParams: undefined;
     response: any; // TODO: Use Camera with PTZ info to see possible response type
+  };
+  // Camera Media
+  [Media.MJPEGDebugStream]: {
+    urlParams: {
+      camera_name: string;
+    };
+    queryParams: MJPEGDebugStream;
+    response: Stream;
   };
 }
 
