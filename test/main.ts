@@ -16,6 +16,9 @@ async function main() {
     camera_name: 'reolink_duo_2_wifi',
   });
   console.log(ffprobe[0]);
+
+  const restart = await FrigateHTTPAPI.post(ManagementAndInformation.Restart);
+  console.log(restart.message);
 }
 
 void main();

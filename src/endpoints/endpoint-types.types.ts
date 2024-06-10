@@ -2,7 +2,8 @@ import { ManagementAndInformation } from './app.enum';
 import { FFProbeQueryParameters } from './query-params/app/ffprobe.interface';
 import { StatsResponse } from './responses/app/stats.interface';
 import { ConfigResponse } from './responses/app/config.interface';
-import { FFprobe } from './responses/app/ffprobe.interface';
+import { FFprobeResponse } from './responses/app/ffprobe.interface';
+import { RestartResponse } from './responses/app/restart.interface';
 
 /**
  * API Functions Mapping.
@@ -13,6 +14,11 @@ export interface FrigateApiEndpointsMapping {
     urlParams: undefined;
     queryParams: undefined;
     response: ConfigResponse;
+  };
+  [ManagementAndInformation.Restart]: {
+    urlParams: undefined;
+    queryParams: undefined;
+    response: RestartResponse;
   };
   [ManagementAndInformation.Stats]: {
     urlParams: undefined;
@@ -28,7 +34,7 @@ export interface FrigateApiEndpointsMapping {
     urlParams: undefined;
     queryParams: FFProbeQueryParameters;
     response: {
-      [key: string]: FFprobe;
+      [key: string]: FFprobeResponse;
     };
   };
   [ManagementAndInformation.CameraPTZInfo]: {
