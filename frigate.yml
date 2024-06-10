@@ -3,7 +3,7 @@ info:
   title: Frigate HTTP API
   version: 1.0.0
 servers:
-  - url: http://192.168.1.243:5000
+  - url: https://demo.frigate.video:5000
 tags:
   - name: Management & Information
     description: Management & Information
