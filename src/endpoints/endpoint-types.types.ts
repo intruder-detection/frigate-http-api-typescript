@@ -18,17 +18,23 @@ import { DeleteResponse } from './responses/delete-response.interface';
 import { PostResponse } from './responses/post-response.interface';
 import { IdPlus } from './query-params/events/id-plus.interface';
 import { SubLabelBody } from './body/events/sub-label.interface';
+import { ThumbnailJPG } from './query-params/events/thumbnail-jpg.interface';
+import { SnapshotCleanPng } from './query-params/events/snapshot-clean-png.interface';
+import { SnapshotJPG } from './query-params/events/snapshot-jpg.interface';
+import { CreateLabel } from './body/events/create-label.interface';
+import { CreateLabelResponse } from './responses/events/create-label.interface';
+import { PutResponse } from './responses/put-response.interface';
 
 interface CameraName {
   camera_name: string;
 }
 
-interface CameraAndLabelName {
+interface CameraAndLabelNameUrlParams {
   camera_name: string;
   label: string;
 }
 
-interface CameraAndId {
+interface CameraAndEventIdUrlParams {
   camera_name: string;
   event_id: string;
 }
@@ -83,17 +89,17 @@ export interface FrigateApiGetEndpointsMapping {
     response: string;
   };
   [Media.ThumbnailJPG]: {
-    urlParams: CameraAndLabelName;
+    urlParams: CameraAndLabelNameUrlParams;
     queryParams: undefined;
     response: string;
   };
   [Media.ClipMP4]: {
-    urlParams: CameraAndLabelName;
+    urlParams: CameraAndLabelNameUrlParams;
     queryParams: undefined;
     response: string;
   };
   [Media.SnapshotJPG]: {
-    urlParams: CameraAndLabelName;
+    urlParams: CameraAndLabelNameUrlParams;
     queryParams: undefined;
     response: string;
   };
@@ -103,7 +109,7 @@ export interface FrigateApiGetEndpointsMapping {
     response: string;
   };
   [Media.CameraAndEventJGPSnapShot]: {
-    urlParams: CameraAndId;
+    urlParams: CameraAndEventIdUrlParams;
     queryParams: undefined;
     response: string;
   };
@@ -122,6 +128,26 @@ export interface FrigateApiGetEndpointsMapping {
     urlParams: EventIdUrlParams;
     queryParams: undefined;
     response: EventsByIDResponse;
+  };
+  [Events.ThumbnailJPG]: {
+    urlParams: EventIdUrlParams;
+    queryParams: ThumbnailJPG;
+    response: string;
+  };
+  [Events.ClipMp4]: {
+    urlParams: EventIdUrlParams;
+    queryParams: undefined;
+    response: string;
+  };
+  [Events.SnapshotCleanPNG]: {
+    urlParams: EventIdUrlParams;
+    queryParams: SnapshotCleanPng;
+    response: string;
+  };
+  [Events.SnapshotJPG]: {
+    urlParams: EventIdUrlParams;
+    queryParams: SnapshotJPG;
+    response: string;
   };
 }
 
@@ -158,6 +184,22 @@ export interface FrigateApiPostEndpointsMapping {
     queryParams: undefined;
     response: PostResponse;
     body: SubLabelBody;
+  };
+  [Events.CreateLabel]: {
+    urlParams: CameraAndLabelNameUrlParams;
+    queryParams: undefined;
+    body: CreateLabel;
+    response: CreateLabelResponse;
+  };
+}
+
+// PUT
+export interface FrigateApiPutEndpointsMapping {
+  [Events.EndEvent]: {
+    urlParams: EventIdUrlParams;
+    queryParams: undefined;
+    body: undefined;
+    response: PutResponse;
   };
 }
 

@@ -1,7 +1,12 @@
 import axios, { AxiosRequestConfig, ResponseType } from 'axios';
 import { environment } from '../environment';
 import { queryStringify } from './utils/querystring.utils';
-import { FrigateApiDeleteEndpointsMapping, FrigateApiGetEndpointsMapping, FrigateApiPostEndpointsMapping } from './endpoints/endpoint-types.types';
+import {
+  FrigateApiDeleteEndpointsMapping,
+  FrigateApiGetEndpointsMapping,
+  FrigateApiPostEndpointsMapping,
+  FrigateApiPutEndpointsMapping,
+} from './endpoints/endpoint-types.types';
 import { interpolateURLParams } from './utils/interpolate-url-params.utils';
 
 export class FrigateHTTPAPI {
@@ -67,6 +72,24 @@ export class FrigateHTTPAPI {
   ): Promise<FrigateApiPostEndpointsMapping[typeof endpoint]['response']> {
     try {
       const rxp = await axios.post<FrigateApiPostEndpointsMapping[typeof endpoint]['response']>(
+        this.getURL(endpoint, urlParams, queryParams),
+        body,
+        this.defaultRequestConfig,
+      );
+      return rxp.data;
+    } catch (e: unknown) {
+      throw new Error(`Failed to run command ${endpoint}. ${e}`);
+    }
+  }
+
+  static async put<E extends keyof FrigateApiPutEndpointsMapping>(
+    endpoint: E,
+    urlParams?: FrigateApiPutEndpointsMapping[typeof endpoint]['urlParams'],
+    queryParams?: FrigateApiPutEndpointsMapping[typeof endpoint]['queryParams'],
+    body?: FrigateApiPutEndpointsMapping[typeof endpoint]['body'],
+  ): Promise<FrigateApiPutEndpointsMapping[typeof endpoint]['response']> {
+    try {
+      const rxp = await axios.put<FrigateApiPutEndpointsMapping[typeof endpoint]['response']>(
         this.getURL(endpoint, urlParams, queryParams),
         body,
         this.defaultRequestConfig,

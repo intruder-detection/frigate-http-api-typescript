@@ -8,7 +8,7 @@ export enum Events {
   SubLabel = 'events/<event_id>/sub_label',
   ThumbnailJPG = 'events/<event_id>/thumbnail.jpg',
   ClipMp4 = 'events/<event_id>/clip.mp4',
-  SnapshotCleanMp4 = 'events/<event_id>/snapshot-clean.png',
+  SnapshotCleanPNG = 'events/<event_id>/snapshot-clean.png',
   SnapshotJPG = 'events/<event_id>/snapshot.jpg',
   CreateLabel = 'events/<camera_name>/<label>/create',
   EndEvent = 'events/<event_id>/end',

@@ -10,6 +10,8 @@ const defaultCameraName = 'reolink_duo_2_wifi';
 
 const defaultEventId = '1718036218.556791-faihjk';
 
+const defaultOutputDir = '/tmp/test_frigate';
+
 const cameraNameUrlParams = {
   camera_name: defaultCameraName,
 };
@@ -34,7 +36,7 @@ async function managementAndInformation() {
 }
 
 async function media() {
-  async function writeMPEGStreamToDisk(response: Stream, outputDir: string = '/tmp/test_stream') {
+  async function writeMPEGStreamToDisk(response: Stream, outputDir: string = defaultOutputDir) {
     let frameBuffer = [];
     let frameCount = 0;
 
@@ -84,7 +86,7 @@ async function media() {
 
   // void writeMPEGStreamToDisk(debugStream);
 
-  async function latestJPGForMultipleQualities(outputDir: string = '/tmp/test_stream') {
+  async function latestJPGForMultipleQualities(outputDir: string = defaultOutputDir) {
     const qualities = Array(10)
       .fill(3)
       .map((_, i) => (i + 1) * 10);
@@ -111,7 +113,7 @@ async function media() {
     console.timeEnd('latestJPGForMultipleQualities');
   }
 
-  async function thumbnailJPG(outputDir: string = '/tmp/test_stream') {
+  async function thumbnailJPG(outputDir: string = defaultOutputDir) {
     const thumbnailJPG = await FrigateHTTPAPI.get(
       Media.ThumbnailJPG,
       {
@@ -124,7 +126,7 @@ async function media() {
     fs.writeFileSync(path.join(outputDir, 'thumbnail.jpg'), thumbnailJPG);
   }
 
-  async function clipMP4(outputDir: string = '/tmp/test_stream') {
+  async function clipMP4(outputDir: string = defaultOutputDir) {
     const clipMP4 = await FrigateHTTPAPI.get(
       Media.ClipMP4,
       {
@@ -137,7 +139,7 @@ async function media() {
     fs.writeFileSync(path.join(outputDir, 'clip.mp4'), clipMP4);
   }
 
-  async function snapshotJPG(outputDir: string = '/tmp/test_stream') {
+  async function snapshotJPG(outputDir: string = defaultOutputDir) {
     const snapshotJPG = await FrigateHTTPAPI.get(
       Media.SnapshotJPG,
       {
@@ -150,12 +152,12 @@ async function media() {
     fs.writeFileSync(path.join(outputDir, 'snapshot.jpg'), snapshotJPG);
   }
 
-  async function gridJPG(outputDir: string = '/tmp/test_stream') {
+  async function gridJPG(outputDir: string = defaultOutputDir) {
     const gridJPG = await FrigateHTTPAPI.get(Media.GridJPG, cameraNameUrlParams, undefined, 'arraybuffer');
     fs.writeFileSync(path.join(outputDir, 'grid.jpg'), gridJPG);
   }
 
-  async function cameraAndEventJGPSnapShot(outputDir: string = '/tmp/test_stream') {
+  async function cameraAndEventJGPSnapShot(outputDir: string = defaultOutputDir) {
     const cameraAndEventJGPSnapShot = await FrigateHTTPAPI.get(
       Media.CameraAndEventJGPSnapShot,
       {
@@ -238,6 +240,70 @@ async function events() {
     },
   );
   console.log(subLabel);
+
+  const thumbnailJPG = await FrigateHTTPAPI.get(
+    Events.ThumbnailJPG,
+    {
+      event_id: defaultEventId,
+    },
+    {
+      format: 'android',
+    },
+    'arraybuffer',
+  );
+  fs.writeFileSync(path.join(defaultOutputDir, 'event_thumbnail.jpg'), thumbnailJPG);
+
+  const clipMp4 = await FrigateHTTPAPI.get(
+    Events.ClipMp4,
+    {
+      event_id: defaultEventId,
+    },
+    undefined,
+    'arraybuffer',
+  );
+  fs.writeFileSync(path.join(defaultOutputDir, 'event_clip.mp4'), clipMp4);
+
+  // const snapshotCleanPng = await FrigateHTTPAPI.get(
+  //   Events.SnapshotCleanPNG,
+  //   {
+  //     event_id: defaultEventId,
+  //   },
+  //   { download: true },
+  //   'arraybuffer',
+  // );
+  // fs.writeFileSync(path.join(defaultOutputDir, 'snapshot-clean.png'), snapshotCleanPng);
+
+  // const snapshotJPG = await FrigateHTTPAPI.get(
+  //   Events.SnapshotJPG,
+  //   {
+  //     event_id: defaultEventId,
+  //   },
+  //   {
+  //     h: 300,
+  //   },
+  //   'arraybuffer',
+  // );
+  // fs.writeFileSync(path.join(defaultOutputDir, 'snapshot.jpg'), snapshotJPG);
+
+  // Events.CreateLabel
+  // const createLabel = await FrigateHTTPAPI.post(
+  //   Events.CreateLabel,
+  //   {
+  //     camera_name: defaultCameraName,
+  //     label: 'person',
+  //   },
+  //   undefined,
+  // );
+  // console.log(createLabel);
+
+  const endEvent = await FrigateHTTPAPI.put(
+    Events.EndEvent,
+    {
+      event_id: defaultEventId,
+    },
+    undefined,
+  );
+  console.log(endEvent);
 }
 
 async function main() {
