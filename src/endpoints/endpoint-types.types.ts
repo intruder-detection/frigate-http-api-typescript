@@ -9,6 +9,12 @@ import { MJPEGDebugStream } from './query-params/media/mjpeg-stream.interface';
 import * as Stream from 'node:stream';
 import { LatestJPG } from './query-params/media/latest-jpg.interface';
 import { GridJPG } from './query-params/media/grid-jpg.interface';
+import { Events } from './events.enum';
+import { EventsQueryParams } from './query-params/events/events.interface';
+import { EventsResponse } from './responses/events/events.interface';
+import { EventsSummaryResponse } from './responses/events/events-summary.interface';
+import { EventsByIDResponse } from './responses/events/events-by-id.interface';
+import { DeleteResponse } from './responses/delete-response.interface';
 
 interface CameraName {
   camera_name: string;
@@ -24,6 +30,10 @@ interface CameraAndId {
   event_id: string;
 }
 
+interface ByEventId {
+  event_id: string;
+}
+
 /**
  * API Functions Mapping.
  */
@@ -33,11 +43,6 @@ export interface FrigateApiEndpointsMapping {
     urlParams: undefined;
     queryParams: undefined;
     response: ConfigResponse;
-  };
-  [ManagementAndInformation.Restart]: {
-    urlParams: undefined;
-    queryParams: undefined;
-    response: RestartResponse;
   };
   [ManagementAndInformation.Stats]: {
     urlParams: undefined;
@@ -96,5 +101,39 @@ export interface FrigateApiEndpointsMapping {
     urlParams: CameraAndId;
     queryParams: undefined;
     response: string;
+  };
+  // Events
+  [Events.Events]: {
+    urlParams: undefined;
+    queryParams: EventsQueryParams;
+    response: EventsResponse[];
+  };
+  [Events.EventsSummary]: {
+    urlParams: undefined;
+    queryParams: undefined;
+    response: EventsSummaryResponse;
+  };
+  [Events.ById]: {
+    urlParams: ByEventId;
+    queryParams: undefined;
+    response: EventsByIDResponse;
+  };
+}
+
+export interface FrigateApiPostEndpointsMapping {
+  // Management && Information
+  [ManagementAndInformation.Restart]: {
+    urlParams: undefined;
+    queryParams: undefined;
+    response: RestartResponse;
+  };
+}
+
+export interface FrigateApiDeleteEndpointsMapping {
+  // Events
+  [Events.ById]: {
+    urlParams: ByEventId;
+    queryParams: undefined;
+    response: DeleteResponse;
   };
 }

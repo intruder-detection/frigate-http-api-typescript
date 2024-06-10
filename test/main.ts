@@ -4,8 +4,12 @@ import { Media } from '../src/endpoints/media';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 import * as Stream from 'node:stream';
+import { Events } from '../src/endpoints/events.enum';
+import { DeleteResponse } from '../src/endpoints/responses/delete-response.interface';
 
 const defaultCameraName = 'reolink_duo_2_wifi';
+
+const defaultEventId = '1718036645.603573-75btdk';
 
 const cameraNameUrlParams = {
   camera_name: defaultCameraName,
@@ -139,7 +143,7 @@ async function media() {
   async function cameraAndEventJGPSnapShot(outputDir: string = '/tmp/test_stream') {
     const cameraAndEventJGPSnapShot = await FrigateHTTPAPI.get(Media.CameraAndEventJGPSnapShot, {
       ...cameraNameUrlParams,
-      event_id: '1718036645.603573-75btdk'
+      event_id: defaultEventId,
     }, undefined, 'arraybuffer');
     fs.writeFileSync(path.join(outputDir, 'camera_and_event_snapshot.jpg'), cameraAndEventJGPSnapShot);
   }
@@ -160,12 +164,33 @@ async function media() {
   // await gridJPG();
 
   // Media.CameraAndEventJGPSnapShot
-  await cameraAndEventJGPSnapShot();
+  // await cameraAndEventJGPSnapShot();
+}
+
+async function events() {
+  const events = await FrigateHTTPAPI.get(Events.Events, undefined, {
+    limit: 5
+  });
+  console.log(events[0].id);
+
+  const eventsSummary = await FrigateHTTPAPI.get(Events.EventsSummary);
+  console.log(eventsSummary);
+
+  const eventById = await FrigateHTTPAPI.get(Events.ById, {
+    event_id: defaultEventId,
+  });
+  console.log(eventById);
+
+  const deleteEventById = await FrigateHTTPAPI.delete(Events.ById, {
+    event_id: defaultEventId,
+  });
+  console.log(deleteEventById);
 }
 
 async function main() {
   await managementAndInformation();
   await media();
+  await events();
 }
 
 void main();

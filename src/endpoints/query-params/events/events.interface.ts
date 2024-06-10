@@ -1,4 +1,4 @@
-export interface Events {
+export interface EventsQueryParams {
   before?: number; // Epoch time (optional)
   after?: number;  // Epoch time (optional)
   cameras?: string; // Comma-separated list of cameras (optional)

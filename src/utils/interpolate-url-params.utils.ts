@@ -1,12 +1,7 @@
-import { FrigateApiEndpointsMapping } from '../endpoints/endpoint-types.types';
-
 /**
  * Interpolates the endpoint with path/query params.
  */
-export function interpolateURLParams<E extends keyof FrigateApiEndpointsMapping>(
-  endpoint: E,
-  params: FrigateApiEndpointsMapping[typeof endpoint]['urlParams'] = undefined,
-) {
+export function interpolateURLParams(endpoint: string, params: { [key: string]: any } = undefined) {
   if (!params) {
     return endpoint;
   }
