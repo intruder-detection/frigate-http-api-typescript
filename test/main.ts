@@ -9,7 +9,12 @@ async function main() {
   const version = await FrigateHTTPAPI.get(ManagementAndInformation.Version);
   console.log(version);
 
-  const ffprobe = await FrigateHTTPAPI.get(ManagementAndInformation.FFProbe, { paths: 'reolink_duo_2_wifi' });
+  const ffprobe = await FrigateHTTPAPI.get(ManagementAndInformation.FFProbe, undefined, { paths: 'reolink_duo_2_wifi' });
+  console.log(ffprobe[0]);
+
+  const ptzinfo = await FrigateHTTPAPI.get(ManagementAndInformation.CameraPTZInfo, {
+    camera_name: 'reolink_duo_2_wifi',
+  });
   console.log(ffprobe[0]);
 }
 

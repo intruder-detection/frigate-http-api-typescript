@@ -7,24 +7,36 @@ import { FFprobe } from './responses/app/ffprobe.interface';
 /**
  * API Functions Mapping.
  */
-export type FrigateApiEndpointsMapping = {
+export interface FrigateApiEndpointsMapping {
+  // Management && Information
   [ManagementAndInformation.Config]: {
+    urlParams: undefined;
     queryParams: undefined;
     response: ConfigResponse;
   };
   [ManagementAndInformation.Stats]: {
+    urlParams: undefined;
     queryParams: undefined;
     response: StatsResponse;
   };
   [ManagementAndInformation.Version]: {
+    urlParams: undefined;
     queryParams: undefined;
     response: string;
   };
   [ManagementAndInformation.FFProbe]: {
-    queryParams?: FFProbeQueryParameters;
+    urlParams: undefined;
+    queryParams: FFProbeQueryParameters;
     response: {
-      [key: string]: FFprobe
+      [key: string]: FFprobe;
     };
+  };
+  [ManagementAndInformation.CameraPTZInfo]: {
+    urlParams: {
+      camera_name: string;
+    };
+    queryParams: undefined;
+    response: any; // TODO: Use Camera with PTZ info to see possible response type
   };
 }
 
