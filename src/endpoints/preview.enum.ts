@@ -3,5 +3,5 @@ export enum Preview {
   MetadataForPreviewsInRange = 'preview/<camera>/start/<start-timestamp>/end/<end-timestamp>',
   MetadataForPreviewsInHour = 'preview/<year>-<month>/<day>/<hour>/<camera>/<timezone>',
   Frame  = 'preview/<file_name>/thumbnail.jpg',
-  GifFromPreview = '/<camera>/start/<start-timestamp>/end/<end-timestamp>/preview.gif',
+  GifFromPreview = '<camera>/start/<start-timestamp>/end/<end-timestamp>/preview.gif',
 }
