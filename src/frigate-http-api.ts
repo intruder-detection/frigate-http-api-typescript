@@ -31,9 +31,10 @@ export class FrigateHTTPAPI {
     queryParams?: FrigateApiEndpointsMapping[typeof endpoint]['queryParams'],
     responseType?: ResponseType,
   ): Promise<FrigateApiEndpointsMapping[typeof endpoint]['response']> {
+    const url = this.getURL(endpoint, urlParams, queryParams);
     try {
       const rxp = await axios.get<FrigateApiEndpointsMapping[typeof endpoint]['response']>(
-        this.getURL(endpoint, urlParams, queryParams),
+        url,
         responseType ? {
           ...this.defaultRequestConfig,
           responseType,
@@ -41,7 +42,7 @@ export class FrigateHTTPAPI {
       );
       return rxp.data;
     } catch (e: unknown) {
-      throw new Error(`Failed to run command ${endpoint}. ${e}`);
+      throw new Error(`Failed to run command ${endpoint}. URL: ${url}. ${e}`);
     }
   }
 

@@ -115,10 +115,52 @@ async function media() {
     fs.writeFileSync(path.join(outputDir, 'thumbnail.jpg'), thumbnailJPG);
   }
 
+  async function clipMP4(outputDir: string = '/tmp/test_stream') {
+    const clipMP4 = await FrigateHTTPAPI.get(Media.ClipMP4, {
+      ...cameraNameUrlParams,
+      label: 'person'
+    }, undefined, 'arraybuffer');
+    fs.writeFileSync(path.join(outputDir, 'clip.mp4'), clipMP4);
+  }
+
+  async function snapshotJPG(outputDir: string = '/tmp/test_stream') {
+    const snapshotJPG = await FrigateHTTPAPI.get(Media.SnapshotJPG, {
+      ...cameraNameUrlParams,
+      label: 'person'
+    }, undefined, 'arraybuffer');
+    fs.writeFileSync(path.join(outputDir, 'snapshot.jpg'), snapshotJPG);
+  }
+
+  async function gridJPG(outputDir: string = '/tmp/test_stream') {
+    const gridJPG = await FrigateHTTPAPI.get(Media.GridJPG, cameraNameUrlParams, undefined, 'arraybuffer');
+    fs.writeFileSync(path.join(outputDir, 'grid.jpg'), gridJPG);
+  }
+
+  async function cameraAndEventJGPSnapShot(outputDir: string = '/tmp/test_stream') {
+    const cameraAndEventJGPSnapShot = await FrigateHTTPAPI.get(Media.CameraAndEventJGPSnapShot, {
+      ...cameraNameUrlParams,
+      event_id: '1718036645.603573-75btdk'
+    }, undefined, 'arraybuffer');
+    fs.writeFileSync(path.join(outputDir, 'camera_and_event_snapshot.jpg'), cameraAndEventJGPSnapShot);
+  }
+
   // Media.LatestJPG
   // await latestJPGForMultipleQualities();
+
   // Media.ThumbnailJPG
-  await thumbnailJPG();
+  // await thumbnailJPG();
+
+  // Media.ClipMP4
+  // await clipMP4();
+
+  // Media.SnapshotJPG
+  // await snapshotJPG();
+
+  // Media.GridJPG
+  // await gridJPG();
+
+  // Media.CameraAndEventJGPSnapShot
+  await cameraAndEventJGPSnapShot();
 }
 
 async function main() {

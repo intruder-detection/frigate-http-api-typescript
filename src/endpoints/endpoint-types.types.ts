@@ -8,6 +8,7 @@ import { Media } from './media';
 import { MJPEGDebugStream } from './query-params/media/mjpeg-stream.interface';
 import * as Stream from 'node:stream';
 import { LatestJPG } from './query-params/media/latest-jpg.interface';
+import { GridJPG } from './query-params/media/grid-jpg.interface';
 
 interface CameraName {
   camera_name: string;
@@ -16,6 +17,11 @@ interface CameraName {
 interface CameraAndLabelName {
   camera_name: string;
   label: string;
+}
+
+interface CameraAndId {
+  camera_name: string;
+  event_id: string;
 }
 
 /**
@@ -68,6 +74,26 @@ export interface FrigateApiEndpointsMapping {
   };
   [Media.ThumbnailJPG]: {
     urlParams: CameraAndLabelName;
+    queryParams: undefined;
+    response: string;
+  };
+  [Media.ClipMP4]: {
+    urlParams: CameraAndLabelName;
+    queryParams: undefined;
+    response: string;
+  };
+  [Media.SnapshotJPG]: {
+    urlParams: CameraAndLabelName;
+    queryParams: undefined;
+    response: string;
+  };
+  [Media.GridJPG]: {
+    urlParams: CameraName;
+    queryParams: GridJPG;
+    response: string;
+  };
+  [Media.CameraAndEventJGPSnapShot]: {
+    urlParams: CameraAndId;
     queryParams: undefined;
     response: string;
   };
