@@ -9,7 +9,7 @@ export class FrigateHTTPAPI {
 
   static defaultRequestConfig: AxiosRequestConfig = {
     headers: {
-      contentType: 'application/json',
+      contentType: 'image/webp',
     },
     timeout: environment.DEFAULT_TIMEOUT,
     transitional: { clarifyTimeoutError: true },

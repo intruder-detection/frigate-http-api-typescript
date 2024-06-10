@@ -7,6 +7,10 @@ import * as Stream from 'node:stream';
 
 const defaultCameraName = 'reolink_duo_2_wifi';
 
+const cameraNameUrlParams = {
+  camera_name: defaultCameraName,
+};
+
 async function managementAndInformation() {
   // Management && Information
   const config = await FrigateHTTPAPI.get(ManagementAndInformation.Config);
@@ -19,9 +23,7 @@ async function managementAndInformation() {
   const ffprobe = await FrigateHTTPAPI.get(ManagementAndInformation.FFProbe, undefined, { paths: 'reolink_duo_2_wifi' });
   console.log(ffprobe[0]);
 
-  const ptzinfo = await FrigateHTTPAPI.get(ManagementAndInformation.CameraPTZInfo, {
-    camera_name: defaultCameraName,
-  });
+  const ptzinfo = await FrigateHTTPAPI.get(ManagementAndInformation.CameraPTZInfo, cameraNameUrlParams);
   console.log(ptzinfo);
 
   // const restart = await FrigateHTTPAPI.post(ManagementAndInformation.Restart);
@@ -66,11 +68,16 @@ async function media() {
     });
   }
 
+  function writeJPEGToDisk(jpegImageString: string, outputDir: string = '/tmp/test_stream') {
+    // const data = jpegImageString.replace(/^data:image\/\w+;base64,/, "");
+    // const buf = Buffer.from(data, 'binary');
+    fs.writeFileSync( path.join(outputDir, `jpeg-test.jpg`),  jpegImageString, { encoding: 'base64' });//`data:image/jpeg;base64,${Buffer.from(jpegImageString, 'binary').toString('base64')}`); // Buffer.from(jpegImageString, 'binary'));
+    console.log(`Wrote file ${path.join(outputDir, `jpeg-test.webp`)} to disk`);
+  }
+
   const debugStream = await FrigateHTTPAPI.get(
     Media.MJPEGDebugStream,
-    {
-      camera_name: defaultCameraName,
-    },
+    cameraNameUrlParams,
     {
       fps: 10,
       h: 300,
@@ -79,6 +86,16 @@ async function media() {
     true,
   );
   // void writeMPEGStreamToDisk(debugStream);
+
+  const latestJPG = await FrigateHTTPAPI.get(
+    Media.LatestJPG,
+    cameraNameUrlParams,
+    {
+      h: 300,
+      timestamp: 1,
+    },
+  );
+  writeJPEGToDisk(latestJPG);
 }
 
 async function main() {

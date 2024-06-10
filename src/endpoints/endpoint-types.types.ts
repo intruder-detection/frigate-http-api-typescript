@@ -7,6 +7,11 @@ import { RestartResponse } from './responses/app/restart.interface';
 import { Media } from './media';
 import { MJPEGDebugStream } from './query-params/media/mjpeg-stream.interface';
 import * as Stream from 'node:stream';
+import { LatestJPG } from './query-params/media/latest-jpg.interface';
+
+interface CameraName {
+  camera_name: string;
+}
 
 /**
  * API Functions Mapping.
@@ -41,19 +46,19 @@ export interface FrigateApiEndpointsMapping {
     };
   };
   [ManagementAndInformation.CameraPTZInfo]: {
-    urlParams: {
-      camera_name: string;
-    };
+    urlParams: CameraName;
     queryParams: undefined;
     response: any; // TODO: Use Camera with PTZ info to see possible response type
   };
   // Camera Media
   [Media.MJPEGDebugStream]: {
-    urlParams: {
-      camera_name: string;
-    };
+    urlParams: CameraName;
     queryParams: MJPEGDebugStream;
     response: Stream;
   };
+  [Media.LatestJPG]: {
+    urlParams: CameraName;
+    queryParams: LatestJPG;
+    response: string;
+  };
 }
-
