@@ -12,7 +12,7 @@ export function interpolateURLParams<E extends keyof FrigateApiEndpointsMapping>
   }
   let res = String(endpoint);
   for (const [key, value] of Object.entries(params)) {
-    res = endpoint.replace(`<${key}>`, value as string);
+    res = res.replace(`<${key}>`, value as string);
   }
 
   return res;

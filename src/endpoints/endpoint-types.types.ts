@@ -13,6 +13,11 @@ interface CameraName {
   camera_name: string;
 }
 
+interface CameraAndLabelName {
+  camera_name: string;
+  label: string;
+}
+
 /**
  * API Functions Mapping.
  */
@@ -59,6 +64,11 @@ export interface FrigateApiEndpointsMapping {
   [Media.LatestJPG]: {
     urlParams: CameraName;
     queryParams: LatestJPG;
+    response: string;
+  };
+  [Media.ThumbnailJPG]: {
+    urlParams: CameraAndLabelName;
+    queryParams: undefined;
     response: string;
   };
 }

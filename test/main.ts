@@ -68,10 +68,6 @@ async function media() {
     });
   }
 
-  function writeJPEGToDisk(jpegImageString: string, outputDir: string = '/tmp/test_stream') {
-    fs.writeFileSync(path.join(outputDir, `jpeg-test.jpg`), jpegImageString);
-  }
-
   const debugStream = await FrigateHTTPAPI.get(
     Media.MJPEGDebugStream,
     cameraNameUrlParams,
@@ -82,7 +78,6 @@ async function media() {
     },
     'stream',
   );
-
   // void writeMPEGStreamToDisk(debugStream);
 
   async function latestJPGForMultipleQualities(outputDir: string = '/tmp/test_stream') {
@@ -112,7 +107,18 @@ async function media() {
     console.timeEnd('latestJPGForMultipleQualities');
   }
 
-  await latestJPGForMultipleQualities();
+  async function thumbnailJPG(outputDir: string = '/tmp/test_stream') {
+    const thumbnailJPG = await FrigateHTTPAPI.get(Media.ThumbnailJPG, {
+      ...cameraNameUrlParams,
+      label: 'person'
+    }, undefined, 'arraybuffer');
+    fs.writeFileSync(path.join(outputDir, 'thumbnail.jpg'), thumbnailJPG);
+  }
+
+  // Media.LatestJPG
+  // await latestJPGForMultipleQualities();
+  // Media.ThumbnailJPG
+  await thumbnailJPG();
 }
 
 async function main() {
