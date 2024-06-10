@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Frigate HTTP API
+  title: Frigate HTTP API for version 0.14 beta
   version: 1.0.0
 servers:
   - url: https://demo.frigate.video:5000
