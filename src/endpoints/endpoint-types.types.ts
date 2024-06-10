@@ -24,29 +24,19 @@ import { SnapshotJPG } from './query-params/events/snapshot-jpg.interface';
 import { CreateLabel } from './body/events/create-label.interface';
 import { CreateLabelResponse } from './responses/events/create-label.interface';
 import { PutResponse } from './responses/put-response.interface';
-
-interface CameraName {
-  camera_name: string;
-}
-
-interface CameraAndLabelNameUrlParams {
-  camera_name: string;
-  label: string;
-}
-
-interface CameraAndEventIdUrlParams {
-  camera_name: string;
-  event_id: string;
-}
-
-interface EventIdUrlParams {
-  event_id: string;
-}
+import { Preview } from './preview.enum';
+import { MetaDataForPreviewsInRangeUrlParams } from './url-params/previews/metadata-for-previews-in-range.interface';
+import { CameraAndEventIdUrlParams } from './url-params/camera-and-event-id-url-params.interface';
+import { CameraAndLabelNameUrlParams } from './url-params/camera-and-label-name-url-params.interface';
+import { CameraNameUrlParams } from './url-params/camera-name-url-params.interface';
+import { EventIdUrlParams } from './url-params/event-id-url-params.interface';
+import { MetaDataForPreviewsInHourUrlParams } from './url-params/previews/metadata-for-previews-in-hour.interface';
+import { MetaDataFrameUrlParams } from './url-params/previews/metadata-frame-url-params.interface';
+import { GifFromPreviewUrlParams } from './url-params/previews/gif-from-preview-url-params.interface';
 
 /**
  * API Functions Mapping.
  */
-
 // GET
 export interface FrigateApiGetEndpointsMapping {
   // Management && Information
@@ -73,18 +63,18 @@ export interface FrigateApiGetEndpointsMapping {
     };
   };
   [ManagementAndInformation.CameraPTZInfo]: {
-    urlParams: CameraName;
+    urlParams: CameraNameUrlParams;
     queryParams: undefined;
     response: any; // TODO: Use Camera with PTZ info to see possible response type
   };
   // Camera Media
   [Media.MJPEGDebugStream]: {
-    urlParams: CameraName;
+    urlParams: CameraNameUrlParams;
     queryParams: MJPEGDebugStream;
     response: Stream;
   };
   [Media.LatestJPG]: {
-    urlParams: CameraName;
+    urlParams: CameraNameUrlParams;
     queryParams: LatestJPG;
     response: string;
   };
@@ -104,7 +94,7 @@ export interface FrigateApiGetEndpointsMapping {
     response: string;
   };
   [Media.GridJPG]: {
-    urlParams: CameraName;
+    urlParams: CameraNameUrlParams;
     queryParams: GridJPG;
     response: string;
   };
@@ -132,12 +122,12 @@ export interface FrigateApiGetEndpointsMapping {
   [Events.ThumbnailJPG]: {
     urlParams: EventIdUrlParams;
     queryParams: ThumbnailJPG;
-    response: string;
+    response: Uint8Array;
   };
   [Events.ClipMp4]: {
     urlParams: EventIdUrlParams;
     queryParams: undefined;
-    response: string;
+    response: Uint8Array;
   };
   [Events.SnapshotCleanPNG]: {
     urlParams: EventIdUrlParams;
@@ -148,6 +138,32 @@ export interface FrigateApiGetEndpointsMapping {
     urlParams: EventIdUrlParams;
     queryParams: SnapshotJPG;
     response: string;
+  };
+  // Previews
+  [Preview.Gif]: {
+    urlParams: EventIdUrlParams;
+    queryParams: undefined;
+    response: any; // TODO: Verify
+  };
+  [Preview.MetadataForPreviewsInRange]: {
+    urlParams: MetaDataForPreviewsInRangeUrlParams;
+    queryParams: undefined;
+    response: any; // TODO: Verify
+  };
+  [Preview.MetadataForPreviewsInHour]: {
+    urlParams: MetaDataForPreviewsInHourUrlParams;
+    queryParams: undefined;
+    response: any; // TODO: Verify
+  };
+  [Preview.Frame]: {
+    urlParams: MetaDataFrameUrlParams;
+    queryParams: undefined;
+    response: any; // TODO: Verify
+  };
+  [Preview.GifFromPreview]: {
+    urlParams: GifFromPreviewUrlParams;
+    queryParams: undefined;
+    response: any; // TODO: Verify
   };
 }
 

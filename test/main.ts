@@ -5,6 +5,7 @@ import * as path from 'node:path';
 import * as fs from 'node:fs';
 import * as Stream from 'node:stream';
 import { Events } from '../src/endpoints/events.enum';
+import { Preview } from '../src/endpoints/preview.enum';
 
 const defaultCameraName = 'reolink_duo_2_wifi';
 
@@ -253,15 +254,15 @@ async function events() {
   );
   fs.writeFileSync(path.join(defaultOutputDir, 'event_thumbnail.jpg'), thumbnailJPG);
 
-  const clipMp4 = await FrigateHTTPAPI.get(
-    Events.ClipMp4,
-    {
-      event_id: defaultEventId,
-    },
-    undefined,
-    'arraybuffer',
-  );
-  fs.writeFileSync(path.join(defaultOutputDir, 'event_clip.mp4'), clipMp4);
+  // const clipMp4 = await FrigateHTTPAPI.get(
+  //   Events.ClipMp4,
+  //   {
+  //     event_id: defaultEventId,
+  //   },
+  //   undefined,
+  //   'arraybuffer',
+  // );
+  // fs.writeFileSync(path.join(defaultOutputDir, 'event_clip.mp4'), clipMp4);
 
   // const snapshotCleanPng = await FrigateHTTPAPI.get(
   //   Events.SnapshotCleanPNG,
@@ -306,10 +307,22 @@ async function events() {
   console.log(endEvent);
 }
 
+async function previews() {
+  // event_id: 1717972821.878462-pq41sy
+  const gifOfEvent = await FrigateHTTPAPI.get(
+    Preview.Gif,
+    { event_id: '1717972821.878462-pq41sy' },
+    undefined,
+    'arraybuffer',
+  );
+  fs.writeFileSync(path.join(defaultOutputDir, 'snapshot.jpg'), gifOfEvent);
+}
+
 async function main() {
   await managementAndInformation();
   await media();
   await events();
+  await previews();
 }
 
 void main();
