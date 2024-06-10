@@ -9,7 +9,7 @@ import { DeleteResponse } from '../src/endpoints/responses/delete-response.inter
 
 const defaultCameraName = 'reolink_duo_2_wifi';
 
-const defaultEventId = '1718036645.603573-75btdk';
+const defaultEventId = '1718036218.556791-faihjk';
 
 const cameraNameUrlParams = {
   camera_name: defaultCameraName,
@@ -181,10 +181,25 @@ async function events() {
   });
   console.log(eventById);
 
-  const deleteEventById = await FrigateHTTPAPI.delete(Events.ById, {
+  // const deleteEventById = await FrigateHTTPAPI.delete(Events.ById, {
+  //   event_id: defaultEventId,
+  // });
+  // console.log(deleteEventById);
+
+  const retainById = await FrigateHTTPAPI.post(Events.IdRetain, {
     event_id: defaultEventId,
   });
-  console.log(deleteEventById);
+  console.log(retainById);
+
+  const submitForFrigatePlus = await FrigateHTTPAPI.post(Events.SubmitForFrigatePlus, {
+    event_id: defaultEventId,
+  },  { include_annotation: 1 });
+  console.log(submitForFrigatePlus);
+
+  const submitForFrigatePlusFalsePositive = await FrigateHTTPAPI.post(Events.SubmitForFrigatePlusFalsePositive, {
+    event_id: defaultEventId,
+  });
+  console.log(submitForFrigatePlusFalsePositive);
 }
 
 async function main() {

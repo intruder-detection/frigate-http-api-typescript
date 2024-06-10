@@ -15,6 +15,8 @@ import { EventsResponse } from './responses/events/events.interface';
 import { EventsSummaryResponse } from './responses/events/events-summary.interface';
 import { EventsByIDResponse } from './responses/events/events-by-id.interface';
 import { DeleteResponse } from './responses/delete-response.interface';
+import { PostResponse } from './responses/post-response.interface';
+import { IdPlus } from './query-params/events/id-plus.interface';
 
 interface CameraName {
   camera_name: string;
@@ -30,7 +32,7 @@ interface CameraAndId {
   event_id: string;
 }
 
-interface ByEventId {
+interface EventIdUrlParams {
   event_id: string;
 }
 
@@ -114,7 +116,7 @@ export interface FrigateApiEndpointsMapping {
     response: EventsSummaryResponse;
   };
   [Events.ById]: {
-    urlParams: ByEventId;
+    urlParams: EventIdUrlParams;
     queryParams: undefined;
     response: EventsByIDResponse;
   };
@@ -127,12 +129,33 @@ export interface FrigateApiPostEndpointsMapping {
     queryParams: undefined;
     response: RestartResponse;
   };
+  // Events
+  [Events.IdRetain]: {
+    urlParams: EventIdUrlParams;
+    queryParams: undefined;
+    response: PostResponse;
+  };
+  [Events.SubmitForFrigatePlus]: {
+    urlParams: EventIdUrlParams;
+    queryParams: IdPlus;
+    response: PostResponse;
+  };
+  [Events.SubmitForFrigatePlusFalsePositive]: {
+    urlParams: EventIdUrlParams;
+    queryParams: undefined;
+    response: PostResponse;
+  };
 }
 
 export interface FrigateApiDeleteEndpointsMapping {
   // Events
   [Events.ById]: {
-    urlParams: ByEventId;
+    urlParams: EventIdUrlParams;
+    queryParams: undefined;
+    response: DeleteResponse;
+  };
+  [Events.IdRetain]: {
+    urlParams: EventIdUrlParams;
     queryParams: undefined;
     response: DeleteResponse;
   };

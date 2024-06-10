@@ -1,3 +1,3 @@
 import { BasicResponse } from './basic-response.interface';
 
-export interface DeleteResponse extends BasicResponse {}
+export interface PostResponse extends BasicResponse {}
