@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, ResponseType } from 'axios';
 import { environment } from '../environment';
 import { queryStringify } from './utils/querystring.utils';
 import { FrigateApiEndpointsMapping } from './endpoints/endpoint-types.types';
@@ -9,7 +9,7 @@ export class FrigateHTTPAPI {
 
   static defaultRequestConfig: AxiosRequestConfig = {
     headers: {
-      contentType: 'image/webp',
+      contentType: 'application/json',
     },
     timeout: environment.DEFAULT_TIMEOUT,
     transitional: { clarifyTimeoutError: true },
@@ -29,14 +29,14 @@ export class FrigateHTTPAPI {
     endpoint: E,
     urlParams?: FrigateApiEndpointsMapping[typeof endpoint]['urlParams'],
     queryParams?: FrigateApiEndpointsMapping[typeof endpoint]['queryParams'],
-    isStream: boolean = false,
+    responseType?: ResponseType,
   ): Promise<FrigateApiEndpointsMapping[typeof endpoint]['response']> {
     try {
       const rxp = await axios.get<FrigateApiEndpointsMapping[typeof endpoint]['response']>(
         this.getURL(endpoint, urlParams, queryParams),
-        isStream ? {
+        responseType ? {
           ...this.defaultRequestConfig,
-          responseType: 'stream',
+          responseType,
         } : this.defaultRequestConfig ,
       );
       return rxp.data;

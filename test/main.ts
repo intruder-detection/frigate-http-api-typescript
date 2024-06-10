@@ -69,10 +69,7 @@ async function media() {
   }
 
   function writeJPEGToDisk(jpegImageString: string, outputDir: string = '/tmp/test_stream') {
-    // const data = jpegImageString.replace(/^data:image\/\w+;base64,/, "");
-    // const buf = Buffer.from(data, 'binary');
-    fs.writeFileSync( path.join(outputDir, `jpeg-test.jpg`),  jpegImageString, { encoding: 'base64' });//`data:image/jpeg;base64,${Buffer.from(jpegImageString, 'binary').toString('base64')}`); // Buffer.from(jpegImageString, 'binary'));
-    console.log(`Wrote file ${path.join(outputDir, `jpeg-test.webp`)} to disk`);
+    fs.writeFileSync(path.join(outputDir, `jpeg-test.jpg`), jpegImageString);
   }
 
   const debugStream = await FrigateHTTPAPI.get(
@@ -83,19 +80,39 @@ async function media() {
       h: 300,
       timestamp: 1,
     },
-    true,
+    'stream',
   );
+
   // void writeMPEGStreamToDisk(debugStream);
 
-  const latestJPG = await FrigateHTTPAPI.get(
-    Media.LatestJPG,
-    cameraNameUrlParams,
-    {
-      h: 300,
-      timestamp: 1,
-    },
-  );
-  writeJPEGToDisk(latestJPG);
+  async function latestJPGForMultipleQualities(outputDir: string = '/tmp/test_stream') {
+    const qualities = Array(10)
+      .fill(3)
+      .map((_, i) => (i + 1) * 10);
+    const heights = [300, 500, 1000, 2000, undefined];
+    const qualityParameters = qualities
+      .map((quality) =>
+        heights.map((h) => ({
+          quality,
+          h,
+        })),
+      )
+      .flat();
+
+    console.time('latestJPGForMultipleQualities');
+
+    const allJpegResponses = await Promise.all(
+      qualityParameters.map((qualityParams) => FrigateHTTPAPI.get(Media.LatestJPG, cameraNameUrlParams, qualityParams, 'arraybuffer')),
+    );
+    allJpegResponses.map((jpegData, idx) => {
+      const fileName = `jpeg_${qualityParameters[idx].quality}_${qualityParameters[idx].h ?? 'original_h'}.jpg`;
+      fs.writeFileSync(path.join(outputDir, fileName), jpegData);
+    });
+
+    console.timeEnd('latestJPGForMultipleQualities');
+  }
+
+  await latestJPGForMultipleQualities();
 }
 
 async function main() {

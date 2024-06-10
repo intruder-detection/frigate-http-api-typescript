@@ -14,15 +14,15 @@
   },
   "devDependencies": {
     "@types/node": "^20.14.2",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
     "dotenv-cli": "^7.4.1",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.1.0",
     "eslint-plugin-deprecation": "^1.4.1",
-    "prettier": "^3.3.1",
-    "typescript": "^5.4.5",
+    "eslint-plugin-prettier": "^5.0.0",
     "npx": "^10.2.2",
-    "tsx": "^4.15.1"
+    "prettier": "^3.3.1",
+    "tsx": "^4.15.1",
+    "typescript": "^5.4.5"
   }
 }
