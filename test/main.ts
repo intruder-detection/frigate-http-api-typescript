@@ -6,6 +6,7 @@ import * as fs from 'node:fs';
 import * as Stream from 'node:stream';
 import { Events } from '../src/endpoints/events.enum';
 import { Recordings } from '../src/endpoints/recordings.enum';
+import { Exports } from '../src/endpoints/exports.enum';
 
 const defaultCameraName = 'reolink_duo_2_wifi';
 
@@ -318,6 +319,39 @@ async function previews() {
   // fs.writeFileSync(path.join(defaultOutputDir, 'snapshot.jpg'), gifOfEvent);
 }
 
+async function exportsTests() {
+  // Exports.ExportTimeRangeMp4ToDisk
+  // const exportTimRangeToDisk = await FrigateHTTPAPI.post(
+  //   Exports.ExportTimeRangeMP4ToDisk,
+  //   {
+  //     ...cameraNameUrlParams,
+  //     start_timestamp: (new Date(Date.now() - 30 * 60 * 1000).getTime() / 1000),
+  //     end_timestamp: (new Date().getTime() / 1000),
+  //   },
+  //   undefined,
+  //   {
+  //     playback: 'timelapse_25x',
+  //     name: 'Export 101',
+  //   }
+  // );
+  // console.log(exportTimRangeToDisk);
+
+  // Exports.ListExports
+  const listOfExports = await FrigateHTTPAPI.get(Exports.ListExports);
+  console.log(listOfExports[0].video_path);
+
+  // const deleteExportById = await FrigateHTTPAPI.delete(Exports.DeleteExportById, {
+  //   export_id: 'reolink_duo_2_wifi_ggg1iw',
+  // });
+  // console.log(deleteExportById);
+
+  // const renameExport = await FrigateHTTPAPI.patch(Exports.RenameExport, {
+  //   export_id: 'reolink_duo_2_wifi_oml4cx',
+  //   export_name_new: 'my_export_name'
+  // });
+  // console.log(renameExport);
+}
+
 async function recordings() {
   // Recordings.LiveStreamURLHour
   // const liveStreamURLHour = await FrigateHTTPAPI.get(
@@ -335,36 +369,6 @@ async function recordings() {
   // );
   // console.log(liveStreamURLHour);
 
-  // Recordings.ExportTimeRangeMp4ToDisk
-  // const exportTimRangeToDisk = await FrigateHTTPAPI.post(
-  //   Recordings.ExportTimeRangeMP4ToDisk,
-  //   {
-  //     ...cameraNameUrlParams,
-  //     start_timestamp: (new Date(Date.now() - 30 * 60 * 1000).getTime() / 1000),
-  //     end_timestamp: (new Date().getTime() / 1000),
-  //   },
-  //   undefined,
-  //   {
-  //     playback: 'timelapse_25x',
-  //     name: 'Export 101',
-  //   }
-  // );
-  // console.log(exportTimRangeToDisk);
-
-  // Recordings.ListExports
-  const listOfExports = await FrigateHTTPAPI.get(Recordings.ListExports);
-  console.log(listOfExports[0].video_path);
-
-  // const deleteExportById = await FrigateHTTPAPI.delete(Recordings.DeleteExportById, {
-  //   export_id: 'reolink_duo_2_wifi_ggg1iw',
-  // });
-  // console.log(deleteExportById);
-
-  // const renameExport = await FrigateHTTPAPI.patch(Recordings.RenameExport, {
-  //   export_id: 'reolink_duo_2_wifi_oml4cx',
-  //   export_name_new: 'my_export_name'
-  // });
-  // console.log(renameExport);
 }
 
 async function main() {
@@ -372,6 +376,7 @@ async function main() {
   // await media();
   // await events();
   // await previews();
+  await exportsTests();
   await recordings();
 }
 

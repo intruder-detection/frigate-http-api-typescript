@@ -14,8 +14,6 @@ import { EventsQueryParams } from './query-params/events/events.interface';
 import { EventsResponse } from './responses/events/events.interface';
 import { EventsSummaryResponse } from './responses/events/events-summary.interface';
 import { EventsByIDResponse } from './responses/events/events-by-id.interface';
-import { DeleteResponse } from './responses/delete-response.interface';
-import { PostResponse } from './responses/post-response.interface';
 import { IdPlus } from './query-params/events/id-plus.interface';
 import { SubLabelBody } from './body/events/sub-label.interface';
 import { ThumbnailJPG } from './query-params/events/thumbnail-jpg.interface';
@@ -23,7 +21,6 @@ import { SnapshotCleanPng } from './query-params/events/snapshot-clean-png.inter
 import { SnapshotJPG } from './query-params/events/snapshot-jpg.interface';
 import { CreateLabel } from './body/events/create-label.interface';
 import { CreateLabelResponse } from './responses/events/create-label.interface';
-import { PutResponse } from './responses/put-response.interface';
 import { Preview } from './preview.enum';
 import { MetaDataForPreviewsInRangeUrlParams } from './url-params/previews/metadata-for-previews-in-range.interface';
 import { CameraAndEventIdUrlParams } from './url-params/camera-and-event-id-url-params.interface';
@@ -36,14 +33,15 @@ import { GifFromPreviewUrlParams } from './url-params/previews/gif-from-preview-
 import { Recordings } from './recordings.enum';
 import { LivestreamUrlHourUrlParamsInterface } from './url-params/recordings/livestream-url-hour-url-params.interface';
 import { LivestreamInRangeUrlParams } from './url-params/recordings/livestream-in-range-url-params.interface';
-import {
-  ExportTimeRangeMp4ToDiskUrlParams
-} from './url-params/recordings/export-time-range-mp4-to-disk-url-params.interface';
 import { ExportTimeRangeMp4Body } from './body/recordings/time-range-mp4.interface';
-import { ExportResponse } from './responses/recordings/export-response.interface';
-import { DeleteExportUrlParams } from './url-params/recordings/delete-export-url-params.interface';
-import { RenameExportUrlParams } from './url-params/recordings/rename-export-url-params.interface';
+import { ExportResponse } from './responses/exports/export-response.interface';
 import { BasicResponse } from './responses/basic-response.interface';
+import { RenameExportUrlParams } from './url-params/exports/rename-export-url-params.interface';
+import { DeleteExportUrlParams } from './url-params/exports/delete-export-url-params.interface';
+import {
+  ExportTimeRangeMp4ToDiskUrlParams,
+} from './url-params/exports/export-time-range-mp4-to-disk-url-params.interface';
+import { Exports } from './exports.enum';
 
 /**
  * API Functions Mapping.
@@ -192,7 +190,7 @@ export interface FrigateApiGetEndpointsMapping {
     queryParams: undefined;
     response: any; // TODO: Verify
   };
-  [Recordings.ListExports]: {
+  [Exports.ListExports]: {
     urlParams: undefined;
     queryParams: undefined;
     response: ExportResponse[];
@@ -213,25 +211,25 @@ export interface FrigateApiPostEndpointsMapping {
     urlParams: EventIdUrlParams;
     queryParams: undefined;
     body: undefined;
-    response: PostResponse;
+    response: BasicResponse;
   };
   [Events.SubmitForFrigatePlus]: {
     urlParams: EventIdUrlParams;
     queryParams: IdPlus;
     body: undefined;
-    response: PostResponse;
+    response: BasicResponse;
   };
   [Events.SubmitForFrigatePlusFalsePositive]: {
     urlParams: EventIdUrlParams;
     queryParams: undefined;
     body: undefined;
-    response: PostResponse;
+    response: BasicResponse;
   };
   [Events.SubLabel]: {
     urlParams: EventIdUrlParams;
     queryParams: undefined;
     body: SubLabelBody;
-    response: PostResponse;
+    response: BasicResponse;
   };
   [Events.CreateLabel]: {
     urlParams: CameraAndLabelNameUrlParams;
@@ -240,11 +238,11 @@ export interface FrigateApiPostEndpointsMapping {
     response: CreateLabelResponse;
   };
   // Recordings
-  [Recordings.ExportTimeRangeMP4ToDisk]: {
+  [Exports.ExportTimeRangeMP4ToDisk]: {
     urlParams: ExportTimeRangeMp4ToDiskUrlParams;
     queryParams: undefined;
     body?: ExportTimeRangeMp4Body;
-    response: PostResponse;
+    response: BasicResponse;
   };
 }
 
@@ -254,7 +252,7 @@ export interface FrigateApiPutEndpointsMapping {
     urlParams: EventIdUrlParams;
     queryParams: undefined;
     body: undefined;
-    response: PutResponse;
+    response: BasicResponse;
   };
 }
 
@@ -264,24 +262,24 @@ export interface FrigateApiDeleteEndpointsMapping {
   [Events.ById]: {
     urlParams: EventIdUrlParams;
     queryParams: undefined;
-    response: DeleteResponse;
+    response: BasicResponse;
   };
   [Events.IdRetain]: {
     urlParams: EventIdUrlParams;
     queryParams: undefined;
-    response: DeleteResponse;
+    response: BasicResponse;
   };
-  [Recordings.DeleteExportById]: {
+  [Exports.DeleteExportById]: {
     urlParams: DeleteExportUrlParams;
     queryParams: undefined;
-    response: DeleteResponse;
+    response: BasicResponse;
   };
 }
 
 // PATCH
 export interface FrigateApiPatchEndpointsMapping {
   // Recordings
-  [Recordings.RenameExport]: {
+  [Exports.RenameExport]: {
     urlParams: RenameExportUrlParams;
     queryParams: undefined;
     body?: undefined;
