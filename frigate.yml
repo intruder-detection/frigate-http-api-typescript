@@ -1056,7 +1056,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RecordingsPerHourResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecordingsPerHourResponse'
   /api/{camera_name}/recordings:
     get:
       tags:
@@ -1073,15 +1075,21 @@ paths:
           in: query
           schema:
             type: integer
-          description: Unix timestamp for beginning of range
+          description: Unix timestamp (in seconds) for beginning of range
         - name: before
           in: query
           schema:
             type: integer
-          description: Unix timestamp for end of range
+          description: Unix timestamp (in seconds) for end of range
       responses:
         '200':
           description: Recording segment details response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecordingsForRange'
   /api/{camera_name}/recordings/{frame_time}/snapshot.png:
     get:
       tags:
@@ -1102,6 +1110,7 @@ paths:
       responses:
         '200':
           description: Recording snapshot response
+
   /api/review:
     get:
       tags:
@@ -1402,7 +1411,7 @@ components:
         - hours
       additionalProperties: false
       title: RecordingsPerHourResponse
-      type: array
+      type: object
       example:
         [
           {
@@ -1441,3 +1450,49 @@ components:
           }
         ]
 
+    RecordingsForRange:
+      properties:
+        duration:
+          title: duration
+          type: number
+        end_time:
+          title: end_time
+          type: number
+        id:
+          title: id
+          type: string
+        motion:
+          title: motion
+          type: number
+        objects:
+          title: objects
+          type: number
+        segment_size:
+          title: segment_size
+          type: number
+        start_time:
+          title: start_time
+          type: number
+      required:
+        - duration
+        - end_time
+        - id
+        - motion
+        - objects
+        - segment_size
+        - start_time
+      additionalProperties: false
+      title: RecordingsForRange
+      type: object
+      example:
+        [
+          {
+            "duration": 10.181955555555554,
+            "end_time": 1718134676.181956,
+            "id": "1718134666.0-hzso98",
+            "motion": 411,
+            "objects": 0,
+            "segment_size": 5.9,
+            "start_time": 1718134666
+          }
+        ]

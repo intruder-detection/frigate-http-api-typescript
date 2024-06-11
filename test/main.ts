@@ -371,6 +371,12 @@ async function recordings() {
 
   const recordingsPerHourSummary = await FrigateHTTPAPI.get(Recordings.HourlySummaryRecordings, cameraNameUrlParams);
   console.log(recordingsPerHourSummary[0].hours[0].hour);
+
+  const segmentDetailsForRange = await FrigateHTTPAPI.get(Recordings.RecordingSegmentsForRange, cameraNameUrlParams, {
+    after: new Date(Date.now() - 30 * 60 * 1000).getTime() / 1000,
+    before: new Date().getTime() / 1000,
+  });
+  console.log(segmentDetailsForRange);
 }
 
 async function main() {

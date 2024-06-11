@@ -33,7 +33,7 @@ import { GifFromPreviewUrlParams } from './url-params/previews/gif-from-preview-
 import { Recordings } from './recordings.enum';
 import { LivestreamUrlHourUrlParamsInterface } from './url-params/recordings/livestream-url-hour-url-params.interface';
 import { LivestreamInRangeUrlParams } from './url-params/recordings/livestream-in-range-url-params.interface';
-import { ExportTimeRangeMp4Body } from './body/recordings/time-range-mp4.interface';
+import { ExportTimeRangeMp4Body } from './body/exports/time-range-mp4.interface';
 import { ExportResponse } from './responses/exports/export-response.interface';
 import { BasicResponse } from './responses/basic-response.interface';
 import { RenameExportUrlParams } from './url-params/exports/rename-export-url-params.interface';
@@ -43,6 +43,8 @@ import {
 } from './url-params/exports/export-time-range-mp4-to-disk-url-params.interface';
 import { Exports } from './exports.enum';
 import { RecordingsPerHourResponse } from './responses/recordings/hourly-summary-recordings-response.interface';
+import { SegmentDetailsForRange } from './query-params/recordings/segment-details-for-range-body.interface';
+import { RecordingsForRange } from './responses/recordings/recordings-for-range-response.interface';
 
 /**
  * API Functions Mapping.
@@ -201,6 +203,11 @@ export interface FrigateApiGetEndpointsMapping {
     urlParams: CameraNameUrlParams;
     queryParams: undefined;
     response: RecordingsPerHourResponse[];
+  };
+  [Recordings.RecordingSegmentsForRange]: {
+    urlParams: CameraNameUrlParams;
+    queryParams: SegmentDetailsForRange;
+    response: RecordingsForRange[];
   };
 }
 
