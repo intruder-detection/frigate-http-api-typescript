@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, ResponseType } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, ResponseType } from 'axios';
 import { environment } from '../environment';
 import { queryStringify } from './utils/querystring.utils';
 import {
@@ -45,7 +45,7 @@ export class FrigateHTTPAPI {
       );
       return rxp.data;
     } catch (e: unknown) {
-      throw new Error(`Failed to run command ${endpoint}. URL: ${url}. ${e}`);
+      this.throwError(endpoint, url, e as AxiosError);
     }
   }
 
@@ -61,7 +61,7 @@ export class FrigateHTTPAPI {
       );
       return rxp.data;
     } catch (e: unknown) {
-      throw new Error(`Failed to run command ${endpoint}. URL: ${url}. ${e}`);
+      this.throwError(endpoint, url, e as AxiosError);
     }
   }
 
@@ -80,7 +80,7 @@ export class FrigateHTTPAPI {
       );
       return rxp.data;
     } catch (e: unknown) {
-      throw new Error(`Failed to run command ${endpoint}. URL: ${url}. ${e}`);
+      this.throwError(endpoint, url, e as AxiosError);
     }
   }
 
@@ -99,7 +99,11 @@ export class FrigateHTTPAPI {
       );
       return rxp.data;
     } catch (e: unknown) {
-      throw new Error(`Failed to run command ${endpoint}. URL: ${url}. ${e}`);
+      this.throwError(endpoint, url, e as AxiosError);
     }
+  }
+
+  static throwError(endpoint: string, url: string, e: AxiosError) {
+    throw new Error(`Failed to run command ${endpoint}. URL: ${url}. Status: ${e.response.status}. Error is: ${e.response?.data?.message}`);
   }
 }
