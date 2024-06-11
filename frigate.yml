@@ -1053,6 +1053,10 @@ paths:
       responses:
         '200':
           description: Hourly summary response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordingsPerHourResponse'
   /api/{camera_name}/recordings:
     get:
       tags:
@@ -1314,6 +1318,7 @@ components:
           "message": "Action was performed successfully",
           "success": true,
         }
+
     ListExportsResponse:
       type: array
       properties:
@@ -1340,7 +1345,7 @@ components:
         - thumb_path
         - video_path
       additionalProperties: false
-      title: ExportResponse
+      title: ListExportsResponse
       example:
         [
           {
@@ -1351,6 +1356,88 @@ components:
             "name": "random_export",
             "thumb_path": "/media/frigate/clips/export/reolink_duo_2_wifi_ggg1iw.webp",
             "video_path": "/media/frigate/exports/reolink_duo_2_wifi_ggg1iw.mp4"
+          }
+        ]
+
+    RecordingsPerHourResponse:
+      properties:
+        day:
+          title: day
+          type: Date
+        events:
+          title: events
+          type: number
+        hours:
+          items:
+            properties:
+              duration:
+                title: duration
+                type: number
+              events:
+                title: events
+                type: number
+              hour:
+                title: hour
+                type: string
+              motion:
+                title: motion
+                type: number
+              objects:
+                title: objects
+                type: number
+            required:
+              - duration
+              - events
+              - hour
+              - motion
+              - objects
+            additionalProperties: false
+            title: HourlyData
+            type: object
+          title: RecordingsPerHourResponse.hours
+          type: array
+      required:
+        - day
+        - events
+        - hours
+      additionalProperties: false
+      title: RecordingsPerHourResponse
+      type: array
+      example:
+        [
+          {
+            "day": "2024-06-11",
+            "events": 21,
+            "hours": [
+              {
+                "duration": 2389,
+                "events": 1,
+                "hour": "19",
+                "motion": 87852,
+                "objects": 2196
+              },
+              {
+                "duration": 3598,
+                "events": 1,
+                "hour": "18",
+                "motion": 136590,
+                "objects": 68
+              },
+              {
+                "duration": 3598,
+                "events": 10,
+                "hour": "17",
+                "motion": 117958,
+                "objects": 1277
+              },
+              {
+                "duration": 2080,
+                "events": 9,
+                "hour": "16",
+                "motion": 68417,
+                "objects": 559
+              }
+            ]
           }
         ]
 

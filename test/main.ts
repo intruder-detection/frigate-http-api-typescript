@@ -369,6 +369,8 @@ async function recordings() {
   // );
   // console.log(liveStreamURLHour);
 
+  const recordingsPerHourSummary = await FrigateHTTPAPI.get(Recordings.HourlySummaryRecordings, cameraNameUrlParams);
+  console.log(recordingsPerHourSummary[0].hours[0].hour);
 }
 
 async function main() {
@@ -376,7 +378,7 @@ async function main() {
   // await media();
   // await events();
   // await previews();
-  await exportsTests();
+  // await exportsTests();
   await recordings();
 }
 

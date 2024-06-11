@@ -42,6 +42,7 @@ import {
   ExportTimeRangeMp4ToDiskUrlParams,
 } from './url-params/exports/export-time-range-mp4-to-disk-url-params.interface';
 import { Exports } from './exports.enum';
+import { RecordingsPerHourResponse } from './responses/recordings/hourly-summary-recordings-response.interface';
 
 /**
  * API Functions Mapping.
@@ -174,6 +175,12 @@ export interface FrigateApiGetEndpointsMapping {
     queryParams: undefined;
     response: any; // TODO: Verify
   };
+  // Exports
+  [Exports.ListExports]: {
+    urlParams: undefined;
+    queryParams: undefined;
+    response: ExportResponse[];
+  };
   // Recordings
   [Recordings.LiveStreamURLHour]: {
     urlParams: LivestreamUrlHourUrlParamsInterface;
@@ -190,10 +197,10 @@ export interface FrigateApiGetEndpointsMapping {
     queryParams: undefined;
     response: any; // TODO: Verify
   };
-  [Exports.ListExports]: {
-    urlParams: undefined;
+  [Recordings.HourlySummaryRecordings]: {
+    urlParams: CameraNameUrlParams;
     queryParams: undefined;
-    response: ExportResponse[];
+    response: RecordingsPerHourResponse[];
   };
 }
 
