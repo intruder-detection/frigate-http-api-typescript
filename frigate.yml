@@ -1291,6 +1291,7 @@ paths:
       responses:
         '200':
           description: Audio activity response
+
   /api/timeline:
     get:
       tags:
@@ -1312,11 +1313,16 @@ paths:
           in: query
           schema:
             type: integer
-          description: Limit the number of events returned
+          description: Limit the number of events returned. If no value is provided 100 will be used.
       responses:
         '200':
           description: Timeline response
-
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimelineResponse'
 components:
   schemas:
     BaseResponse:
@@ -1499,5 +1505,91 @@ components:
             "objects": 0,
             "segment_size": 5.9,
             "start_time": 1718134666
+          }
+        ]
+
+    TimelineResponse:
+      properties:
+        camera:
+          title: camera
+          type: string
+        class_type:
+          title: class_type
+          type: string
+        data:
+          properties:
+            attribute:
+              title: attribute
+              type: string
+            box:
+              items:
+                type: number
+              title: box
+              type: array
+            label:
+              title: label
+              type: string
+            region:
+              items:
+                type: number
+              title: region
+              type: array
+            sub_label:
+              title: sub_label
+              nullable: true
+              type: string
+          required:
+            - attribute
+            - box
+            - label
+            - region
+            - sub_label
+          additionalProperties: false
+          title: Data
+          type: object
+        source:
+          title: source
+          type: string
+        source_id:
+          title: source_id
+          type: string
+        timestamp:
+          title: timestamp
+          type: number
+      required:
+        - camera
+        - class_type
+        - data
+        - source
+        - source_id
+        - timestamp
+      additionalProperties: false
+      title: TimelineResponse
+      type: object
+      example:
+        [
+          {
+            "camera": "reolink_duo_2_wifi",
+            "class_type": "visible",
+            "data": {
+              "attribute": "",
+              "box": [
+                0.7237413194444444,
+                0.2980324074074074,
+                0.011284722222222222,
+                0.04976851851851852
+              ],
+              "label": "person",
+              "region": [
+                0.6946614583333334,
+                0.22974537037037038,
+                0.06944444444444445,
+                0.18518518518518517
+              ],
+              "sub_label": null
+            },
+            "source": "tracked_object",
+            "source_id": "1718120246.789011-9csgma",
+            "timestamp": 1718120246.789011
           }
         ]

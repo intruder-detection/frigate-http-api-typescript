@@ -7,6 +7,7 @@ import * as Stream from 'node:stream';
 import { Events } from '../src/endpoints/events.enum';
 import { Recordings } from '../src/endpoints/recordings.enum';
 import { Exports } from '../src/endpoints/exports.enum';
+import { Timeline } from '../src/endpoints/timeline.enum';
 
 const defaultCameraName = 'reolink_duo_2_wifi';
 
@@ -388,7 +389,14 @@ async function recordings() {
     'arraybuffer',
   );
   fs.writeFileSync(path.join(defaultOutputDir, 'snapshot-specific-frame.png'), snapshotPNGSpecificFrame);
-  // console.log(snapshotPNGSpecificFrame);
+}
+
+async function timeline() {
+  const timelineEvents = await FrigateHTTPAPI.get(Timeline.Timeline, undefined, {
+    camera: defaultCameraName,
+    limit: 5,
+  });
+  console.log(timelineEvents);
 }
 
 async function main() {
@@ -397,7 +405,8 @@ async function main() {
   // await events();
   // await previews();
   // await exportsTests();
-  await recordings();
+  // await recordings();
+  await timeline();
 }
 
 void main();

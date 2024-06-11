@@ -48,6 +48,9 @@ import { RecordingsForRange } from './responses/recordings/recordings-for-range-
 import {
   SnapshotPNGSpecificFrameUrlParameters
 } from './url-params/recordings/snapshot-png-specific-frame-url-params.interface';
+import { Timeline } from './timeline.enum';
+import { TimelineQueryParameters } from './query-params/timeline/timeline-query-parameters.interface';
+import { TimelineResponse } from './responses/timeline/timeline-response.interface';
 
 /**
  * API Functions Mapping.
@@ -216,6 +219,12 @@ export interface FrigateApiGetEndpointsMapping {
     urlParams: SnapshotPNGSpecificFrameUrlParameters;
     queryParams: undefined;
     response: Uint8Array;
+  };
+  // Timeline
+  [Timeline.Timeline]: {
+    urlParams: undefined;
+    queryParams: TimelineQueryParameters;
+    response: TimelineResponse[];
   };
 }
 
