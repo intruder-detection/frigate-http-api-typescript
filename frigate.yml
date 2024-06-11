@@ -940,6 +940,7 @@ paths:
       responses:
         '200':
           description: HLS VOD URL response
+
   /api/exports:
     get:
       tags:
@@ -952,12 +953,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExportResponse'
+                $ref: '#/components/schemas/ListExportsResponse'
   /api/export/{camera_name}/start/{start-timestamp}/end/{end-timestamp}:
     post:
       tags:
         - Exports
-      summary: Export Recordings
+      summary: Create Export from Recordings in given timestamp
       description: Export recordings from start-timestamp to end-timestamp for camera as a single mp4 file. These recordings will be exported to the /media/frigate/exports folder. It is also possible to export this recording as a time-lapse.
       parameters:
         - name: camera_name
@@ -968,11 +969,13 @@ paths:
         - name: start-timestamp
           in: path
           required: true
+          description: The start UNIX timestamp in seconds
           schema:
             type: integer
         - name: end-timestamp
           in: path
           required: true
+          description: The end UNIX timestamp in seconds
           schema:
             type: integer
       requestBody:
@@ -983,42 +986,50 @@ paths:
               properties:
                 name:
                   type: string
-                  description: "Name for the recording. If not provided "
+                  description: "Name for the recording. If not provided a name will be created from the camera and timestamps"
                 playback:
                   type: string
                   description: "Playback factor: realtime or timelapse_25x"
       responses:
         '200':
           description: Export response
-
-  /api/export/{export_name}:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/export/{export_id}:
     delete:
       tags:
         - Exports
       summary: Delete Export
       description: Delete an export from disk.
       parameters:
-        - name: export_name
+        - name: export_id
           in: path
           required: true
+          description: ID of the export to be deleted
           schema:
             type: string
       responses:
         '200':
           description: Export deleted response
-  /api/export/{export_name_current}/{export_name_new}:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/export/{export_id}/{export_new_name}:
     patch:
       tags:
         - Exports
       summary: Rename Export
       description: Renames an export.
       parameters:
-        - name: export_name_current
+        - name: export_id
           in: path
           required: true
           schema:
             type: string
-        - name: export_name_new
+        - name: export_new_name
           in: path
           required: true
           schema:
@@ -1026,6 +1037,7 @@ paths:
       responses:
         '200':
           description: Export renamed response
+
   /api/{camera_name}/recordings/summary:
     get:
       tags:
@@ -1041,6 +1053,12 @@ paths:
       responses:
         '200':
           description: Hourly summary response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecordingsPerHourResponse'
   /api/{camera_name}/recordings:
     get:
       tags:
@@ -1057,15 +1075,21 @@ paths:
           in: query
           schema:
             type: integer
-          description: Unix timestamp for beginning of range
+          description: Unix timestamp (in seconds) for beginning of range
         - name: before
           in: query
           schema:
             type: integer
-          description: Unix timestamp for end of range
+          description: Unix timestamp (in seconds) for end of range
       responses:
         '200':
           description: Recording segment details response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecordingsForRange'
   /api/{camera_name}/recordings/{frame_time}/snapshot.png:
     get:
       tags:
@@ -1086,6 +1110,12 @@ paths:
       responses:
         '200':
           description: Recording snapshot response
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+
   /api/review:
     get:
       tags:
@@ -1261,6 +1291,7 @@ paths:
       responses:
         '200':
           description: Audio activity response
+
   /api/timeline:
     get:
       tags:
@@ -1282,36 +1313,48 @@ paths:
           in: query
           schema:
             type: integer
-          description: Limit the number of events returned
+          description: Limit the number of events returned. If no value is provided 100 will be used.
       responses:
         '200':
           description: Timeline response
-
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimelineResponse'
 components:
   schemas:
-    ExportResponse:
+    BaseResponse:
+      title: BaseResponse
       type: object
       properties:
+        message:
+          type: string
+        success:
+          type: boolean
+      example:
+        {
+          "message": "Action was performed successfully",
+          "success": true,
+        }
+
+    ListExportsResponse:
+      type: array
+      properties:
         camera:
-          title: camera
           type: string
         date:
-          title: date
           type: number
         id:
-          title: id
           type: string
         in_progress:
-          title: in_progress
           type: boolean
         name:
-          title: name
           type: string
         thumb_path:
-          title: thumb_path
           type: string
         video_path:
-          title: video_path
           type: string
       required:
         - camera
@@ -1322,4 +1365,231 @@ components:
         - thumb_path
         - video_path
       additionalProperties: false
-      title: ExportResponse
+      title: ListExportsResponse
+      example:
+        [
+          {
+            "camera": "reolink_duo_2_wifi",
+            "date": 1718118000,
+            "id": "reolink_duo_2_wifi_ggg1iw",
+            "in_progress": false,
+            "name": "random_export",
+            "thumb_path": "/media/frigate/clips/export/reolink_duo_2_wifi_ggg1iw.webp",
+            "video_path": "/media/frigate/exports/reolink_duo_2_wifi_ggg1iw.mp4"
+          }
+        ]
+
+    RecordingsPerHourResponse:
+      properties:
+        day:
+          title: day
+          type: Date
+        events:
+          title: events
+          type: number
+        hours:
+          items:
+            properties:
+              duration:
+                title: duration
+                type: number
+              events:
+                title: events
+                type: number
+              hour:
+                title: hour
+                type: string
+              motion:
+                title: motion
+                type: number
+              objects:
+                title: objects
+                type: number
+            required:
+              - duration
+              - events
+              - hour
+              - motion
+              - objects
+            additionalProperties: false
+            title: HourlyData
+            type: object
+          title: RecordingsPerHourResponse.hours
+          type: array
+      required:
+        - day
+        - events
+        - hours
+      additionalProperties: false
+      title: RecordingsPerHourResponse
+      type: object
+      example:
+        [
+          {
+            "day": "2024-06-11",
+            "events": 21,
+            "hours": [
+              {
+                "duration": 2389,
+                "events": 1,
+                "hour": "19",
+                "motion": 87852,
+                "objects": 2196
+              },
+              {
+                "duration": 3598,
+                "events": 1,
+                "hour": "18",
+                "motion": 136590,
+                "objects": 68
+              },
+              {
+                "duration": 3598,
+                "events": 10,
+                "hour": "17",
+                "motion": 117958,
+                "objects": 1277
+              },
+              {
+                "duration": 2080,
+                "events": 9,
+                "hour": "16",
+                "motion": 68417,
+                "objects": 559
+              }
+            ]
+          }
+        ]
+
+    RecordingsForRange:
+      properties:
+        duration:
+          title: duration
+          type: number
+        end_time:
+          title: end_time
+          type: number
+        id:
+          title: id
+          type: string
+        motion:
+          title: motion
+          type: number
+        objects:
+          title: objects
+          type: number
+        segment_size:
+          title: segment_size
+          type: number
+        start_time:
+          title: start_time
+          type: number
+      required:
+        - duration
+        - end_time
+        - id
+        - motion
+        - objects
+        - segment_size
+        - start_time
+      additionalProperties: false
+      title: RecordingsForRange
+      type: object
+      example:
+        [
+          {
+            "duration": 10.181955555555554,
+            "end_time": 1718134676.181956,
+            "id": "1718134666.0-hzso98",
+            "motion": 411,
+            "objects": 0,
+            "segment_size": 5.9,
+            "start_time": 1718134666
+          }
+        ]
+
+    TimelineResponse:
+      properties:
+        camera:
+          title: camera
+          type: string
+        class_type:
+          title: class_type
+          type: string
+        data:
+          properties:
+            attribute:
+              title: attribute
+              type: string
+            box:
+              items:
+                type: number
+              title: box
+              type: array
+            label:
+              title: label
+              type: string
+            region:
+              items:
+                type: number
+              title: region
+              type: array
+            sub_label:
+              title: sub_label
+              nullable: true
+              type: string
+          required:
+            - attribute
+            - box
+            - label
+            - region
+            - sub_label
+          additionalProperties: false
+          title: Data
+          type: object
+        source:
+          title: source
+          type: string
+        source_id:
+          title: source_id
+          type: string
+        timestamp:
+          title: timestamp
+          type: number
+      required:
+        - camera
+        - class_type
+        - data
+        - source
+        - source_id
+        - timestamp
+      additionalProperties: false
+      title: TimelineResponse
+      type: object
+      example:
+        [
+          {
+            "camera": "reolink_duo_2_wifi",
+            "class_type": "visible",
+            "data": {
+              "attribute": "",
+              "box": [
+                0.7237413194444444,
+                0.2980324074074074,
+                0.011284722222222222,
+                0.04976851851851852
+              ],
+              "label": "person",
+              "region": [
+                0.6946614583333334,
+                0.22974537037037038,
+                0.06944444444444445,
+                0.18518518518518517
+              ],
+              "sub_label": null
+            },
+            "source": "tracked_object",
+            "source_id": "1718120246.789011-9csgma",
+            "timestamp": 1718120246.789011
+          }
+        ]
