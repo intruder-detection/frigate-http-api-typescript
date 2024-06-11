@@ -952,7 +952,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExportResponse'
+                $ref: '#/components/schemas/ListExportsResponse'
   /api/export/{camera_name}/start/{start-timestamp}/end/{end-timestamp}:
     post:
       tags:
@@ -983,7 +983,7 @@ paths:
               properties:
                 name:
                   type: string
-                  description: "Name for the recording. If not provided "
+                  description: "Name for the recording. If not provided a name will be created from the "
                 playback:
                   type: string
                   description: "Playback factor: realtime or timelapse_25x"
@@ -1289,29 +1289,22 @@ paths:
 
 components:
   schemas:
-    ExportResponse:
-      type: object
+    ListExportsResponse:
+      type: array
       properties:
         camera:
-          title: camera
           type: string
         date:
-          title: date
           type: number
         id:
-          title: id
           type: string
         in_progress:
-          title: in_progress
           type: boolean
         name:
-          title: name
           type: string
         thumb_path:
-          title: thumb_path
           type: string
         video_path:
-          title: video_path
           type: string
       required:
         - camera
@@ -1323,3 +1316,16 @@ components:
         - video_path
       additionalProperties: false
       title: ExportResponse
+      example:
+        [
+          {
+            "camera": "reolink_duo_2_wifi",
+            "date": 1718118000,
+            "id": "reolink_duo_2_wifi_ggg1iw",
+            "in_progress": false,
+            "name": "random_export",
+            "thumb_path": "/media/frigate/clips/export/reolink_duo_2_wifi_ggg1iw.webp",
+            "video_path": "/media/frigate/exports/reolink_duo_2_wifi_ggg1iw.mp4"
+          }
+        ]
+
