@@ -940,6 +940,7 @@ paths:
       responses:
         '200':
           description: HLS VOD URL response
+
   /api/exports:
     get:
       tags:
@@ -968,11 +969,13 @@ paths:
         - name: start-timestamp
           in: path
           required: true
+          description: The start UNIX timestamp in seconds
           schema:
             type: integer
         - name: end-timestamp
           in: path
           required: true
+          description: The end UNIX timestamp in seconds
           schema:
             type: integer
       requestBody:
@@ -983,29 +986,37 @@ paths:
               properties:
                 name:
                   type: string
-                  description: "Name for the recording. If not provided a name will be created from the "
+                  description: "Name for the recording. If not provided a name will be created from the camera and timestamps"
                 playback:
                   type: string
                   description: "Playback factor: realtime or timelapse_25x"
       responses:
         '200':
           description: Export response
-
-  /api/export/{export_name}:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/export/{export_id}:
     delete:
       tags:
         - Exports
       summary: Delete Export
       description: Delete an export from disk.
       parameters:
-        - name: export_name
+        - name: export_id
           in: path
           required: true
+          description: ID of the export to be deleted
           schema:
             type: string
       responses:
         '200':
           description: Export deleted response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
   /api/export/{export_name_current}/{export_name_new}:
     patch:
       tags:
@@ -1026,6 +1037,7 @@ paths:
       responses:
         '200':
           description: Export renamed response
+
   /api/{camera_name}/recordings/summary:
     get:
       tags:
@@ -1289,6 +1301,19 @@ paths:
 
 components:
   schemas:
+    BaseResponse:
+      title: BaseResponse
+      type: object
+      properties:
+        message:
+          type: string
+        success:
+          type: boolean
+      example:
+        {
+          "message": "Action was performed successfully",
+          "success": true,
+        }
     ListExportsResponse:
       type: array
       properties:
