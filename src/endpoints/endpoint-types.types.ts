@@ -33,6 +33,13 @@ import { EventIdUrlParams } from './url-params/event-id-url-params.interface';
 import { MetaDataForPreviewsInHourUrlParams } from './url-params/previews/metadata-for-previews-in-hour.interface';
 import { MetaDataFrameUrlParams } from './url-params/previews/metadata-frame-url-params.interface';
 import { GifFromPreviewUrlParams } from './url-params/previews/gif-from-preview-url-params.interface';
+import { Recordings } from './recordings.enum';
+import { LivestreamUrlHourUrlParamsInterface } from './url-params/recordings/livestream-url-hour-url-params.interface';
+import { LivestreamInRangeUrlParams } from './url-params/recordings/livestream-in-range-url-params.interface';
+import {
+  ExportTimeRangeMp4ToDiskUrlParams
+} from './url-params/recordings/export-time-range-mp4-to-disk-url-params.interface';
+import { ExportTimeRangeMp4Body } from './body/recordings/time-range-mp4.interface';
 
 /**
  * API Functions Mapping.
@@ -165,6 +172,22 @@ export interface FrigateApiGetEndpointsMapping {
     queryParams: undefined;
     response: any; // TODO: Verify
   };
+  // Recordings
+  [Recordings.LiveStreamURLHour]: {
+    urlParams: LivestreamUrlHourUrlParamsInterface;
+    queryParams: undefined;
+    response: any; // TODO: Verify
+  };
+  [Recordings.LiveStreamURLEvent]: {
+    urlParams: EventIdUrlParams;
+    queryParams: undefined;
+    response: any; // TODO: Verify
+  };
+  [Recordings.LiveStreamURLTimeRange]: {
+    urlParams: LivestreamInRangeUrlParams;
+    queryParams: undefined;
+    response: any; // TODO: Verify
+  };
 }
 
 // POST
@@ -198,14 +221,21 @@ export interface FrigateApiPostEndpointsMapping {
   [Events.SubLabel]: {
     urlParams: EventIdUrlParams;
     queryParams: undefined;
-    response: PostResponse;
     body: SubLabelBody;
+    response: PostResponse;
   };
   [Events.CreateLabel]: {
     urlParams: CameraAndLabelNameUrlParams;
     queryParams: undefined;
     body: CreateLabel;
     response: CreateLabelResponse;
+  };
+  // Recordings
+  [Recordings.ExportTimeRangeMP4ToDisk]: {
+    urlParams: ExportTimeRangeMp4ToDiskUrlParams;
+    queryParams: undefined;
+    body?: ExportTimeRangeMp4Body;
+    response: PostResponse;
   };
 }
 

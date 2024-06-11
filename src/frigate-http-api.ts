@@ -53,14 +53,15 @@ export class FrigateHTTPAPI {
     endpoint: E,
     urlParams?: FrigateApiDeleteEndpointsMapping[typeof endpoint]['urlParams'],
   ): Promise<FrigateApiDeleteEndpointsMapping[typeof endpoint]['response']> {
+    const url = this.getURL(endpoint, urlParams);
     try {
       const rxp = await axios.delete<FrigateApiDeleteEndpointsMapping[typeof endpoint]['response']>(
-        this.getURL(endpoint, urlParams),
+        url,
         this.defaultRequestConfig,
       );
       return rxp.data;
     } catch (e: unknown) {
-      throw new Error(`Failed to run command ${endpoint}. ${e}`);
+      throw new Error(`Failed to run command ${endpoint}. URL: ${url}. ${e}`);
     }
   }
 
@@ -70,15 +71,16 @@ export class FrigateHTTPAPI {
     queryParams?: FrigateApiPostEndpointsMapping[typeof endpoint]['queryParams'],
     body?: FrigateApiPostEndpointsMapping[typeof endpoint]['body'],
   ): Promise<FrigateApiPostEndpointsMapping[typeof endpoint]['response']> {
+    const url = this.getURL(endpoint, urlParams, queryParams);
     try {
       const rxp = await axios.post<FrigateApiPostEndpointsMapping[typeof endpoint]['response']>(
-        this.getURL(endpoint, urlParams, queryParams),
+        url,
         body,
         this.defaultRequestConfig,
       );
       return rxp.data;
     } catch (e: unknown) {
-      throw new Error(`Failed to run command ${endpoint}. ${e}`);
+      throw new Error(`Failed to run command ${endpoint}. URL: ${url}. ${e}`);
     }
   }
 
@@ -88,15 +90,16 @@ export class FrigateHTTPAPI {
     queryParams?: FrigateApiPutEndpointsMapping[typeof endpoint]['queryParams'],
     body?: FrigateApiPutEndpointsMapping[typeof endpoint]['body'],
   ): Promise<FrigateApiPutEndpointsMapping[typeof endpoint]['response']> {
+    const url = this.getURL(endpoint, urlParams, queryParams);
     try {
       const rxp = await axios.put<FrigateApiPutEndpointsMapping[typeof endpoint]['response']>(
-        this.getURL(endpoint, urlParams, queryParams),
+    url,
         body,
         this.defaultRequestConfig,
       );
       return rxp.data;
     } catch (e: unknown) {
-      throw new Error(`Failed to run command ${endpoint}. ${e}`);
+      throw new Error(`Failed to run command ${endpoint}. URL: ${url}. ${e}`);
     }
   }
 }

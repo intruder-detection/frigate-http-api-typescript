@@ -940,14 +940,14 @@ paths:
       responses:
         '200':
           description: HLS VOD URL response
-  /api/export/{camera}/start/{start-timestamp}/end/{end-timestamp}:
+  /api/export/{camera_name}/start/{start-timestamp}/end/{end-timestamp}:
     post:
       tags:
         - Recordings
       summary: Export Recordings
       description: Export recordings from start-timestamp to end-timestamp for camera as a single mp4 file. These recordings will be exported to the /media/frigate/exports folder. It is also possible to export this recording as a time-lapse.
       parameters:
-        - name: camera
+        - name: camera_name
           in: path
           required: true
           schema:
@@ -968,6 +968,9 @@ paths:
             schema:
               type: object
               properties:
+                name:
+                  type: string
+                  description: "Name for the recording. If not provided "
                 playback:
                   type: string
                   description: "Playback factor: realtime or timelapse_25x"

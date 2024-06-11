@@ -5,7 +5,7 @@ import * as path from 'node:path';
 import * as fs from 'node:fs';
 import * as Stream from 'node:stream';
 import { Events } from '../src/endpoints/events.enum';
-import { Preview } from '../src/endpoints/preview.enum';
+import { Recordings } from '../src/endpoints/recordings.enum';
 
 const defaultCameraName = 'reolink_duo_2_wifi';
 
@@ -309,20 +309,56 @@ async function events() {
 
 async function previews() {
   // event_id: 1717972821.878462-pq41sy
-  const gifOfEvent = await FrigateHTTPAPI.get(
-    Preview.Gif,
-    { event_id: '1717972821.878462-pq41sy' },
-    undefined,
-    'arraybuffer',
-  );
-  fs.writeFileSync(path.join(defaultOutputDir, 'snapshot.jpg'), gifOfEvent);
+  // const gifOfEvent = await FrigateHTTPAPI.get(
+  //   Preview.Gif,
+  //   { event_id: '1717972821.878462-pq41sy' },
+  //   undefined,
+  //   'arraybuffer',
+  // );
+  // fs.writeFileSync(path.join(defaultOutputDir, 'snapshot.jpg'), gifOfEvent);
+}
+
+async function recordings() {
+  // Recordings.LiveStreamURLHour
+  // const liveStreamURLHour = await FrigateHTTPAPI.get(
+  //   Recordings.LiveStreamURLHour,
+  //   {
+  //     ...cameraNameUrlParams,
+  //     year: 2024,
+  //     month: 6,
+  //     day: 10,
+  //     hour: 22,
+  //     timezone: 'Europe/Lisbon',
+  //   },
+  //   undefined,
+  //   'arraybuffer',
+  // );
+  // console.log(liveStreamURLHour);
+
+
+  // Recordings.ExportTimeRangeMp4ToDisk
+  // const exportTimRangeToDisk = await FrigateHTTPAPI.post(
+  //   Recordings.ExportTimeRangeMP4ToDisk,
+  //   {
+  //     ...cameraNameUrlParams,
+  //     start_timestamp: 1718118000,
+  //     end_timestamp: 1718118180,
+  //   },
+  //   undefined,
+  //   {
+  //     playback: 'timelapse_25x',
+  //     name: 'Random Export',
+  //   }
+  // );
+  // console.log(exportTimRangeToDisk);
 }
 
 async function main() {
-  await managementAndInformation();
-  await media();
-  await events();
-  await previews();
+  // await managementAndInformation();
+  // await media();
+  // await events();
+  // await previews();
+  await recordings();
 }
 
 void main();
