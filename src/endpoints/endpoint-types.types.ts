@@ -40,6 +40,7 @@ import {
   ExportTimeRangeMp4ToDiskUrlParams
 } from './url-params/recordings/export-time-range-mp4-to-disk-url-params.interface';
 import { ExportTimeRangeMp4Body } from './body/recordings/time-range-mp4.interface';
+import { ExportResponse } from './responses/recordings/export-response.interface';
 
 /**
  * API Functions Mapping.
@@ -187,6 +188,11 @@ export interface FrigateApiGetEndpointsMapping {
     urlParams: LivestreamInRangeUrlParams;
     queryParams: undefined;
     response: any; // TODO: Verify
+  };
+  [Recordings.ListExports]: {
+    urlParams: undefined;
+    queryParams: undefined;
+    response: ExportResponse[];
   };
 }
 

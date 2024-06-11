@@ -335,7 +335,6 @@ async function recordings() {
   // );
   // console.log(liveStreamURLHour);
 
-
   // Recordings.ExportTimeRangeMp4ToDisk
   // const exportTimRangeToDisk = await FrigateHTTPAPI.post(
   //   Recordings.ExportTimeRangeMP4ToDisk,
@@ -351,6 +350,10 @@ async function recordings() {
   //   }
   // );
   // console.log(exportTimRangeToDisk);
+
+  // Recordings.ListExports
+  const listOfExports = await FrigateHTTPAPI.get(Recordings.ListExports);
+  console.log(listOfExports[0].video_path);
 }
 
 async function main() {
