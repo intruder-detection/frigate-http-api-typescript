@@ -1,9 +1,9 @@
 openapi: 3.0.0
 info:
-  title: Frigate HTTP API for version 0.14 beta
+  title: Frigate HTTP API
   version: 1.0.0
 servers:
-  - url: https://demo.frigate.video:5000
+  - url: http://192.168.1.243:5000
 tags:
   - name: Management & Information
     description: Management & Information
@@ -940,14 +940,27 @@ paths:
       responses:
         '200':
           description: HLS VOD URL response
-  /api/export/{camera}/start/{start-timestamp}/end/{end-timestamp}:
+  /api/exports:
+    get:
+      tags:
+        - Exports
+      summary: Get List of Exports
+      description: Get a list of the existing exports (ongoing or complete)
+      responses:
+        '200':
+          description: List of Exports
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+  /api/export/{camera_name}/start/{start-timestamp}/end/{end-timestamp}:
     post:
       tags:
-        - Recordings
+        - Exports
       summary: Export Recordings
       description: Export recordings from start-timestamp to end-timestamp for camera as a single mp4 file. These recordings will be exported to the /media/frigate/exports folder. It is also possible to export this recording as a time-lapse.
       parameters:
-        - name: camera
+        - name: camera_name
           in: path
           required: true
           schema:
@@ -968,16 +981,20 @@ paths:
             schema:
               type: object
               properties:
+                name:
+                  type: string
+                  description: "Name for the recording. If not provided "
                 playback:
                   type: string
                   description: "Playback factor: realtime or timelapse_25x"
       responses:
         '200':
           description: Export response
+
   /api/export/{export_name}:
     delete:
       tags:
-        - Recordings
+        - Exports
       summary: Delete Export
       description: Delete an export from disk.
       parameters:
@@ -992,7 +1009,7 @@ paths:
   /api/export/{export_name_current}/{export_name_new}:
     patch:
       tags:
-        - Recordings
+        - Exports
       summary: Rename Export
       description: Renames an export.
       parameters:
@@ -1270,3 +1287,39 @@ paths:
         '200':
           description: Timeline response
 
+components:
+  schemas:
+    ExportResponse:
+      type: object
+      properties:
+        camera:
+          title: camera
+          type: string
+        date:
+          title: date
+          type: number
+        id:
+          title: id
+          type: string
+        in_progress:
+          title: in_progress
+          type: boolean
+        name:
+          title: name
+          type: string
+        thumb_path:
+          title: thumb_path
+          type: string
+        video_path:
+          title: video_path
+          type: string
+      required:
+        - camera
+        - date
+        - id
+        - in_progress
+        - name
+        - thumb_path
+        - video_path
+      additionalProperties: false
+      title: ExportResponse
