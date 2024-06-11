@@ -4,6 +4,7 @@ import { queryStringify } from './utils/querystring.utils';
 import {
   FrigateApiDeleteEndpointsMapping,
   FrigateApiGetEndpointsMapping,
+  FrigateApiPatchEndpointsMapping,
   FrigateApiPostEndpointsMapping,
   FrigateApiPutEndpointsMapping,
 } from './endpoints/endpoint-types.types';
@@ -56,6 +57,19 @@ export class FrigateHTTPAPI {
     const url = this.getURL(endpoint, urlParams);
     try {
       const rxp = await axios.delete<FrigateApiDeleteEndpointsMapping[typeof endpoint]['response']>(url, this.defaultRequestConfig);
+      return rxp.data;
+    } catch (e: unknown) {
+      this.throwError(endpoint, url, e as AxiosError);
+    }
+  }
+
+  static async patch<E extends keyof FrigateApiPatchEndpointsMapping>(
+    endpoint: E,
+    urlParams?: FrigateApiPatchEndpointsMapping[typeof endpoint]['urlParams'],
+  ): Promise<FrigateApiPatchEndpointsMapping[typeof endpoint]['response']> {
+    const url = this.getURL(endpoint, urlParams);
+    try {
+      const rxp = await axios.patch<FrigateApiPatchEndpointsMapping[typeof endpoint]['response']>(url, this.defaultRequestConfig);
       return rxp.data;
     } catch (e: unknown) {
       this.throwError(endpoint, url, e as AxiosError);

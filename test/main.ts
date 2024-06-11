@@ -359,6 +359,12 @@ async function recordings() {
   //   export_id: 'reolink_duo_2_wifi_ggg1iw',
   // });
   // console.log(deleteExportById);
+
+  // const renameExport = await FrigateHTTPAPI.patch(Recordings.RenameExport, {
+  //   export_id: 'reolink_duo_2_wifi_oml4cx',
+  //   export_name_new: 'my_export_name'
+  // });
+  // console.log(renameExport);
 }
 
 async function main() {

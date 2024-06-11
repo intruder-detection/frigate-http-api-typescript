@@ -958,7 +958,7 @@ paths:
     post:
       tags:
         - Exports
-      summary: Export Recordings
+      summary: Create Export from Recordings in given timestamp
       description: Export recordings from start-timestamp to end-timestamp for camera as a single mp4 file. These recordings will be exported to the /media/frigate/exports folder. It is also possible to export this recording as a time-lapse.
       parameters:
         - name: camera_name
@@ -1017,19 +1017,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BaseResponse'
-  /api/export/{export_name_current}/{export_name_new}:
+  /api/export/{export_id}/{export_new_name}:
     patch:
       tags:
         - Exports
       summary: Rename Export
       description: Renames an export.
       parameters:
-        - name: export_name_current
+        - name: export_id
           in: path
           required: true
           schema:
             type: string
-        - name: export_name_new
+        - name: export_new_name
           in: path
           required: true
           schema:
