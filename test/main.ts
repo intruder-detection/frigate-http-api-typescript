@@ -377,6 +377,18 @@ async function recordings() {
     before: new Date().getTime() / 1000,
   });
   console.log(segmentDetailsForRange);
+
+  const snapshotPNGSpecificFrame = await FrigateHTTPAPI.get(
+    Recordings.SnapshotPNGSpecificFrame,
+    {
+      ...cameraNameUrlParams,
+      frame_time: 1718134666,
+    },
+    undefined,
+    'arraybuffer',
+  );
+  fs.writeFileSync(path.join(defaultOutputDir, 'snapshot-specific-frame.png'), snapshotPNGSpecificFrame);
+  // console.log(snapshotPNGSpecificFrame);
 }
 
 async function main() {

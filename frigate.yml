@@ -1110,6 +1110,11 @@ paths:
       responses:
         '200':
           description: Recording snapshot response
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
 
   /api/review:
     get:

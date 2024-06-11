@@ -45,6 +45,9 @@ import { Exports } from './exports.enum';
 import { RecordingsPerHourResponse } from './responses/recordings/hourly-summary-recordings-response.interface';
 import { SegmentDetailsForRange } from './query-params/recordings/segment-details-for-range-body.interface';
 import { RecordingsForRange } from './responses/recordings/recordings-for-range-response.interface';
+import {
+  SnapshotPNGSpecificFrameUrlParameters
+} from './url-params/recordings/snapshot-png-specific-frame-url-params.interface';
 
 /**
  * API Functions Mapping.
@@ -208,6 +211,11 @@ export interface FrigateApiGetEndpointsMapping {
     urlParams: CameraNameUrlParams;
     queryParams: SegmentDetailsForRange;
     response: RecordingsForRange[];
+  };
+  [Recordings.SnapshotPNGSpecificFrame]: {
+    urlParams: SnapshotPNGSpecificFrameUrlParameters;
+    queryParams: undefined;
+    response: Uint8Array;
   };
 }
 
