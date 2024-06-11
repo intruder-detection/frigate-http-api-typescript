@@ -340,13 +340,13 @@ async function recordings() {
   //   Recordings.ExportTimeRangeMP4ToDisk,
   //   {
   //     ...cameraNameUrlParams,
-  //     start_timestamp: 1718118000,
-  //     end_timestamp: 1718118180,
+  //     start_timestamp: (new Date(Date.now() - 30 * 60 * 1000).getTime() / 1000),
+  //     end_timestamp: (new Date().getTime() / 1000),
   //   },
   //   undefined,
   //   {
   //     playback: 'timelapse_25x',
-  //     name: 'Random Export',
+  //     name: 'Export 101',
   //   }
   // );
   // console.log(exportTimRangeToDisk);
@@ -354,6 +354,11 @@ async function recordings() {
   // Recordings.ListExports
   const listOfExports = await FrigateHTTPAPI.get(Recordings.ListExports);
   console.log(listOfExports[0].video_path);
+
+  // const deleteExportById = await FrigateHTTPAPI.delete(Recordings.DeleteExportById, {
+  //   export_id: 'reolink_duo_2_wifi_ggg1iw',
+  // });
+  // console.log(deleteExportById);
 }
 
 async function main() {

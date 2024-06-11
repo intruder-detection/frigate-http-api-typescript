@@ -55,10 +55,7 @@ export class FrigateHTTPAPI {
   ): Promise<FrigateApiDeleteEndpointsMapping[typeof endpoint]['response']> {
     const url = this.getURL(endpoint, urlParams);
     try {
-      const rxp = await axios.delete<FrigateApiDeleteEndpointsMapping[typeof endpoint]['response']>(
-        url,
-        this.defaultRequestConfig,
-      );
+      const rxp = await axios.delete<FrigateApiDeleteEndpointsMapping[typeof endpoint]['response']>(url, this.defaultRequestConfig);
       return rxp.data;
     } catch (e: unknown) {
       this.throwError(endpoint, url, e as AxiosError);
@@ -73,11 +70,7 @@ export class FrigateHTTPAPI {
   ): Promise<FrigateApiPostEndpointsMapping[typeof endpoint]['response']> {
     const url = this.getURL(endpoint, urlParams, queryParams);
     try {
-      const rxp = await axios.post<FrigateApiPostEndpointsMapping[typeof endpoint]['response']>(
-        url,
-        body,
-        this.defaultRequestConfig,
-      );
+      const rxp = await axios.post<FrigateApiPostEndpointsMapping[typeof endpoint]['response']>(url, body, this.defaultRequestConfig);
       return rxp.data;
     } catch (e: unknown) {
       this.throwError(endpoint, url, e as AxiosError);
@@ -92,11 +85,7 @@ export class FrigateHTTPAPI {
   ): Promise<FrigateApiPutEndpointsMapping[typeof endpoint]['response']> {
     const url = this.getURL(endpoint, urlParams, queryParams);
     try {
-      const rxp = await axios.put<FrigateApiPutEndpointsMapping[typeof endpoint]['response']>(
-    url,
-        body,
-        this.defaultRequestConfig,
-      );
+      const rxp = await axios.put<FrigateApiPutEndpointsMapping[typeof endpoint]['response']>(url, body, this.defaultRequestConfig);
       return rxp.data;
     } catch (e: unknown) {
       this.throwError(endpoint, url, e as AxiosError);
@@ -104,6 +93,7 @@ export class FrigateHTTPAPI {
   }
 
   static throwError(endpoint: string, url: string, e: AxiosError) {
-    throw new Error(`Failed to run command ${endpoint}. URL: ${url}. Status: ${e.response.status}. Error is: ${e.response?.data?.message}`);
+    const errorMessage = (e.response?.data as { message: string }).message;
+    throw new Error(`Failed to run command ${endpoint}. URL: ${url}. Status: ${e.response.status}. Error is: ${errorMessage}`);
   }
 }

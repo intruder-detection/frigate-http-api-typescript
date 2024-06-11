@@ -41,6 +41,7 @@ import {
 } from './url-params/recordings/export-time-range-mp4-to-disk-url-params.interface';
 import { ExportTimeRangeMp4Body } from './body/recordings/time-range-mp4.interface';
 import { ExportResponse } from './responses/recordings/export-response.interface';
+import { DeleteExportUrlParams } from './url-params/recordings/delete-export-url-params.interface';
 
 /**
  * API Functions Mapping.
@@ -265,6 +266,11 @@ export interface FrigateApiDeleteEndpointsMapping {
   };
   [Events.IdRetain]: {
     urlParams: EventIdUrlParams;
+    queryParams: undefined;
+    response: DeleteResponse;
+  };
+  [Recordings.DeleteExportById]: {
+    urlParams: DeleteExportUrlParams;
     queryParams: undefined;
     response: DeleteResponse;
   };
