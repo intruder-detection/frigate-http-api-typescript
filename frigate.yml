@@ -3,7 +3,7 @@ info:
   title: Frigate HTTP API
   version: 1.0.0
 servers:
-  - url: http://192.168.1.243:5000
+  - url: https://demo.frigate.video
 tags:
   - name: Management & Information
     description: Management & Information
@@ -159,7 +159,6 @@ paths:
           content:
             video/mpeg:
               schema:
-                type: string
                 format: binary
   /api/{camera_name}/latest.jpg:
     get:
@@ -211,7 +210,6 @@ paths:
           content:
             image/jpeg:
               schema:
-                type: string
                 format: binary
   /api/{camera_name}/{label}/thumbnail.jpg:
     get:
@@ -236,7 +234,6 @@ paths:
           content:
             image/jpeg:
               schema:
-                type: string
                 format: binary
   /api/{camera_name}/{label}/clip.mp4:
     get:
@@ -261,7 +258,6 @@ paths:
           content:
             video/mp4:
               schema:
-                type: string
                 format: binary
   /api/{camera_name}/{label}/snapshot.jpg:
     get:
@@ -286,7 +282,6 @@ paths:
           content:
             image/jpeg:
               schema:
-                type: string
                 format: binary
   /api/{camera_name}/grid.jpg:
     get:
@@ -314,7 +309,6 @@ paths:
           content:
             image/jpeg:
               schema:
-                type: string
                 format: binary
 
 
@@ -434,14 +428,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/EventsSummaryResponse'
-  /api/events/{id}:
+  /api/events/{event_id}:
     get:
       tags:
         - Events
       summary: Get Event by ID
       description: Returns data for a single event
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -473,14 +467,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BaseResponse'
-  /api/events/{id}/retain:
+  /api/events/{event_id}/retain:
     post:
       tags:
         - Events
       summary: Retain Event by ID
       description: Sets retain to true for the event id
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -573,8 +567,15 @@ paths:
               properties:
                 subLabel:
                   type: string
+                  description: The sub label
                 subLabelScore:
                   type: number
+                  description: The score for the sub label
+              example:
+                {
+                  "subLabel": "random",
+                  "subLabelScore": 0.8
+                }
       responses:
         '200':
           description: Sub label set response
@@ -582,14 +583,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BaseResponse'
-  /api/events/{id}/thumbnail.jpg:
+  /api/events/{event_id}/thumbnail.jpg:
     get:
       tags:
         - Events
       summary: Get Event Thumbnail
       description: Returns a thumbnail for the event id optimized for notifications
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -604,16 +605,15 @@ paths:
           content:
             image/jpeg:
               schema:
-                type: string
                 format: binary
-  /api/events/{id}/clip.mp4:
+  /api/events/{event_id}/clip.mp4:
     get:
       tags:
         - Events
       summary: Get Event Clip
       description: Returns the clip for the event id
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -624,16 +624,15 @@ paths:
           content:
             video/mp4:
               schema:
-                type: string
                 format: binary
-  /api/events/{id}/snapshot-clean.png:
+  /api/events/{event_id}/snapshot-clean.png:
     get:
       tags:
         - Events
       summary: Get Clean Snapshot
       description: Returns the clean snapshot image for the event id
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -648,16 +647,15 @@ paths:
           content:
             image/png:
               schema:
-                type: string
                 format: binary
-  /api/events/{id}/snapshot.jpg:
+  /api/events/{event_id}/snapshot.jpg:
     get:
       tags:
         - Events
       summary: Get Event Snapshot
       description: Returns the snapshot image for the event id. Works while the event is in progress and after completion.
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -681,7 +679,7 @@ paths:
           in: query
           schema:
             type: integer
-          description: Crop the snapshot to the (0 or 1)
+          description: Crop the snapshot (0 or 1)
         - name: quality
           in: query
           schema:
@@ -698,7 +696,6 @@ paths:
           content:
             image/jpeg:
               schema:
-                type: string
                 format: binary
   /api/events/{camera_name}/{label}/create:
     post:
@@ -810,7 +807,6 @@ paths:
           content:
             image/gif:
               schema:
-                type: string
                 format: binary
   /api/preview/{camera_name}/start/{start-timestamp}/end/{end-timestamp}:
     get:
@@ -843,7 +839,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/MetadataForPreviewsInRangeResponse'
-  /api/preview/{year}-{month}/{day}/{hour}/{camera_name}/{timezone}:
+  /api/preview/{year}-{month}/{day}/{hour}/{camera_name}/{timezone_name}:
     get:
       tags:
         - Previews
@@ -875,7 +871,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: timezone
+        - name: timezone_name
           in: path
           required: true
           schema:
@@ -907,7 +903,6 @@ paths:
           content:
             image/jpeg:
               schema:
-                type: string
                 format: binary
   /api/{camera_name}/start/{start-timestamp}/end/{end-timestamp}/preview.gif:
     get:
@@ -937,7 +932,6 @@ paths:
           content:
             image/gif:
               schema:
-                type: string
                 format: binary
 
 
@@ -1156,7 +1150,6 @@ paths:
           content:
             image/png:
               schema:
-                type: string
                 format: binary
 
 
@@ -1259,6 +1252,10 @@ paths:
       responses:
         '200':
           description: Export renamed response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
 
 
   # Reviews
