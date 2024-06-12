@@ -446,9 +446,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/EventsByIDResponse'
+                $ref: '#/components/schemas/EventsByIDResponse'
     delete:
       tags:
         - Events
