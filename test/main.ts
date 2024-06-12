@@ -406,6 +406,11 @@ async function reviews() {
     limit: 5,
   });
   console.log(listReviews);
+
+  const getReview = await FrigateHTTPAPI.get(Reviews.GetReviewById, {
+    review_id: '1718181382.406358-6aywc4'
+  });
+  console.log(getReview);
 }
 
 async function main() {

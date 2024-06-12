@@ -1172,7 +1172,26 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ListReviewResponse'
+                  $ref: '#/components/schemas/ReviewResponse'
+  /api/{review_id}:
+    get:
+      tags:
+        - Reviews
+      summary: Get Review
+      description: Get review from the database
+      parameters:
+        - name: review_id
+          in: path
+          schema:
+            type: integer
+          description: Id of the review
+      responses:
+        '200':
+          description: Review response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewResponse'
   /api/review/summary:
     get:
       tags:
@@ -1600,7 +1619,7 @@ components:
           "timestamp": 1718120246.789011
         }
 
-    ListReviewResponse:
+    ReviewResponse:
       properties:
         camera:
           title: camera

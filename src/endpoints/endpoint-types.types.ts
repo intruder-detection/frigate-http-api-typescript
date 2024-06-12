@@ -53,7 +53,8 @@ import { TimelineQueryParameters } from './query-params/timeline/timeline-query-
 import { TimelineResponse } from './responses/timeline/timeline-response.interface';
 import { Reviews } from './reviews.enum';
 import { ListReviewsQueryParams } from './query-params/reviews/list-reviews-query-params.interface';
-import { ListReviewResponse } from './responses/reviews/list-reviews-response.interface';
+import { ReviewResponse } from './responses/reviews/list-reviews-response.interface';
+import { ReviewIdUrlParams } from './url-params/reviews/review-id-url-params.interface';
 
 /**
  * API Functions Mapping.
@@ -233,7 +234,12 @@ export interface FrigateApiGetEndpointsMapping {
   [Reviews.ListReviews]: {
     urlParams: undefined;
     queryParams: ListReviewsQueryParams;
-    response: ListReviewResponse[];
+    response: ReviewResponse[];
+  };
+  [Reviews.GetReviewById]: {
+    urlParams: ReviewIdUrlParams;
+    queryParams: undefined;
+    response: ReviewResponse;
   };
 }
 

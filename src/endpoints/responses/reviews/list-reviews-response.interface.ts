@@ -1,4 +1,4 @@
-export interface ListReviewResponse {
+export interface ReviewResponse {
   camera: string;
   data: Data;
   end_time: number;
