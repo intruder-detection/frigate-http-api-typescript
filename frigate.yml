@@ -1196,7 +1196,7 @@ paths:
     get:
       tags:
         - Reviews
-      summary: Get Reviews Summary
+      summary: Get Reviews Summary last 30 days
       description: Summary of reviews for the last 30 days. Accepts the following query string parameters.
       parameters:
         - name: cameras
@@ -1209,14 +1209,23 @@ paths:
           schema:
             type: string
           description: Comma-separated list of labels
+        - name: zones
+          in: query
+          schema:
+            type: string
+          description: Comma-separated list of zones
         - name: timezone
           in: query
           schema:
             type: string
-          description: Timezone name
+          description: Timezone name. if not provided UTC is used by default
       responses:
         '200':
           description: Reviews summary response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SummaryLast30DaysResponse'
   /api/reviews/viewed:
     post:
       tags:
@@ -1725,3 +1734,105 @@ components:
           "start_time": 1718181382.406358,
           "thumb_path": "/media/frigate/clips/review/thumb-reolink_duo_2_wifi-1718181382.406358-6aywc4.webp"
         }
+
+
+    SummaryLast30DaysResponse:
+      properties:
+        last24Hours:
+          properties:
+            reviewed_alert:
+              title: ReviewSummary.reviewed_alert
+              type: number
+            reviewed_detection:
+              title: ReviewSummary.reviewed_detection
+              type: number
+            reviewed_motion:
+              title: ReviewSummary.reviewed_motion
+              type: number
+            total_alert:
+              title: ReviewSummary.total_alert
+              type: number
+            total_detection:
+              title: ReviewSummary.total_detection
+              type: number
+            total_motion:
+              title: ReviewSummary.total_motion
+              type: number
+          required:
+            - reviewed_alert
+            - reviewed_detection
+            - reviewed_motion
+            - total_alert
+            - total_detection
+            - total_motion
+          additionalProperties: false
+          title: last24Hours
+          type: object
+      required:
+        - last24Hours
+      additionalProperties:
+        $ref: '#/components/schemas/ReviewSummary'
+      title: SummaryLast30DaysResponse
+      type: object
+      example:
+        {
+          "2024-06-11": {
+            "day": "2024-06-11",
+            "reviewed_alert": 7,
+            "reviewed_detection": 0,
+            "reviewed_motion": 0,
+            "total_alert": 20,
+            "total_detection": 0,
+            "total_motion": 0
+          },
+          "2024-06-12": {
+            "day": "2024-06-12",
+            "reviewed_alert": 0,
+            "reviewed_detection": 0,
+            "reviewed_motion": 0,
+            "total_alert": 25,
+            "total_detection": 0,
+            "total_motion": 0
+          },
+          "last24Hours": {
+            "reviewed_alert": 7,
+            "reviewed_detection": 0,
+            "reviewed_motion": 0,
+            "total_alert": 45,
+            "total_detection": 0,
+            "total_motion": 0
+          }
+        }
+    ReviewSummary:
+      properties:
+        day:
+          title: ReviewSummary.day
+          type: string
+        reviewed_alert:
+          title: ReviewSummary.reviewed_alert
+          type: number
+        reviewed_detection:
+          title: ReviewSummary.reviewed_detection
+          type: number
+        reviewed_motion:
+          title: ReviewSummary.reviewed_motion
+          type: number
+        total_alert:
+          title: ReviewSummary.total_alert
+          type: number
+        total_detection:
+          title: ReviewSummary.total_detection
+          type: number
+        total_motion:
+          title: ReviewSummary.total_motion
+          type: number
+      required:
+        - reviewed_alert
+        - reviewed_detection
+        - reviewed_motion
+        - total_alert
+        - total_detection
+        - total_motion
+      additionalProperties: false
+      title: ReviewSummary
+      type: object

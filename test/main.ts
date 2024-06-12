@@ -407,8 +407,18 @@ async function reviews() {
   });
   console.log(listReviews);
 
+  const getReviewById = await FrigateHTTPAPI.get(Reviews.GetReviewById, {
+    review_id: '1718181382.406358-6aywc4'
+  });
+  console.log(getReviewById);
+
   const getReview = await FrigateHTTPAPI.get(Reviews.GetReviewById, {
     review_id: '1718181382.406358-6aywc4'
+  });
+  console.log(getReview);
+
+  const summaryLast30Days = await FrigateHTTPAPI.get(Reviews.SummaryLast30Days, undefined, {
+    cameras: defaultCameraName,
   });
   console.log(getReview);
 }

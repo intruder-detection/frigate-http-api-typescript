@@ -55,6 +55,8 @@ import { Reviews } from './reviews.enum';
 import { ListReviewsQueryParams } from './query-params/reviews/list-reviews-query-params.interface';
 import { ReviewResponse } from './responses/reviews/list-reviews-response.interface';
 import { ReviewIdUrlParams } from './url-params/reviews/review-id-url-params.interface';
+import { ReviewSummaryQueryParameters } from './query-params/reviews/review-summary-query-parameters.interface';
+import { SummaryLast30DaysResponse } from './responses/reviews/summary-last-30-days-response.interface';
 
 /**
  * API Functions Mapping.
@@ -240,6 +242,11 @@ export interface FrigateApiGetEndpointsMapping {
     urlParams: ReviewIdUrlParams;
     queryParams: undefined;
     response: ReviewResponse;
+  };
+  [Reviews.SummaryLast30Days]: {
+    urlParams: undefined;
+    queryParams: ReviewSummaryQueryParameters;
+    response: SummaryLast30DaysResponse;
   };
 }
 
