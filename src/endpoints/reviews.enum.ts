@@ -1,5 +1,5 @@
 export enum Reviews {
-  Review = 'review',
+  ListReviews = 'review',
   SummaryLast30Days = 'review/summary',
   MarkReviewedMany = 'reviews/viewed',
   MarkReviewedById = 'review/<id>/viewed',

@@ -8,6 +8,7 @@ import { Events } from '../src/endpoints/events.enum';
 import { Recordings } from '../src/endpoints/recordings.enum';
 import { Exports } from '../src/endpoints/exports.enum';
 import { Timeline } from '../src/endpoints/timeline.enum';
+import { Reviews } from '../src/endpoints/reviews.enum';
 
 const defaultCameraName = 'reolink_duo_2_wifi';
 
@@ -399,6 +400,14 @@ async function timeline() {
   console.log(timelineEvents);
 }
 
+async function reviews() {
+  const listReviews = await FrigateHTTPAPI.get(Reviews.ListReviews, undefined, {
+    cameras: defaultCameraName,
+    limit: 5,
+  });
+  console.log(listReviews);
+}
+
 async function main() {
   // await managementAndInformation();
   // await media();
@@ -406,7 +415,8 @@ async function main() {
   // await previews();
   // await exportsTests();
   // await recordings();
-  await timeline();
+  // await timeline();
+  await reviews();
 }
 
 void main();

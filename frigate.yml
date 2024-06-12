@@ -160,6 +160,8 @@ paths:
       responses:
         '200':
           description: PTZ info response
+
+
   /api/{camera_name}:
     get:
       tags:
@@ -357,6 +359,8 @@ paths:
       responses:
         '200':
           description: Snapshot response
+
+
   /api/events:
     get:
       tags:
@@ -953,7 +957,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListExportsResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ListExportsResponse'
   /api/export/{camera_name}/start/{start-timestamp}/end/{end-timestamp}:
     post:
       tags:
@@ -1121,23 +1127,23 @@ paths:
       tags:
         - Reviews
       summary: Get Reviews
-      description: Reviews from the database. Accepts the following query string parameters.
+      description: List reviews from the database
       parameters:
         - name: before
           in: query
           schema:
             type: integer
-          description: Epoch time
+          description: Unix timestamp (in seconds) for end of range
         - name: after
           in: query
           schema:
             type: integer
-          description: Epoch time
+          description: Unix timestamp (in seconds) for beginning of range
         - name: cameras
           in: query
           schema:
             type: string
-          description: Comma-separated list of cameras
+          description: Comma-separated list of cameras. If not provided all cameras will be used.
         - name: labels
           in: query
           schema:
@@ -1161,6 +1167,12 @@ paths:
       responses:
         '200':
           description: Reviews response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ListReviewResponse'
   /api/review/summary:
     get:
       tags:
@@ -1323,6 +1335,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TimelineResponse'
+
+
 components:
   schemas:
     BaseResponse:
@@ -1367,17 +1381,15 @@ components:
       additionalProperties: false
       title: ListExportsResponse
       example:
-        [
-          {
-            "camera": "reolink_duo_2_wifi",
-            "date": 1718118000,
-            "id": "reolink_duo_2_wifi_ggg1iw",
-            "in_progress": false,
-            "name": "random_export",
-            "thumb_path": "/media/frigate/clips/export/reolink_duo_2_wifi_ggg1iw.webp",
-            "video_path": "/media/frigate/exports/reolink_duo_2_wifi_ggg1iw.mp4"
-          }
-        ]
+        {
+          "camera": "reolink_duo_2_wifi",
+          "date": 1718118000,
+          "id": "reolink_duo_2_wifi_ggg1iw",
+          "in_progress": false,
+          "name": "random_export",
+          "thumb_path": "/media/frigate/clips/export/reolink_duo_2_wifi_ggg1iw.webp",
+          "video_path": "/media/frigate/exports/reolink_duo_2_wifi_ggg1iw.mp4"
+        }
 
     RecordingsPerHourResponse:
       properties:
@@ -1424,42 +1436,40 @@ components:
       title: RecordingsPerHourResponse
       type: object
       example:
-        [
-          {
-            "day": "2024-06-11",
-            "events": 21,
-            "hours": [
-              {
-                "duration": 2389,
-                "events": 1,
-                "hour": "19",
-                "motion": 87852,
-                "objects": 2196
-              },
-              {
-                "duration": 3598,
-                "events": 1,
-                "hour": "18",
-                "motion": 136590,
-                "objects": 68
-              },
-              {
-                "duration": 3598,
-                "events": 10,
-                "hour": "17",
-                "motion": 117958,
-                "objects": 1277
-              },
-              {
-                "duration": 2080,
-                "events": 9,
-                "hour": "16",
-                "motion": 68417,
-                "objects": 559
-              }
-            ]
-          }
-        ]
+        {
+          "day": "2024-06-11",
+          "events": 21,
+          "hours": [
+            {
+              "duration": 2389,
+              "events": 1,
+              "hour": "19",
+              "motion": 87852,
+              "objects": 2196
+            },
+            {
+              "duration": 3598,
+              "events": 1,
+              "hour": "18",
+              "motion": 136590,
+              "objects": 68
+            },
+            {
+              "duration": 3598,
+              "events": 10,
+              "hour": "17",
+              "motion": 117958,
+              "objects": 1277
+            },
+            {
+              "duration": 2080,
+              "events": 9,
+              "hour": "16",
+              "motion": 68417,
+              "objects": 559
+            }
+          ]
+        }
 
     RecordingsForRange:
       properties:
@@ -1496,17 +1506,15 @@ components:
       title: RecordingsForRange
       type: object
       example:
-        [
-          {
-            "duration": 10.181955555555554,
-            "end_time": 1718134676.181956,
-            "id": "1718134666.0-hzso98",
-            "motion": 411,
-            "objects": 0,
-            "segment_size": 5.9,
-            "start_time": 1718134666
-          }
-        ]
+        {
+          "duration": 10.181955555555554,
+          "end_time": 1718134676.181956,
+          "id": "1718134666.0-hzso98",
+          "motion": 411,
+          "objects": 0,
+          "segment_size": 5.9,
+          "start_time": 1718134666
+        }
 
     TimelineResponse:
       properties:
@@ -1567,29 +1575,134 @@ components:
       title: TimelineResponse
       type: object
       example:
-        [
-          {
-            "camera": "reolink_duo_2_wifi",
-            "class_type": "visible",
-            "data": {
-              "attribute": "",
-              "box": [
-                0.7237413194444444,
-                0.2980324074074074,
-                0.011284722222222222,
-                0.04976851851851852
-              ],
-              "label": "person",
-              "region": [
-                0.6946614583333334,
-                0.22974537037037038,
-                0.06944444444444445,
-                0.18518518518518517
-              ],
-              "sub_label": null
-            },
-            "source": "tracked_object",
-            "source_id": "1718120246.789011-9csgma",
-            "timestamp": 1718120246.789011
-          }
-        ]
+        {
+          "camera": "reolink_duo_2_wifi",
+          "class_type": "visible",
+          "data": {
+            "attribute": "",
+            "box": [
+              0.7237413194444444,
+              0.2980324074074074,
+              0.011284722222222222,
+              0.04976851851851852
+            ],
+            "label": "person",
+            "region": [
+              0.6946614583333334,
+              0.22974537037037038,
+              0.06944444444444445,
+              0.18518518518518517
+            ],
+            "sub_label": null
+          },
+          "source": "tracked_object",
+          "source_id": "1718120246.789011-9csgma",
+          "timestamp": 1718120246.789011
+        }
+
+    ListReviewResponse:
+      properties:
+        camera:
+          title: camera
+          type: string
+        data:
+          properties:
+            audio:
+              title: audio
+              items:
+                type: string
+              type: array
+            detections:
+              title: detections
+              items:
+                type: string
+              type: array
+            objects:
+              title: objects
+              items:
+                type: string
+              type: array
+            sub_labels:
+              title: sub_labels
+              items:
+                type: string
+              type: array
+            zones:
+              title: zones
+              items:
+                type: string
+              type: array
+          required:
+            - audio
+            - detections
+            - objects
+            - sub_labels
+            - zones
+          additionalProperties: false
+          title: Data
+          type: object
+        end_time:
+          title: end_time
+          type: number
+        has_been_reviewed:
+          title: has_been_reviewed
+          type: boolean
+        id:
+          title: id
+          type: string
+        severity:
+          title: severity
+          type: string
+        start_time:
+          title: start_time
+          type: number
+        thumb_path:
+          title: thumb_path
+          type: string
+      required:
+        - camera
+        - data
+        - end_time
+        - has_been_reviewed
+        - id
+        - severity
+        - start_time
+        - thumb_path
+      additionalProperties: false
+      title: ListReviewResponse
+      type: object
+      example:
+        {
+          "camera": "reolink_duo_2_wifi",
+          "data": {
+            "audio": [ ],
+            "detections": [
+              "1718181539.676163-0k2eqp",
+              "1718181466.963565-4bs647",
+              "1718181570.972865-kw4phl",
+              "1718181419.115758-k1td4w",
+              "1718181554.255431-9qlwzw",
+              "1718181585.213176-x39uoh",
+              "1718181635.712695-08cmln",
+              "1718181367.135124-qaxial",
+              "1718181392.15482-fb5gy2",
+              "1718181625.73927-36asm7",
+              "1718181682.613282-1tcwxe",
+              "1718181645.911515-imn6ns",
+              "1718181552.158091-fwj0i6",
+              "1718181563.02-ynn0rg",
+              "1718181521.6298-sgwtlp"
+            ],
+            "objects": [
+              "person"
+            ],
+            "sub_labels": [ ],
+            "zones": [ ]
+          },
+          "end_time": 1718181729.995143,
+          "has_been_reviewed": false,
+          "id": "1718181382.406358-6aywc4",
+          "severity": "alert",
+          "start_time": 1718181382.406358,
+          "thumb_path": "/media/frigate/clips/review/thumb-reolink_duo_2_wifi-1718181382.406358-6aywc4.webp"
+        }

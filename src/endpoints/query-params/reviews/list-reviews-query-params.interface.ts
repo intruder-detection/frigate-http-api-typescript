@@ -1,4 +1,4 @@
-export interface Review {
+export interface ListReviewsQueryParams {
   before?: number; // Epoch time (optional)
   after?: number;  // Epoch time (optional)
   cameras?: 'all' | string; // Comma-separated list of cameras (optional)
