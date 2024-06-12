@@ -803,14 +803,19 @@ paths:
       responses:
         '200':
           description: Preview gif response
-  /api/preview/{camera}/start/{start-timestamp}/end/{end-timestamp}:
+          content:
+            image/gif:
+              schema:
+                type: string
+                format: binary
+  /api/preview/{camera_name}/start/{start-timestamp}/end/{end-timestamp}:
     get:
       tags:
         - Previews
       summary: Get Preview Metadata
       description: Metadata about previews for this time range.
       parameters:
-        - name: camera
+        - name: camera_name
           in: path
           required: true
           schema:
@@ -828,6 +833,10 @@ paths:
       responses:
         '200':
           description: Preview metadata response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
   /api/preview/{year}-{month}/{day}/{hour}/{camera}/{timezone}:
     get:
       tags:
