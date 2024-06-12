@@ -788,14 +788,14 @@ paths:
                 $ref: '#/components/schemas/BaseResponse'
 
   # Previews
-  /api/events/{id}/preview.gif:
+  /api/events/{event_id}/preview.gif:
     get:
       tags:
         - Previews
       summary: Get Event Preview Gif
       description: Gif covering the first 20 seconds of a specific event.
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -836,7 +836,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BaseResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/MetadataForPreviewsInRangeResponse'
   /api/preview/{year}-{month}/{day}/{hour}/{camera}/{timezone}:
     get:
       tags:
@@ -3822,3 +3824,34 @@ components:
       additionalProperties: false
       title: EventsByIDData
       type: object
+
+    # ---------- Preview ----
+    MetadataForPreviewsInRangeResponse:
+      properties:
+        camera:
+          type: string
+        end:
+          type: number
+        src:
+          type: string
+        start:
+          type: number
+        type:
+          type: string
+      required:
+        - camera
+        - end
+        - src
+        - start
+        - type
+      additionalProperties: false
+      title: MetadataForPreviewsInRangeResponse
+      type: object
+      example:
+        {
+          "camera": "reolink_duo_2_wifi",
+          "end": 1718200800.04472,
+          "src": "/clips/previews/reolink_duo_2_wifi/1718197200.23219-1718200800.04472.mp4",
+          "start": 1718197200.23219,
+          "type": "video/mp4"
+        }

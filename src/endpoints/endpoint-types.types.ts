@@ -23,7 +23,6 @@ import { CreateLabel } from './body/events/create-label.interface';
 import { CreateLabelResponse } from './responses/events/create-label.interface';
 import { Preview } from './preview.enum';
 import { MetaDataForPreviewsInRangeUrlParams } from './url-params/previews/metadata-for-previews-in-range.interface';
-import { CameraAndEventIdUrlParams } from './url-params/camera-and-event-id-url-params.interface';
 import { CameraAndLabelNameUrlParams } from './url-params/camera-and-label-name-url-params.interface';
 import { CameraNameUrlParams } from './url-params/camera-name-url-params.interface';
 import { EventIdUrlParams } from './url-params/event-id-url-params.interface';
@@ -46,7 +45,7 @@ import { RecordingsPerHourResponse } from './responses/recordings/hourly-summary
 import { SegmentDetailsForRange } from './query-params/recordings/segment-details-for-range-body.interface';
 import { RecordingsForRange } from './responses/recordings/recordings-for-range-response.interface';
 import {
-  SnapshotPNGSpecificFrameUrlParameters
+  SnapshotPNGSpecificFrameUrlParameters,
 } from './url-params/recordings/snapshot-png-specific-frame-url-params.interface';
 import { Timeline } from './timeline.enum';
 import { TimelineQueryParameters } from './query-params/timeline/timeline-query-parameters.interface';
@@ -62,6 +61,9 @@ import { DeleteReviewManyBody } from './body/reviews/delete-review-many-body.int
 import { MotionActivityForPeriodQueryParameters } from './query-params/reviews/motion-activity-for-period.interface';
 import { MotionActivityForPeriod } from './responses/reviews/motion-activity-for-period-response.interface';
 import { AudioActivityForPeriod } from './responses/reviews/audio-activity-for-period-response.interface';
+import {
+  MetadataForPreviewsInRangeResponse,
+} from './responses/preview/metadata-for-previews-in-range-response.interface';
 
 /**
  * API Functions Mapping.
@@ -167,12 +169,12 @@ export interface FrigateApiGetEndpointsMapping {
   [Preview.Gif]: {
     urlParams: EventIdUrlParams;
     queryParams: undefined;
-    response: any; // TODO: Verify
+    response: Uint8Array;
   };
   [Preview.MetadataForPreviewsInRange]: {
     urlParams: MetaDataForPreviewsInRangeUrlParams;
     queryParams: undefined;
-    response: any; // TODO: Verify
+    response: MetadataForPreviewsInRangeResponse[];
   };
   [Preview.MetadataForPreviewsInHour]: {
     urlParams: MetaDataForPreviewsInHourUrlParams;
@@ -317,7 +319,7 @@ export interface FrigateApiPostEndpointsMapping {
   [Reviews.DeleteReviewedMany]: {
     urlParams: undefined;
     queryParams: undefined;
-    body: DeleteReviewManyBody
+    body: DeleteReviewManyBody;
     response: BasicResponse;
   };
 }
