@@ -3,7 +3,7 @@ info:
   title: Frigate HTTP API
   version: 1.0.0
 servers:
-  - url: http://192.168.1.243:5000
+  - url: https://demo.frigate.video
 tags:
   - name: Management & Information
     description: Management & Information
@@ -455,7 +455,7 @@ paths:
       summary: Delete Event by ID
       description: Permanently deletes the event along with any clips/snapshots
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -492,7 +492,7 @@ paths:
       summary: Remove Retain for Event by ID
       description: Sets retain to false for the event id (event may be deleted quickly after removing)
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -1252,6 +1252,10 @@ paths:
       responses:
         '200':
           description: Export renamed response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
 
 
   # Reviews
@@ -1317,6 +1321,7 @@ paths:
           in: path
           schema:
             type: integer
+          required: true
           description: Id of the review
       responses:
         '200':
@@ -1549,7 +1554,7 @@ components:
         }
 
     ListExportsResponse:
-      type: array
+      type: object
       properties:
         camera:
           type: string
@@ -2760,6 +2765,7 @@ components:
           type: array
         hwaccel_args:
           items:
+            type: string
           type: array
         input_args:
           type: string
@@ -3510,6 +3516,8 @@ components:
         top_score:
           nullable: true
         zones:
+          items:
+            type: string
           type: array
       required:
         - box
@@ -3612,6 +3620,7 @@ components:
           nullable: true
         zones:
           items:
+            type: string
           type: array
       required:
         - camera
