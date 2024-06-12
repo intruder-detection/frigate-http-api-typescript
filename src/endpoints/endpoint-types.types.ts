@@ -57,6 +57,8 @@ import { ReviewResponse } from './responses/reviews/list-reviews-response.interf
 import { ReviewIdUrlParams } from './url-params/reviews/review-id-url-params.interface';
 import { ReviewSummaryQueryParameters } from './query-params/reviews/review-summary-query-parameters.interface';
 import { SummaryLast30DaysResponse } from './responses/reviews/summary-last-30-days-response.interface';
+import { MarkViewedManyBody } from './body/reviews/mark-reviewed-many-body.interface';
+import { DeleteReviewManyBody } from './body/reviews/delete-review-many-body.interface';
 
 /**
  * API Functions Mapping.
@@ -297,6 +299,19 @@ export interface FrigateApiPostEndpointsMapping {
     body?: ExportTimeRangeMp4Body;
     response: BasicResponse;
   };
+  // Reviews
+  [Reviews.MarkViewedMany]: {
+    urlParams: undefined;
+    queryParams: undefined;
+    body?: MarkViewedManyBody;
+    response: BasicResponse;
+  };
+  [Reviews.DeleteReviewedMany]: {
+    urlParams: undefined;
+    queryParams: undefined;
+    body: DeleteReviewManyBody
+    response: BasicResponse;
+  };
 }
 
 // PUT
@@ -324,6 +339,12 @@ export interface FrigateApiDeleteEndpointsMapping {
   };
   [Exports.DeleteExportById]: {
     urlParams: DeleteExportUrlParams;
+    queryParams: undefined;
+    response: BasicResponse;
+  };
+  // Reviews
+  [Reviews.MarkReviewedById]: {
+    urlParams: ReviewIdUrlParams;
     queryParams: undefined;
     response: BasicResponse;
   };

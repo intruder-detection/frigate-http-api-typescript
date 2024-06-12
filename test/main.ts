@@ -408,12 +408,12 @@ async function reviews() {
   console.log(listReviews);
 
   const getReviewById = await FrigateHTTPAPI.get(Reviews.GetReviewById, {
-    review_id: '1718181382.406358-6aywc4'
+    review_id: '1718181382.406358-6aywc4',
   });
   console.log(getReviewById);
 
   const getReview = await FrigateHTTPAPI.get(Reviews.GetReviewById, {
-    review_id: '1718181382.406358-6aywc4'
+    review_id: '1718181382.406358-6aywc4',
   });
   console.log(getReview);
 
@@ -421,6 +421,27 @@ async function reviews() {
     cameras: defaultCameraName,
   });
   console.log(getReview);
+
+  const markViewedMany = await FrigateHTTPAPI.post(Reviews.MarkViewedMany, undefined, undefined, {
+    ids: ['1718181382.406358-6aywc4'],
+  });
+  console.log(markViewedMany);
+
+  const deleteReviewedMany = await FrigateHTTPAPI.post(Reviews.DeleteReviewedMany, undefined, undefined, {
+    ids: ['1718185273.423603-zdt64y'],
+  });
+  console.log(deleteReviewedMany);
+
+  const markReviewedById = await FrigateHTTPAPI.delete(Reviews.MarkReviewedById, {
+    review_id: '1718181382.406358-6aywc4',
+  });
+  console.log(markReviewedById);
+
+  const segmentDetailsForRange = await FrigateHTTPAPI.get(Recordings.RecordingSegmentsForRange, cameraNameUrlParams, {
+    after: new Date(Date.now() - 30 * 60 * 1000).getTime() / 1000,
+    before: new Date().getTime() / 1000,
+  });
+  console.log(segmentDetailsForRange);
 }
 
 async function main() {

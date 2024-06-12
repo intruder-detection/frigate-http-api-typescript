@@ -1281,7 +1281,7 @@ paths:
       responses:
         '200':
           description: Reviews deleted response
-  /review/activity/motion:
+  /api/review/activity/motion:
     get:
       tags:
         - Reviews
@@ -1292,21 +1292,21 @@ paths:
           in: query
           schema:
             type: integer
-          description: Epoch time
+          description: Unix timestamp (in seconds) for end of range
         - name: after
           in: query
           schema:
             type: integer
-          description: Epoch time
+          description: Unix timestamp (in seconds) for beginning of range
         - name: cameras
           in: query
           schema:
             type: string
-          description: Comma-separated list of cameras
+          description: Comma-separated list of cameras. If not provided all cameras will be used
       responses:
         '200':
           description: Motion activity response
-  /review/activity/audio:
+  /api/review/activity/audio:
     get:
       tags:
         - Reviews
