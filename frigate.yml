@@ -284,26 +284,6 @@ paths:
       responses:
         '200':
           description: Grid image response
-  /clips/{camera}-{id}.jpg:
-    get:
-      tags:
-        - Camera Media
-      summary: Get Snapshot by Event ID
-      description: JPG snapshot for the given camera and event id
-      parameters:
-        - name: camera
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Snapshot response
 
 
   /api/events:

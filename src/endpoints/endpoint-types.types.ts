@@ -127,11 +127,6 @@ export interface FrigateApiGetEndpointsMapping {
     queryParams: GridJPG;
     response: string;
   };
-  [Media.CameraAndEventJGPSnapShot]: {
-    urlParams: CameraAndEventIdUrlParams;
-    queryParams: undefined;
-    response: string;
-  };
   // Events
   [Events.Events]: {
     urlParams: undefined;

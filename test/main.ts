@@ -161,19 +161,6 @@ async function media() {
     fs.writeFileSync(path.join(outputDir, 'grid.jpg'), gridJPG);
   }
 
-  async function cameraAndEventJGPSnapShot(outputDir: string = defaultOutputDir) {
-    const cameraAndEventJGPSnapShot = await FrigateHTTPAPI.get(
-      Media.CameraAndEventJGPSnapShot,
-      {
-        ...cameraNameUrlParams,
-        event_id: defaultEventId,
-      },
-      undefined,
-      'arraybuffer',
-    );
-    fs.writeFileSync(path.join(outputDir, 'camera_and_event_snapshot.jpg'), cameraAndEventJGPSnapShot);
-  }
-
   // Media.LatestJPG
   // await latestJPGForMultipleQualities();
 
@@ -188,9 +175,6 @@ async function media() {
 
   // Media.GridJPG
   // await gridJPG();
-
-  // Media.CameraAndEventJGPSnapShot
-  // await cameraAndEventJGPSnapShot();
 }
 
 async function events() {
@@ -453,7 +437,7 @@ async function reviews() {
 }
 
 async function main() {
-  await managementAndInformation();
+  // await managementAndInformation();
   // await media();
   // await events();
   // await previews();

@@ -5,5 +5,4 @@ export enum Media {
   ClipMP4 = '<camera_name>/<label>/clip.mp4',
   SnapshotJPG = '<camera_name>/<label>/snapshot.jpg',
   GridJPG = '<camera_name>/grid.jpg',
-  CameraAndEventJGPSnapShot = 'clips/<camera_name>/<event_id>.jpg'
 }
