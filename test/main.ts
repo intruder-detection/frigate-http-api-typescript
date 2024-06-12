@@ -376,20 +376,19 @@ async function exportsTests() {
 
 async function recordings() {
   // Recordings.LiveStreamURLHour
-  // const liveStreamURLHour = await FrigateHTTPAPI.get(
-  //   Recordings.LiveStreamURLHour,
-  //   {
-  //     ...cameraNameUrlParams,
-  //     year: 2024,
-  //     month: 6,
-  //     day: 10,
-  //     hour: 22,
-  //     timezone: 'Europe/Lisbon',
-  //   },
-  //   undefined,
-  //   'arraybuffer',
-  // );
-  // console.log(liveStreamURLHour);
+  const vodSpecificHour = await FrigateHTTPAPI.get(
+    Recordings.VodSpecificHour,
+    {
+      ...cameraNameUrlParams,
+      year: 2024,
+      month: 6,
+      day: 12,
+      hour: 15,
+      timezone: 'utc',
+    },
+    undefined,
+  );
+  console.log(vodSpecificHour);
 
   const recordingsPerHourSummary = await FrigateHTTPAPI.get(Recordings.HourlySummaryRecordings, cameraNameUrlParams);
   console.log(recordingsPerHourSummary[0].hours[0].hour);

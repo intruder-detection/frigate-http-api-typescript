@@ -29,7 +29,6 @@ import { EventIdUrlParams } from './url-params/event-id-url-params.interface';
 import { MetaDataForPreviewsInHourUrlParams } from './url-params/previews/metadata-for-previews-in-hour.interface';
 import { GifFromPreviewUrlParams } from './url-params/previews/gif-from-preview-url-params.interface';
 import { Recordings } from './recordings.enum';
-import { LivestreamUrlHourUrlParamsInterface } from './url-params/recordings/livestream-url-hour-url-params.interface';
 import { LivestreamInRangeUrlParams } from './url-params/recordings/livestream-in-range-url-params.interface';
 import { ExportTimeRangeMp4Body } from './body/exports/time-range-mp4.interface';
 import { ExportResponse } from './responses/exports/export-response.interface';
@@ -63,6 +62,8 @@ import { AudioActivityForPeriod } from './responses/reviews/audio-activity-for-p
 import {
   MetadataForPreviewsInRangeResponse,
 } from './responses/preview/metadata-for-previews-in-range-response.interface';
+import { VodSpecificHourUrlParams } from './url-params/recordings/vod-specific-hour-url-params.interface';
+import { VodSpecificHourResponse } from './responses/recordings/vod-specific-hour-response.interface';
 
 /**
  * API Functions Mapping.
@@ -192,10 +193,10 @@ export interface FrigateApiGetEndpointsMapping {
     response: ExportResponse[];
   };
   // Recordings
-  [Recordings.LiveStreamURLHour]: {
-    urlParams: LivestreamUrlHourUrlParamsInterface;
+  [Recordings.VodSpecificHour]: {
+    urlParams: VodSpecificHourUrlParams;
     queryParams: undefined;
-    response: any; // TODO: Verify
+    response: VodSpecificHourResponse[];
   };
   [Recordings.LiveStreamURLEvent]: {
     urlParams: EventIdUrlParams;

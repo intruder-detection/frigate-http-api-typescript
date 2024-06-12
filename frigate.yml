@@ -406,7 +406,7 @@ paths:
           description: Sort by one of the possible values. If not provided 'date_desc' will be used
           schema:
             type: string
-            enum: ['score_asc', 'score_desc', 'date_asc', 'date_desc']
+            enum: [ 'score_asc', 'score_desc', 'date_asc', 'date_desc' ]
       responses:
         '200':
           description: Events response
@@ -839,7 +839,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/MetadataForPreviewsInRangeResponse'
-  /api/preview/{year}-{month}/{day}/{hour}/{camera}/{timezone}:
+  /api/preview/{year}-{month}/{day}/{hour}/{camera_name}/{timezone}:
     get:
       tags:
         - Previews
@@ -866,7 +866,7 @@ paths:
           required: true
           schema:
             type: integer
-        - name: camera
+        - name: camera_name
           in: path
           required: true
           schema:
@@ -905,14 +905,14 @@ paths:
               schema:
                 type: string
                 format: binary
-  /{camera}/start/{start-timestamp}/end/{end-timestamp}/preview.gif:
+  /api/{camera_name}/start/{start-timestamp}/end/{end-timestamp}/preview.gif:
     get:
       tags:
         - Previews
       summary: Get Preview Gif
       description: Gif made from preview video/frames during this time range.
       parameters:
-        - name: camera
+        - name: camera_name
           in: path
           required: true
           schema:
@@ -935,7 +935,7 @@ paths:
               schema:
                 type: string
                 format: binary
-  /vod/{year}-{month}-{day}-{hour}-{camera}/master.m3u8:
+  /api/vod/{year}-{month}-{day}-{hour}-{camera}:
     get:
       tags:
         - Recordings
@@ -970,7 +970,13 @@ paths:
       responses:
         '200':
           description: HLS VOD URL response
-  /vod/event/{event-id}/index.m3u8:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VodSpecificHourResponse'
+  /api/vod/event/{event-id}/index.m3u8:
     get:
       tags:
         - Recordings
@@ -985,7 +991,7 @@ paths:
       responses:
         '200':
           description: HLS VOD URL response
-  /vod/{camera}/start/{start-timestamp}/end/{end-timestamp}/index.m3u8:
+  /api/vod/{camera}/start/{start-timestamp}/end/{end-timestamp}/index.m3u8:
     get:
       tags:
         - Recordings
@@ -1517,130 +1523,6 @@ components:
           "name": "random_export",
           "thumb_path": "/media/frigate/clips/export/reolink_duo_2_wifi_ggg1iw.webp",
           "video_path": "/media/frigate/exports/reolink_duo_2_wifi_ggg1iw.mp4"
-        }
-
-    RecordingsPerHourResponse:
-      properties:
-        day:
-          title: day
-          type: string
-        events:
-          title: events
-          type: number
-        hours:
-          items:
-            properties:
-              duration:
-                title: duration
-                type: number
-              events:
-                title: events
-                type: number
-              hour:
-                title: hour
-                type: string
-              motion:
-                title: motion
-                type: number
-              objects:
-                title: objects
-                type: number
-            required:
-              - duration
-              - events
-              - hour
-              - motion
-              - objects
-            additionalProperties: false
-            title: HourlyData
-            type: object
-          type: array
-      required:
-        - day
-        - events
-        - hours
-      additionalProperties: false
-      title: RecordingsPerHourResponse
-      type: object
-      example:
-        {
-          "day": "2024-06-11",
-          "events": 21,
-          "hours": [
-            {
-              "duration": 2389,
-              "events": 1,
-              "hour": "19",
-              "motion": 87852,
-              "objects": 2196
-            },
-            {
-              "duration": 3598,
-              "events": 1,
-              "hour": "18",
-              "motion": 136590,
-              "objects": 68
-            },
-            {
-              "duration": 3598,
-              "events": 10,
-              "hour": "17",
-              "motion": 117958,
-              "objects": 1277
-            },
-            {
-              "duration": 2080,
-              "events": 9,
-              "hour": "16",
-              "motion": 68417,
-              "objects": 559
-            }
-          ]
-        }
-
-    RecordingsForRange:
-      properties:
-        duration:
-          title: duration
-          type: number
-        end_time:
-          title: end_time
-          type: number
-        id:
-          title: id
-          type: string
-        motion:
-          title: motion
-          type: number
-        objects:
-          title: objects
-          type: number
-        segment_size:
-          title: segment_size
-          type: number
-        start_time:
-          title: start_time
-          type: number
-      required:
-        - duration
-        - end_time
-        - id
-        - motion
-        - objects
-        - segment_size
-        - start_time
-      additionalProperties: false
-      title: RecordingsForRange
-      type: object
-      example:
-        {
-          "duration": 10.181955555555554,
-          "end_time": 1718134676.181956,
-          "id": "1718134666.0-hzso98",
-          "motion": 411,
-          "objects": 0,
-          "segment_size": 5.9,
-          "start_time": 1718134666
         }
 
     TimelineResponse:
@@ -3593,7 +3475,7 @@ components:
           "box": null,
           "camera": "reolink_duo_2_wifi",
           "data": {
-            "attributes": [],
+            "attributes": [ ],
             "box": [
               0.3548177083333333,
               0.014467592592592593,
@@ -3871,3 +3753,270 @@ components:
           "start": 1718197200.23219,
           "type": "video/mp4"
         }
+
+    # ---------- Recordings ----
+    RecordingsPerHourResponse:
+      properties:
+        day:
+          title: day
+          type: string
+        events:
+          title: events
+          type: number
+        hours:
+          items:
+            properties:
+              duration:
+                title: duration
+                type: number
+              events:
+                title: events
+                type: number
+              hour:
+                title: hour
+                type: string
+              motion:
+                title: motion
+                type: number
+              objects:
+                title: objects
+                type: number
+            required:
+              - duration
+              - events
+              - hour
+              - motion
+              - objects
+            additionalProperties: false
+            title: HourlyData
+            type: object
+          type: array
+      required:
+        - day
+        - events
+        - hours
+      additionalProperties: false
+      title: RecordingsPerHourResponse
+      type: object
+      example:
+        {
+          "day": "2024-06-11",
+          "events": 21,
+          "hours": [
+            {
+              "duration": 2389,
+              "events": 1,
+              "hour": "19",
+              "motion": 87852,
+              "objects": 2196
+            },
+            {
+              "duration": 3598,
+              "events": 1,
+              "hour": "18",
+              "motion": 136590,
+              "objects": 68
+            },
+            {
+              "duration": 3598,
+              "events": 10,
+              "hour": "17",
+              "motion": 117958,
+              "objects": 1277
+            },
+            {
+              "duration": 2080,
+              "events": 9,
+              "hour": "16",
+              "motion": 68417,
+              "objects": 559
+            }
+          ]
+        }
+
+    RecordingsForRange:
+      properties:
+        duration:
+          title: duration
+          type: number
+        end_time:
+          title: end_time
+          type: number
+        id:
+          title: id
+          type: string
+        motion:
+          title: motion
+          type: number
+        objects:
+          title: objects
+          type: number
+        segment_size:
+          title: segment_size
+          type: number
+        start_time:
+          title: start_time
+          type: number
+      required:
+        - duration
+        - end_time
+        - id
+        - motion
+        - objects
+        - segment_size
+        - start_time
+      additionalProperties: false
+      title: RecordingsForRange
+      type: object
+      example:
+        {
+          "duration": 10.181955555555554,
+          "end_time": 1718134676.181956,
+          "id": "1718134666.0-hzso98",
+          "motion": 411,
+          "objects": 0,
+          "segment_size": 5.9,
+          "start_time": 1718134666
+        }
+
+    VodSpecificHourResponse:
+      properties:
+        cache:
+          type: boolean
+        consistentSequenceMediaInfo:
+          type: boolean
+        discontinuity:
+          type: boolean
+        durations:
+          items:
+            type: number
+          type: array
+        segment_duration:
+          type: number
+        sequences:
+          items:
+            $ref: '#/components/schemas/Sequence'
+          type: array
+      required:
+        - cache
+        - consistentSequenceMediaInfo
+        - discontinuity
+        - durations
+        - segment_duration
+        - sequences
+      additionalProperties: false
+      title: VodSpecificHourResponse
+      type: object
+      example:
+        {
+          "cache": false,
+          "consistentSequenceMediaInfo": true,
+          "discontinuity": false,
+          "durations": [
+            10406,
+            9817,
+            10295,
+            10148,
+            10122,
+            10208,
+            10073,
+            10207,
+            10245,
+            10069,
+            8055,
+            10094,
+            10199
+          ],
+          "segment_duration": 10406,
+          "sequences": [
+            {
+              "clips": [
+                {
+                  "keyFrameDurations": [
+                    10406
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/14/reolink_duo_2_wifi/59.53.mp4",
+                  "type": "source"
+                },
+                {
+                  "keyFrameDurations": [
+                    9817
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/15/reolink_duo_2_wifi/00.03.mp4",
+                  "type": "source"
+                },
+                {
+                  "keyFrameDurations": [
+                    10295
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/15/reolink_duo_2_wifi/00.13.mp4",
+                  "type": "source"
+                },
+                {
+                  "keyFrameDurations": [
+                    10148
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/15/reolink_duo_2_wifi/00.23.mp4",
+                  "type": "source"
+                },
+                {
+                  "keyFrameDurations": [
+                    10122
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/15/reolink_duo_2_wifi/00.34.mp4",
+                  "type": "source"
+                },
+                {
+                  "keyFrameDurations": [
+                    10208
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/15/reolink_duo_2_wifi/00.44.mp4",
+                  "type": "source"
+                },
+                {
+                  "keyFrameDurations": [
+                    10073
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/15/reolink_duo_2_wifi/00.54.mp4",
+                  "type": "source"
+                },
+                {
+                  "keyFrameDurations": [
+                    10207
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/15/reolink_duo_2_wifi/01.04.mp4",
+                  "type": "source"
+                }
+              ]
+            }
+          ]
+        }
+    Sequence:
+      properties:
+        clips:
+          items:
+            $ref: '#/components/schemas/Clip'
+          type: array
+      required:
+        - clips
+      additionalProperties: false
+      title: Sequence
+      type: object
+    Clip:
+      properties:
+        keyFrameDurations:
+          items:
+            type: number
+          type: array
+        path:
+          type: string
+        type:
+          type: string
+          enum: [ source ]
+      required:
+        - keyFrameDurations
+        - path
+        - type
+      additionalProperties: false
+      title: Clip
+      type: object
