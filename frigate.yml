@@ -598,6 +598,11 @@ paths:
       responses:
         '200':
           description: Event thumbnail response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
   /api/events/{id}/clip.mp4:
     get:
       tags:
@@ -613,6 +618,11 @@ paths:
       responses:
         '200':
           description: Event clip response
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
   /api/events/{id}/snapshot-clean.png:
     get:
       tags:
@@ -632,6 +642,11 @@ paths:
       responses:
         '200':
           description: Clean snapshot response
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
   /api/events/{id}/snapshot.jpg:
     get:
       tags:
@@ -677,6 +692,11 @@ paths:
       responses:
         '200':
           description: Snapshot image response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
   /api/events/{camera_name}/{label}/create:
     post:
       tags:
@@ -762,7 +782,10 @@ paths:
       responses:
         '200':
           description: Event ended response
-
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
 
   # Previews
   /api/events/{id}/preview.gif:
