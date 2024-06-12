@@ -59,6 +59,8 @@ import { ReviewSummaryQueryParameters } from './query-params/reviews/review-summ
 import { SummaryLast30DaysResponse } from './responses/reviews/summary-last-30-days-response.interface';
 import { MarkViewedManyBody } from './body/reviews/mark-reviewed-many-body.interface';
 import { DeleteReviewManyBody } from './body/reviews/delete-review-many-body.interface';
+import { MotionActivityForPeriodQueryParameters } from './query-params/reviews/motion-activity-for-period.interface';
+import { MotionActivityForPeriod } from './responses/reviews/motion-activity-for-period-response.interface';
 
 /**
  * API Functions Mapping.
@@ -249,6 +251,11 @@ export interface FrigateApiGetEndpointsMapping {
     urlParams: undefined;
     queryParams: ReviewSummaryQueryParameters;
     response: SummaryLast30DaysResponse;
+  };
+  [Reviews.MotionActivityForPeriod]: {
+    urlParams: undefined;
+    queryParams: MotionActivityForPeriodQueryParameters;
+    response: MotionActivityForPeriod[];
   };
 }
 

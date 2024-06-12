@@ -437,11 +437,12 @@ async function reviews() {
   });
   console.log(markReviewedById);
 
-  const segmentDetailsForRange = await FrigateHTTPAPI.get(Recordings.RecordingSegmentsForRange, cameraNameUrlParams, {
+  const motionActivityForPeriod = await FrigateHTTPAPI.get(Reviews.MotionActivityForPeriod, undefined, {
     after: new Date(Date.now() - 30 * 60 * 1000).getTime() / 1000,
     before: new Date().getTime() / 1000,
+    scale: 30,
   });
-  console.log(segmentDetailsForRange);
+  console.log(motionActivityForPeriod);
 }
 
 async function main() {

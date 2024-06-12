@@ -1246,14 +1246,14 @@ paths:
       responses:
         '200':
           description: Reviews marked as viewed response
-  /api/review/{id}/viewed:
+  /api/review/{review_id}/viewed:
     delete:
       tags:
         - Reviews
       summary: Unmark Review as Viewed
       description: Mark an item as not reviewed.
       parameters:
-        - name: id
+        - name: review_id
           in: path
           required: true
           schema:
@@ -1292,20 +1292,31 @@ paths:
           in: query
           schema:
             type: integer
-          description: Unix timestamp (in seconds) for end of range
+          description: Unix timestamp (in seconds) for end of range. Default now()
         - name: after
           in: query
           schema:
             type: integer
-          description: Unix timestamp (in seconds) for beginning of range
+          description: Unix timestamp (in seconds) for beginning of range. Default 1 hour ago.
         - name: cameras
           in: query
           schema:
             type: string
-          description: Comma-separated list of cameras. If not provided all cameras will be used
+          description: Comma-separated list of cameras. Default 'all'
+        - name: scale
+          in: query
+          schema:
+            type: number
+          description: Scale in seconds. Default 30
       responses:
         '200':
           description: Motion activity response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MotionActivityForPeriod'
   /api/review/activity/audio:
     get:
       tags:
@@ -1735,7 +1746,6 @@ components:
           "thumb_path": "/media/frigate/clips/review/thumb-reolink_duo_2_wifi-1718181382.406358-6aywc4.webp"
         }
 
-
     SummaryLast30DaysResponse:
       properties:
         last24Hours:
@@ -1835,4 +1845,23 @@ components:
         - total_motion
       additionalProperties: false
       title: ReviewSummary
+      type: object
+
+    MotionActivityForPeriod:
+      properties:
+        camera:
+          title: camera
+          type: string
+        motion:
+          title: motion
+          type: number
+        start_time:
+          title: start_time
+          type: number
+      required:
+        - camera
+        - motion
+        - start_time
+      additionalProperties: false
+      title: MotionActivityForPeriod
       type: object
