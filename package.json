@@ -1,6 +1,6 @@
 {
   "name": "frigate-http-api-typescript",
-  "version": "0.14-beta1",
+  "version": "0.14",
   "description": "Typescript client for the Frigate HTTP API",
   "main": "index.js",
   "scripts": {
