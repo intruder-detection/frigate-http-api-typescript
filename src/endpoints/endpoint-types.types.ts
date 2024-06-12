@@ -165,7 +165,7 @@ export interface FrigateApiGetEndpointsMapping {
     response: string;
   };
   // Previews
-  [Preview.Gif]: {
+  [Preview.GifFromEvent]: {
     urlParams: EventIdUrlParams;
     queryParams: undefined;
     response: Uint8Array;
@@ -180,10 +180,10 @@ export interface FrigateApiGetEndpointsMapping {
     queryParams: undefined;
     response: MetadataForPreviewsInRangeResponse[];
   };
-  [Preview.GifFromPreview]: {
+  [Preview.GifFromRange]: {
     urlParams: GifFromPreviewUrlParams;
     queryParams: undefined;
-    response: any; // TODO: Verify
+    response: Uint8Array;
   };
   // Exports
   [Exports.ListExports]: {

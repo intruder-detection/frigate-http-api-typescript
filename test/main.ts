@@ -297,7 +297,7 @@ async function events() {
 
 async function previews() {
   // Preview.Gif
-  const gifOfEvent = await FrigateHTTPAPI.get(Preview.Gif, { event_id: '1718199731.484731-xtyvtf' }, undefined, 'arraybuffer');
+  const gifOfEvent = await FrigateHTTPAPI.get(Preview.GifFromEvent, { event_id: '1718199731.484731-xtyvtf' }, undefined, 'arraybuffer');
   fs.writeFileSync(path.join(defaultOutputDir, 'preview.gif'), gifOfEvent);
 
   // Preview.MetadataForPreviewsInRange
@@ -305,7 +305,7 @@ async function previews() {
     Preview.MetadataForPreviewsInRange,
     {
       ...cameraNameUrlParams,
-      start_timestamp: new Date(Date.now() - 30 * 60 * 1000).getTime() / 1000,
+      start_timestamp: new Date(Date.now() - 60 * 60 * 1000).getTime() / 1000,
       end_timestamp: new Date().getTime() / 1000,
     },
     undefined,
@@ -329,16 +329,16 @@ async function previews() {
 
   // Preview.PreviewThumbnailJPG
   const gifFromPreview = await FrigateHTTPAPI.get(
-    Preview.GifFromPreview,
+    Preview.GifFromRange,
     {
       ...cameraNameUrlParams,
-      start_timestamp: new Date(Date.now() - 60 * 60 * 1000).getTime() / 1000,
+      start_timestamp: new Date(Date.now() - 0.2 * 60 * 1000).getTime() / 1000,
       end_timestamp: new Date().getTime() / 1000,
     },
     undefined,
     'arraybuffer',
   );
-  fs.writeFileSync(path.join(defaultOutputDir, 'preview_3.gif'), gifFromPreview);
+  fs.writeFileSync(path.join(defaultOutputDir, 'preview_5.gif'), gifFromPreview);
 }
 
 async function exportsTests() {
@@ -478,7 +478,7 @@ async function main() {
   // await events();
   // await previews();
   // await exportsTests();
-  // await recordings();
+  await recordings();
   // await timeline();
   // await reviews();
 }

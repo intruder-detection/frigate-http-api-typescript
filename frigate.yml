@@ -930,6 +930,11 @@ paths:
       responses:
         '200':
           description: Preview gif response
+          content:
+            image/gif:
+              schema:
+                type: string
+                format: binary
   /vod/{year}-{month}-{day}-{hour}-{camera}/master.m3u8:
     get:
       tags:
