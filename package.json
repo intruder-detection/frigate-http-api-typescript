@@ -1,6 +1,6 @@
 {
   "name": "@intruder-detection/frigate-http-api-typescript",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "Typescript client for the Frigate HTTP API",
   "main": "index.js",
   "scripts": {
