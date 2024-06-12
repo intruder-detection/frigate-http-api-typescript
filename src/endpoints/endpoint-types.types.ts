@@ -214,7 +214,7 @@ export interface FrigateApiGetEndpointsMapping {
   [Recordings.VodForRange]: {
     urlParams: VodInRangeUrlParams;
     queryParams: undefined;
-    response: any; // TODO: Verify
+    response: VodSpecificHourResponse[];
   };
   [Recordings.HourlySummaryRecordings]: {
     urlParams: CameraNameUrlParams;
