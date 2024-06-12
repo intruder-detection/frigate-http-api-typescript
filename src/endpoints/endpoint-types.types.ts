@@ -27,7 +27,6 @@ import { CameraAndLabelNameUrlParams } from './url-params/camera-and-label-name-
 import { CameraNameUrlParams } from './url-params/camera-name-url-params.interface';
 import { EventIdUrlParams } from './url-params/event-id-url-params.interface';
 import { MetaDataForPreviewsInHourUrlParams } from './url-params/previews/metadata-for-previews-in-hour.interface';
-import { MetaDataFrameUrlParams } from './url-params/previews/metadata-frame-url-params.interface';
 import { GifFromPreviewUrlParams } from './url-params/previews/gif-from-preview-url-params.interface';
 import { Recordings } from './recordings.enum';
 import { LivestreamUrlHourUrlParamsInterface } from './url-params/recordings/livestream-url-hour-url-params.interface';
@@ -179,12 +178,7 @@ export interface FrigateApiGetEndpointsMapping {
   [Preview.MetadataForPreviewsInHour]: {
     urlParams: MetaDataForPreviewsInHourUrlParams;
     queryParams: undefined;
-    response: any; // TODO: Verify
-  };
-  [Preview.Frame]: {
-    urlParams: MetaDataFrameUrlParams;
-    queryParams: undefined;
-    response: any; // TODO: Verify
+    response: MetadataForPreviewsInRangeResponse[];
   };
   [Preview.GifFromPreview]: {
     urlParams: GifFromPreviewUrlParams;

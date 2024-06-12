@@ -879,6 +879,12 @@ paths:
       responses:
         '200':
           description: Hourly preview metadata response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MetadataForPreviewsInRangeResponse'
   /api/preview/{file_name}/thumbnail.jpg:
     get:
       tags:
@@ -894,6 +900,11 @@ paths:
       responses:
         '200':
           description: Preview frame response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
   /{camera}/start/{start-timestamp}/end/{end-timestamp}/preview.gif:
     get:
       tags:

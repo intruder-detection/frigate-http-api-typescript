@@ -9,6 +9,7 @@ import { Recordings } from '../src/endpoints/recordings.enum';
 import { Exports } from '../src/endpoints/exports.enum';
 import { Timeline } from '../src/endpoints/timeline.enum';
 import { Reviews } from '../src/endpoints/reviews.enum';
+import { Preview } from '../src/endpoints/preview.enum';
 
 const defaultCameraName = 'reolink_duo_2_wifi';
 
@@ -295,14 +296,49 @@ async function events() {
 }
 
 async function previews() {
-  // event_id: 1717972821.878462-pq41sy
-  // const gifOfEvent = await FrigateHTTPAPI.get(
-  //   Preview.Gif,
-  //   { event_id: '1717972821.878462-pq41sy' },
-  //   undefined,
-  //   'arraybuffer',
-  // );
-  // fs.writeFileSync(path.join(defaultOutputDir, 'snapshot.jpg'), gifOfEvent);
+  // Preview.Gif
+  const gifOfEvent = await FrigateHTTPAPI.get(Preview.Gif, { event_id: '1718199731.484731-xtyvtf' }, undefined, 'arraybuffer');
+  fs.writeFileSync(path.join(defaultOutputDir, 'preview.gif'), gifOfEvent);
+
+  // Preview.MetadataForPreviewsInRange
+  const metadataForPreviewsInRange = await FrigateHTTPAPI.get(
+    Preview.MetadataForPreviewsInRange,
+    {
+      ...cameraNameUrlParams,
+      start_timestamp: new Date(Date.now() - 30 * 60 * 1000).getTime() / 1000,
+      end_timestamp: new Date().getTime() / 1000,
+    },
+    undefined,
+  );
+  console.log(metadataForPreviewsInRange);
+
+  // Preview.MetadataForPreviewsInHour
+  const metadataForPreviewsInHour = await FrigateHTTPAPI.get(
+    Preview.MetadataForPreviewsInHour,
+    {
+      ...cameraNameUrlParams,
+      year: 2024,
+      month: 6,
+      day: 11,
+      hour: 15,
+      timezone: 'utc',
+    },
+    undefined,
+  );
+  console.log(metadataForPreviewsInHour);
+
+  // Preview.PreviewThumbnailJPG
+  const gifFromPreview = await FrigateHTTPAPI.get(
+    Preview.GifFromPreview,
+    {
+      ...cameraNameUrlParams,
+      start_timestamp: new Date(Date.now() - 60 * 60 * 1000).getTime() / 1000,
+      end_timestamp: new Date().getTime() / 1000,
+    },
+    undefined,
+    'arraybuffer',
+  );
+  fs.writeFileSync(path.join(defaultOutputDir, 'preview_3.gif'), gifFromPreview);
 }
 
 async function exportsTests() {
