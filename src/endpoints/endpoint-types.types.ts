@@ -29,7 +29,7 @@ import { EventIdUrlParams } from './url-params/event-id-url-params.interface';
 import { MetaDataForPreviewsInHourUrlParams } from './url-params/previews/metadata-for-previews-in-hour.interface';
 import { GifFromPreviewUrlParams } from './url-params/previews/gif-from-preview-url-params.interface';
 import { Recordings } from './recordings.enum';
-import { LivestreamInRangeUrlParams } from './url-params/recordings/livestream-in-range-url-params.interface';
+import { VodInRangeUrlParams } from './url-params/recordings/livestream-in-range-url-params.interface';
 import { ExportTimeRangeMp4Body } from './body/exports/time-range-mp4.interface';
 import { ExportResponse } from './responses/exports/export-response.interface';
 import { BasicResponse } from './responses/basic-response.interface';
@@ -209,10 +209,10 @@ export interface FrigateApiGetEndpointsMapping {
   [Recordings.VodForEvent]: {
     urlParams: EventIdUrlParams;
     queryParams: undefined;
-    response: any; // TODO: Verify
+    response: VodSpecificHourResponse;
   };
-  [Recordings.LiveStreamURLTimeRange]: {
-    urlParams: LivestreamInRangeUrlParams;
+  [Recordings.VodForRange]: {
+    urlParams: VodInRangeUrlParams;
     queryParams: undefined;
     response: any; // TODO: Verify
   };

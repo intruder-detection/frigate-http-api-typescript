@@ -403,6 +403,26 @@ async function recordings() {
   );
   console.log(vodSpecificHourWithTimezone);
 
+  const vodForEvent = await FrigateHTTPAPI.get(
+    Recordings.VodForEvent,
+    {
+      event_id: '1718207606.010532-c42jn1',
+    },
+    undefined,
+  );
+  console.log(vodSpecificHourWithTimezone);
+
+  const vodForRange = await FrigateHTTPAPI.get(
+    Recordings.VodForRange,
+    {
+      ...cameraNameUrlParams,
+      start_timestamp: new Date(Date.now() - 10 * 60 * 1000).getTime() / 1000,
+      end_timestamp: new Date().getTime() / 1000,
+    },
+    undefined,
+  );
+  console.log(vodForRange);
+
   const recordingsPerHourSummary = await FrigateHTTPAPI.get(Recordings.HourlySummaryRecordings, cameraNameUrlParams);
   console.log(recordingsPerHourSummary[0].hours[0].hour);
 
