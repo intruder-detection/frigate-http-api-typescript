@@ -22,7 +22,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/ConfigResponse'
   /api/restart:
     post:
       tags:
@@ -1246,6 +1246,10 @@ paths:
       responses:
         '200':
           description: Reviews marked as viewed response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
   /api/review/{review_id}/viewed:
     delete:
       tags:
@@ -1261,6 +1265,10 @@ paths:
       responses:
         '200':
           description: Review unmarked as viewed response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
   /api/reviews/delete:
     post:
       tags:
@@ -1281,6 +1289,10 @@ paths:
       responses:
         '200':
           description: Reviews deleted response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
   /api/review/activity/motion:
     get:
       tags:
@@ -1902,3 +1914,1222 @@ components:
           "audio": 88,
           "start_time": 1718186500
         }
+
+    # Config
+    ConfigResponse:
+      properties:
+        audio:
+          $ref: '#/components/schemas/Audio'
+        birdseye:
+          $ref: '#/components/schemas/ConfigResponseBirdseye'
+        cameras:
+          additionalProperties:
+            $ref: '#/components/schemas/Camera'
+          type: object
+        database:
+          $ref: '#/components/schemas/Database'
+        detect:
+          $ref: '#/components/schemas/Detect'
+        detectors:
+          $ref: '#/components/schemas/Detectors'
+        environment_vars:
+          $ref: '#/components/schemas/EnvironmentVars'
+        ffmpeg:
+          $ref: '#/components/schemas/Ffmpeg'
+        go2rtc:
+          $ref: '#/components/schemas/Go2RTC'
+        live:
+          $ref: '#/components/schemas/Live'
+        logger:
+          $ref: '#/components/schemas/Logger'
+        model:
+          $ref: '#/components/schemas/ConfigResponseModel'
+        motion:
+          title: ConfigResponse.motion
+          nullable: true
+        mqtt:
+          $ref: '#/components/schemas/Mqtt'
+        objects:
+          $ref: '#/components/schemas/ConfigResponseObjects'
+        plus:
+          $ref: '#/components/schemas/Plus'
+        record:
+          $ref: '#/components/schemas/Record'
+        rtmp:
+          $ref: '#/components/schemas/Plus'
+        snapshots:
+          $ref: '#/components/schemas/Snapshots'
+        telemetry:
+          $ref: '#/components/schemas/Telemetry'
+        timestamp_style:
+          $ref: '#/components/schemas/TimestampStyle'
+        ui:
+          $ref: '#/components/schemas/ConfigResponseUI'
+      required:
+        - audio
+        - birdseye
+        - cameras
+        - database
+        - detect
+        - detectors
+        - environment_vars
+        - ffmpeg
+        - go2rtc
+        - live
+        - logger
+        - model
+        - motion
+        - mqtt
+        - objects
+        - plus
+        - record
+        - rtmp
+        - snapshots
+        - telemetry
+        - timestamp_style
+        - ui
+      additionalProperties: false
+      title: ConfigResponse
+      type: object
+      example:
+        {
+          "audio": {
+            "enabled": false,
+            "listen": [
+              "bark",
+              "fire_alarm",
+              "scream",
+              "speech",
+              "yell"
+            ],
+            "max_not_heard": 30,
+            "min_volume": 500,
+            "num_threads": 2
+          },
+          "auth": {
+            "cookie_name": "frigate_token",
+            "cookie_secure": false,
+            "hash_iterations": 600000,
+            "header_map": { },
+            "mode": "native",
+            "refresh_time": 43200,
+            "reset_admin_password": false,
+            "session_length": 86400,
+            "trusted_proxies": [ ]
+          },
+          "birdseye": {
+            "enabled": true,
+            "height": 720,
+            "inactivity_threshold": 30,
+            "layout": {
+              "scaling_factor": 2
+            },
+            "mode": "objects",
+            "quality": 8,
+            "restream": false,
+            "width": 1280
+          },
+          "camera_groups": { },
+          "cameras": {
+            "reolink_duo_2_wifi": {
+              "audio": {
+                "enabled": false,
+                "enabled_in_config": false,
+                "listen": [
+                  "bark",
+                  "fire_alarm",
+                  "scream",
+                  "speech",
+                  "yell"
+                ],
+                "max_not_heard": 30,
+                "min_volume": 500,
+                "num_threads": 2
+              },
+              "best_image_timeout": 60,
+              "birdseye": {
+                "enabled": true,
+                "mode": "objects",
+                "order": 0
+              },
+              "detect": {
+                "annotation_offset": 0,
+                "enabled": true,
+                "fps": 20,
+                "height": 1728,
+                "max_disappeared": 100,
+                "min_initialized": 10,
+                "stationary": {
+                  "interval": 200,
+                  "max_frames": {
+                    "objects": { }
+                  },
+                  "threshold": 200
+                },
+                "width": 4608
+              },
+              "enabled": true,
+              "ffmpeg": {
+                "global_args": [
+                  "-hide_banner",
+                  "-loglevel",
+                  "warning",
+                  "-threads",
+                  "2"
+                ],
+                "hwaccel_args": "",
+                "input_args": "preset-rtsp-generic",
+                "inputs": [
+                  {
+                    "global_args": [ ],
+                    "hwaccel_args": [ ],
+                    "input_args": [ ],
+                    "path": "rtsp://*:*@192.168.1.3:554",
+                    "roles": [
+                      "record",
+                      "detect"
+                    ]
+                  }
+                ],
+                "output_args": {
+                  "detect": [
+                    "-threads",
+                    "2",
+                    "-f",
+                    "rawvideo",
+                    "-pix_fmt",
+                    "yuv420p"
+                  ],
+                  "record": "preset-record-generic"
+                },
+                "retry_interval": 10
+              },
+              "ffmpeg_cmds": [
+                {
+                  "cmd": "ffmpeg -hide_banner -loglevel warning -threads 2 -user_agent FFmpeg Frigate/0.14.0-402c16e -avoid_negative_ts make_zero -fflags +genpts+discardcorrupt -rtsp_transport tcp -timeout 5000000 -use_wallclock_as_timestamps 1 -i rtsp://*:*@192.168.1.3:554 -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c copy -an /tmp/cache/reolink_duo_2_wifi@%Y%m%d%H%M%S%z.mp4 -r 20 -vf fps=20,scale=4608:1728 -threads 2 -f rawvideo -pix_fmt yuv420p pipe:",
+                  "roles": [
+                    "record",
+                    "detect"
+                  ]
+                }
+              ],
+              "live": {
+                "height": 720,
+                "quality": 8,
+                "stream_name": "reolink_duo_2_wifi"
+              },
+              "motion": {
+                "contour_area": 10,
+                "delta_alpha": 0.2,
+                "enabled": true,
+                "enabled_in_config": true,
+                "frame_alpha": 0.01,
+                "frame_height": 100,
+                "improve_contrast": true,
+                "lightning_threshold": 0.8,
+                "mask": "",
+                "mqtt_off_delay": 30,
+                "raw_mask": null,
+                "threshold": 30
+              },
+              "mqtt": {
+                "bounding_box": true,
+                "crop": true,
+                "enabled": true,
+                "height": 270,
+                "quality": 70,
+                "required_zones": [ ],
+                "timestamp": true
+              },
+              "name": "reolink_duo_2_wifi",
+              "objects": {
+                "filters": {
+                  "car": {
+                    "max_area": 24000000,
+                    "max_ratio": 24000000,
+                    "min_area": 0,
+                    "min_ratio": 0,
+                    "min_score": 0.5,
+                    "threshold": 0.7
+                  },
+                  "person": {
+                    "max_area": 24000000,
+                    "max_ratio": 24000000,
+                    "min_area": 0,
+                    "min_ratio": 0,
+                    "min_score": 0.5,
+                    "threshold": 0.7
+                  }
+                },
+                "mask": "",
+                "track": [
+                  "person",
+                  "car"
+                ]
+              },
+              "onvif": {
+                "autotracking": {
+                  "calibrate_on_startup": false,
+                  "enabled": false,
+                  "enabled_in_config": false,
+                  "movement_weights": [ ],
+                  "required_zones": [ ],
+                  "return_preset": "home",
+                  "timeout": 10,
+                  "track": [
+                    "person"
+                  ],
+                  "zoom_factor": 0.3,
+                  "zooming": "disabled"
+                },
+                "host": "",
+                "port": 8000
+              },
+              "record": {
+                "enabled": true,
+                "enabled_in_config": true,
+                "events": {
+                  "post_capture": 5,
+                  "pre_capture": 5,
+                  "retain": {
+                    "default": 90,
+                    "mode": "motion",
+                    "objects": { }
+                  }
+                },
+                "expire_interval": 60,
+                "export": {
+                  "timelapse_args": "-vf scale=trunc(iw/2)*2:trunc(ih/2)*2 -vf setpts=0.00695*PTS -r 30 -crf 28 -preset veryslow"
+                },
+                "preview": {
+                  "quality": "medium"
+                },
+                "retain": {
+                  "days": 2,
+                  "mode": "motion"
+                },
+                "sync_recordings": false
+              },
+              "review": {
+                "alerts": {
+                  "labels": [
+                    "person",
+                    "car"
+                  ],
+                  "required_zones": [ ]
+                },
+                "detections": {
+                  "required_zones": [ ]
+                }
+              },
+              "snapshots": {
+                "bounding_box": true,
+                "clean_copy": true,
+                "crop": false,
+                "enabled": false,
+                "quality": 70,
+                "required_zones": [ ],
+                "retain": {
+                  "default": 10,
+                  "mode": "motion",
+                  "objects": { }
+                },
+                "timestamp": false
+              },
+              "timestamp_style": {
+                "color": {
+                  "blue": 255,
+                  "green": 255,
+                  "red": 255
+                },
+                "format": "%m/%d/%Y %H:%M:%S",
+                "position": "tl",
+                "thickness": 2
+              },
+              "ui": {
+                "dashboard": true,
+                "order": 0
+              },
+              "zones": { }
+            }
+          },
+          "database": {
+            "path": "/config/frigate.db"
+          },
+          "detect": {
+            "annotation_offset": 0,
+            "enabled": true,
+            "fps": 20,
+            "stationary": {
+              "max_frames": {
+                "objects": { }
+              }
+            }
+          },
+          "detectors": {
+            "coral": {
+              "model": {
+                "height": 320,
+                "input_pixel_format": "rgb",
+                "input_tensor": "nhwc",
+                "labelmap": {
+                  "0": "person",
+                  "1": "bicycle",
+                  "2": "car",
+                  "3": "motorcycle",
+                  "4": "airplane",
+                  "5": "bus",
+                  "6": "train",
+                  "7": "car",
+                  "8": "boat",
+                  "9": "traffic light",
+                  "10": "fire hydrant",
+                  "11": "street sign",
+                  "12": "stop sign",
+                  "13": "parking meter",
+                  "14": "bench",
+                  "15": "bird",
+                  "16": "cat",
+                  "17": "dog",
+                  "18": "horse",
+                  "19": "sheep",
+                  "20": "cow",
+                  "21": "elephant",
+                  "22": "bear",
+                  "23": "zebra",
+                  "24": "giraffe",
+                  "25": "hat",
+                  "26": "backpack",
+                  "27": "umbrella",
+                  "28": "shoe",
+                  "29": "eye glasses",
+                  "30": "handbag",
+                  "31": "tie",
+                  "32": "suitcase",
+                  "33": "frisbee",
+                  "34": "skis",
+                  "35": "snowboard",
+                  "36": "sports ball",
+                  "37": "kite",
+                  "38": "baseball bat",
+                  "39": "baseball glove",
+                  "40": "skateboard",
+                  "41": "surfboard",
+                  "42": "tennis racket",
+                  "43": "bottle",
+                  "44": "plate",
+                  "45": "wine glass",
+                  "46": "cup",
+                  "47": "fork",
+                  "48": "knife",
+                  "49": "spoon",
+                  "50": "bowl",
+                  "51": "banana",
+                  "52": "apple",
+                  "53": "sandwich",
+                  "54": "orange",
+                  "55": "broccoli",
+                  "56": "carrot",
+                  "57": "hot dog",
+                  "58": "pizza",
+                  "59": "donut",
+                  "60": "cake",
+                  "61": "chair",
+                  "62": "couch",
+                  "63": "potted plant",
+                  "64": "bed",
+                  "65": "mirror",
+                  "66": "dining table",
+                  "67": "window",
+                  "68": "desk",
+                  "69": "toilet",
+                  "70": "door",
+                  "71": "tv",
+                  "72": "laptop",
+                  "73": "mouse",
+                  "74": "remote",
+                  "75": "keyboard",
+                  "76": "cell phone",
+                  "77": "microwave",
+                  "78": "oven",
+                  "79": "toaster",
+                  "80": "sink",
+                  "81": "refrigerator",
+                  "82": "blender",
+                  "83": "book",
+                  "84": "clock",
+                  "85": "vase",
+                  "86": "scissors",
+                  "87": "teddy bear",
+                  "88": "hair drier",
+                  "89": "toothbrush",
+                  "90": "hair brush"
+                },
+                "model_type": "ssd",
+                "path": "/edgetpu_model.tflite",
+                "width": 320
+              },
+              "type": "edgetpu"
+            }
+          },
+          "environment_vars": { },
+          "ffmpeg": {
+            "global_args": [
+              "-hide_banner",
+              "-loglevel",
+              "warning",
+              "-threads",
+              "2"
+            ],
+            "hwaccel_args": "",
+            "input_args": "preset-rtsp-generic",
+            "output_args": {
+              "detect": [
+                "-threads",
+                "2",
+                "-f",
+                "rawvideo",
+                "-pix_fmt",
+                "yuv420p"
+              ],
+              "record": "preset-record-generic"
+            },
+            "retry_interval": 10
+          },
+          "go2rtc": {
+            "streams": {
+              "back": [
+                "rtsp://admin:Awsprimus1!@192.168.1.8:554"
+              ]
+            }
+          },
+          "live": {
+            "height": 720,
+            "quality": 8,
+            "stream_name": ""
+          },
+          "logger": {
+            "default": "info",
+            "logs": { }
+          },
+          "model": {
+            "colormap": {
+              "car": [
+                31,
+                119,
+                180
+              ],
+              "person": [
+                23,
+                190,
+                207
+              ]
+            },
+            "height": 320,
+            "input_pixel_format": "rgb",
+            "input_tensor": "nhwc",
+            "labelmap": { },
+            "model_type": "ssd",
+            "width": 320
+          },
+          "mqtt": {
+            "client_id": "frigate",
+            "enabled": true,
+            "host": "192.168.1.5",
+            "port": 1883,
+            "stats_interval": 60,
+            "topic_prefix": "frigate"
+          },
+          "objects": {
+            "filters": {
+              "amazon": {
+                "max_area": 24000000,
+                "max_ratio": 24000000,
+                "min_area": 0,
+                "min_ratio": 0,
+                "min_score": 0.7,
+                "raw_mask": null,
+                "threshold": 0.7
+              },
+              "face": {
+                "max_area": 24000000,
+                "max_ratio": 24000000,
+                "min_area": 0,
+                "min_ratio": 0,
+                "min_score": 0.7,
+                "raw_mask": null,
+                "threshold": 0.7
+              },
+              "fedex": {
+                "max_area": 24000000,
+                "max_ratio": 24000000,
+                "min_area": 0,
+                "min_ratio": 0,
+                "min_score": 0.7,
+                "raw_mask": null,
+                "threshold": 0.7
+              },
+              "license_plate": {
+                "max_area": 24000000,
+                "max_ratio": 24000000,
+                "min_area": 0,
+                "min_ratio": 0,
+                "min_score": 0.7,
+                "raw_mask": null,
+                "threshold": 0.7
+              },
+              "ups": {
+                "max_area": 24000000,
+                "max_ratio": 24000000,
+                "min_area": 0,
+                "min_ratio": 0,
+                "min_score": 0.7,
+                "raw_mask": null,
+                "threshold": 0.7
+              }
+            },
+            "mask": "",
+            "track": [
+              "person",
+              "car"
+            ]
+          },
+          "plus": {
+            "enabled": false
+          },
+          "record": {
+            "enabled": true,
+            "events": {
+              "post_capture": 5,
+              "pre_capture": 5,
+              "retain": {
+                "default": 90,
+                "mode": "motion",
+                "objects": { }
+              }
+            },
+            "expire_interval": 60,
+            "export": {
+              "timelapse_args": "-vf scale=trunc(iw/2)*2:trunc(ih/2)*2 -vf setpts=0.00695*PTS -r 30 -crf 28 -preset veryslow"
+            },
+            "preview": {
+              "quality": "medium"
+            },
+            "retain": {
+              "days": 2,
+              "mode": "motion"
+            },
+            "sync_recordings": false
+          },
+          "review": {
+            "alerts": {
+              "labels": [
+                "person",
+                "car"
+              ],
+              "required_zones": [ ]
+            },
+            "detections": {
+              "required_zones": [ ]
+            }
+          },
+          "snapshots": {
+            "bounding_box": true,
+            "clean_copy": true,
+            "crop": false,
+            "enabled": false,
+            "quality": 70,
+            "required_zones": [ ],
+            "retain": {
+              "default": 10,
+              "mode": "motion",
+              "objects": { }
+            },
+            "timestamp": false
+          },
+          "telemetry": {
+            "network_interfaces": [ ],
+            "stats": {
+              "amd_gpu_stats": true,
+              "intel_gpu_stats": true,
+              "network_bandwidth": false
+            },
+            "version_check": true
+          },
+          "timestamp_style": {
+            "color": {
+              "blue": 255,
+              "green": 255,
+              "red": 255
+            },
+            "format": "%m/%d/%Y %H:%M:%S",
+            "position": "tl",
+            "thickness": 2
+          },
+          "ui": {
+            "date_style": "short",
+            "time_format": "browser",
+            "time_style": "medium"
+          },
+          "version": 0.14
+        }
+    Audio:
+      properties:
+        enabled:
+          title: Audio.enabled
+          type: boolean
+        enabled_in_config:
+          title: Audio.enabled_in_config
+          nullable: true
+          type: boolean
+        filters:
+          type: object
+        listen:
+          items:
+            title: Audio.listen.[]
+            type: string
+          title: Audio.listen
+          type: array
+        max_not_heard:
+          title: Audio.max_not_heard
+          type: number
+        min_volume:
+          title: Audio.min_volume
+          type: number
+        num_threads:
+          title: Audio.num_threads
+          type: number
+      required:
+        - enabled
+        - enabled_in_config
+        - filters
+        - listen
+        - max_not_heard
+        - min_volume
+        - num_threads
+      additionalProperties: false
+      title: Audio
+      type: object
+    ConfigResponseBirdseye:
+      properties:
+        enabled:
+          title: ConfigResponseBirdseye.enabled
+          type: boolean
+        height:
+          title: ConfigResponseBirdseye.height
+          type: number
+        inactivity_threshold:
+          title: ConfigResponseBirdseye.inactivity_threshold
+          type: number
+        layout:
+          type: object
+        mode:
+          title: ConfigResponseBirdseye.mode
+          type: string
+        quality:
+          title: ConfigResponseBirdseye.quality
+          type: number
+        restream:
+          title: ConfigResponseBirdseye.restream
+          type: boolean
+        width:
+          title: ConfigResponseBirdseye.width
+          type: number
+      required:
+        - enabled
+        - height
+        - inactivity_threshold
+        - layout
+        - mode
+        - quality
+        - restream
+        - width
+      additionalProperties: false
+      title: ConfigResponseBirdseye
+      type: object
+    Camera:
+      properties:
+        audio:
+          $ref: '#/components/schemas/Audio'
+        best_image_timeout:
+          title: Camera.best_image_timeout
+          type: number
+        birdseye:
+          type: object
+        detect:
+          $ref: '#/components/schemas/Detect'
+        enabled:
+          title: Camera.enabled
+          type: boolean
+        ffmpeg:
+          $ref: '#/components/schemas/Ffmpeg'
+        ffmpeg_cmds:
+          items:
+            type: object
+          title: Camera.ffmpeg_cmds
+          type: array
+        live:
+          $ref: '#/components/schemas/Live'
+          title: Camera.live
+        motion:
+          type: object
+        mqtt:
+          $ref: '#/components/schemas/Snapshots'
+          title: Camera.mqtt
+        name:
+          title: Camera.name
+          type: string
+        objects:
+          type: object
+        onvif:
+          type: object
+        record:
+          $ref: '#/components/schemas/Record'
+        rtmp:
+          $ref: '#/components/schemas/Plus'
+        snapshots:
+          $ref: '#/components/schemas/Snapshots'
+        timestamp_style:
+          $ref: '#/components/schemas/TimestampStyle'
+        ui:
+          type: object
+        webui_url:
+          title: Camera.webui_url
+          nullable: true
+        zones:
+          $ref: '#/components/schemas/EnvironmentVars'
+          title: Camera.zones
+      required:
+        - audio
+        - best_image_timeout
+        - birdseye
+        - detect
+        - enabled
+        - ffmpeg
+        - ffmpeg_cmds
+        - live
+        - motion
+        - mqtt
+        - name
+        - objects
+        - onvif
+        - record
+        - rtmp
+        - snapshots
+        - timestamp_style
+        - ui
+        - webui_url
+        - zones
+      additionalProperties: false
+      title: Camera
+      type: object
+    Database:
+      properties:
+        path:
+          title: Database.path
+          type: string
+      required:
+        - path
+      additionalProperties: false
+      title: Database
+      type: object
+    Detect:
+      properties:
+        annotation_offset:
+          title: Detect.annotation_offset
+          type: number
+        enabled:
+          title: Detect.enabled
+          type: boolean
+        fps:
+          title: Detect.fps
+          type: number
+        height:
+          title: Detect.height
+          nullable: true
+          type: number
+        max_disappeared:
+          title: Detect.max_disappeared
+          nullable: true
+          type: number
+        min_initialized:
+          title: Detect.min_initialized
+          nullable: true
+          type: number
+        stationary:
+          type: object
+        width:
+          title: Detect.width
+          nullable: true
+          type: number
+      required:
+        - annotation_offset
+        - enabled
+        - fps
+        - height
+        - max_disappeared
+        - min_initialized
+        - stationary
+        - width
+      additionalProperties: false
+      title: Detect
+      type: object
+    Detectors:
+      properties:
+        coral:
+          type: object
+      required:
+        - coral
+      additionalProperties: false
+      title: Detectors
+      type: object
+    EnvironmentVars:
+      additionalProperties: false
+      title: EnvironmentVars
+      type: object
+    Ffmpeg:
+      properties:
+        global_args:
+          items:
+            title: Ffmpeg.global_args.[]
+            type: string
+          title: Ffmpeg.global_args
+          type: array
+        hwaccel_args:
+          items:
+            title: Ffmpeg.hwaccel_args.[]
+          title: Ffmpeg.hwaccel_args
+          type: array
+        input_args:
+          title: Ffmpeg.input_args
+          type: string
+        inputs:
+          items:
+            type: object
+          title: Ffmpeg.inputs
+          type: array
+        output_args:
+          type: object
+        retry_interval:
+          title: Ffmpeg.retry_interval
+          type: number
+      required:
+        - global_args
+        - hwaccel_args
+        - input_args
+        - output_args
+        - retry_interval
+      additionalProperties: false
+      title: Ffmpeg
+      type: object
+    Go2RTC:
+      properties:
+        streams:
+          type: object
+      required:
+        - streams
+      additionalProperties: false
+      title: Go2RTC
+      type: object
+    Live:
+      properties:
+        height:
+          title: Live.height
+          type: number
+        quality:
+          title: Live.quality
+          type: number
+        stream_name:
+          title: Live.stream_name
+          type: string
+      required:
+        - height
+        - quality
+        - stream_name
+      additionalProperties: false
+      title: Live
+      type: object
+    Logger:
+      properties:
+        default:
+          title: Logger.default
+          type: string
+        logs:
+          $ref: '#/components/schemas/EnvironmentVars'
+          title: Logger.logs
+      required:
+        - default
+        - logs
+      additionalProperties: false
+      title: Logger
+      type: object
+    ConfigResponseModel:
+      properties:
+        height:
+          title: ConfigResponseModel.height
+          type: number
+        input_pixel_format:
+          title: ConfigResponseModel.input_pixel_format
+          type: string
+        input_tensor:
+          title: ConfigResponseModel.input_tensor
+          type: string
+        labelmap:
+          $ref: '#/components/schemas/EnvironmentVars'
+          title: ConfigResponseModel.labelmap
+        labelmap_path:
+          title: ConfigResponseModel.labelmap_path
+          nullable: true
+        model_type:
+          title: ConfigResponseModel.model_type
+          type: string
+        path:
+          title: ConfigResponseModel.path
+          nullable: true
+        width:
+          title: ConfigResponseModel.width
+          type: number
+      required:
+        - height
+        - input_pixel_format
+        - input_tensor
+        - labelmap
+        - labelmap_path
+        - model_type
+        - path
+        - width
+      additionalProperties: false
+      title: ConfigResponseModel
+      type: object
+    Mqtt:
+      properties:
+        client_id:
+          title: Mqtt.client_id
+          type: string
+        enabled:
+          title: Mqtt.enabled
+          type: boolean
+        host:
+          title: Mqtt.host
+          type: string
+        port:
+          title: Mqtt.port
+          type: number
+        stats_interval:
+          title: Mqtt.stats_interval
+          type: number
+        tls_ca_certs:
+          title: Mqtt.tls_ca_certs
+          nullable: true
+        tls_client_cert:
+          title: Mqtt.tls_client_cert
+          nullable: true
+        tls_client_key:
+          title: Mqtt.tls_client_key
+          nullable: true
+        tls_insecure:
+          title: Mqtt.tls_insecure
+          nullable: true
+        topic_prefix:
+          title: Mqtt.topic_prefix
+          type: string
+        user:
+          title: Mqtt.user
+          nullable: true
+      required:
+        - client_id
+        - enabled
+        - host
+        - port
+        - stats_interval
+        - tls_ca_certs
+        - tls_client_cert
+        - tls_client_key
+        - tls_insecure
+        - topic_prefix
+        - user
+      additionalProperties: false
+      title: Mqtt
+      type: object
+    ConfigResponseObjects:
+      properties:
+        filters:
+          type: object
+        mask:
+          title: ConfigResponseObjects.mask
+          type: string
+        track:
+          items:
+            title: ConfigResponseObjects.track.[]
+            type: string
+          title: ConfigResponseObjects.track
+          type: array
+      required:
+        - filters
+        - mask
+        - track
+      additionalProperties: false
+      title: ConfigResponseObjects
+      type: object
+    Plus:
+      properties:
+        enabled:
+          title: Plus.enabled
+          type: boolean
+      required:
+        - enabled
+      additionalProperties: false
+      title: Plus
+      type: object
+    Record:
+      properties:
+        enabled:
+          title: Record.enabled
+          type: boolean
+        enabled_in_config:
+          title: Record.enabled_in_config
+          nullable: true
+          type: boolean
+        events:
+          type: object
+        expire_interval:
+          title: Record.expire_interval
+          type: number
+        export:
+          type: object
+        retain:
+          type: object
+        sync_recordings:
+          title: Record.sync_recordings
+          type: boolean
+      required:
+        - enabled
+        - enabled_in_config
+        - events
+        - expire_interval
+        - export
+        - retain
+        - sync_recordings
+      additionalProperties: false
+      title: Record
+      type: object
+    Snapshots:
+      properties:
+        bounding_box:
+          title: Snapshots.bounding_box
+          type: boolean
+        crop:
+          title: Snapshots.crop
+          type: boolean
+        enabled:
+          title: Snapshots.enabled
+          type: boolean
+        height:
+          title: Snapshots.height
+          nullable: true
+          type: number
+        quality:
+          title: Snapshots.quality
+          type: number
+        required_zones:
+          items:
+            title: Snapshots.required_zones.[]
+          title: Snapshots.required_zones
+          type: array
+        timestamp:
+          title: Snapshots.timestamp
+          type: boolean
+        clean_copy:
+          title: Snapshots.clean_copy
+          type: boolean
+        retain:
+          type: object
+      required:
+        - bounding_box
+        - crop
+        - enabled
+        - height
+        - quality
+        - required_zones
+        - timestamp
+      additionalProperties: false
+      title: Snapshots
+      type: object
+    Telemetry:
+      properties:
+        network_interfaces:
+          items:
+            title: Telemetry.network_interfaces.[]
+          title: Telemetry.network_interfaces
+          type: array
+        stats:
+          type: object
+        version_check:
+          title: Telemetry.version_check
+          type: boolean
+      required:
+        - network_interfaces
+        - stats
+        - version_check
+      additionalProperties: false
+      title: Telemetry
+      type: object
+    TimestampStyle:
+      properties:
+        color:
+          type: object
+        effect:
+          title: TimestampStyle.effect
+          nullable: true
+        format:
+          title: TimestampStyle.format
+          type: string
+        position:
+          title: TimestampStyle.position
+          type: string
+        thickness:
+          title: TimestampStyle.thickness
+          type: number
+      required:
+        - color
+        - effect
+        - format
+        - position
+        - thickness
+      additionalProperties: false
+      title: TimestampStyle
+      type: object
+    ConfigResponseUI:
+          properties:
+            date_style:
+              title: ConfigResponseUI.date_style
+              type: string
+            live_mode:
+              title: ConfigResponseUI.live_mode
+              type: string
+            strftime_fmt:
+              title: ConfigResponseUI.strftime_fmt
+              nullable: true
+            time_format:
+              title: ConfigResponseUI.time_format
+              type: string
+            time_style:
+              title: ConfigResponseUI.time_style
+              type: string
+            timezone:
+              title: ConfigResponseUI.timezone
+              nullable: true
+            use_experimental:
+              title: ConfigResponseUI.use_experimental
+              type: boolean
+          required:
+            - date_style
+            - live_mode
+            - strftime_fmt
+            - time_format
+            - time_style
+            - timezone
+            - use_experimental
+          additionalProperties: false
+          title: ConfigResponseUI
+          type: object

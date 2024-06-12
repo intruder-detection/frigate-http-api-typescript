@@ -420,7 +420,7 @@ async function reviews() {
   const summaryLast30Days = await FrigateHTTPAPI.get(Reviews.SummaryLast30Days, undefined, {
     cameras: defaultCameraName,
   });
-  console.log(getReview);
+  console.log(summaryLast30Days);
 
   const markViewedMany = await FrigateHTTPAPI.post(Reviews.MarkViewedMany, undefined, undefined, {
     ids: ['1718181382.406358-6aywc4'],
@@ -453,14 +453,14 @@ async function reviews() {
 }
 
 async function main() {
-  // await managementAndInformation();
+  await managementAndInformation();
   // await media();
   // await events();
   // await previews();
   // await exportsTests();
   // await recordings();
   // await timeline();
-  await reviews();
+  // await reviews();
 }
 
 void main();
