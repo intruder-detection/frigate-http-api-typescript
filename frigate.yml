@@ -1328,20 +1328,31 @@ paths:
           in: query
           schema:
             type: integer
-          description: Epoch time
+          description: Unix timestamp (in seconds) for end of range. Default now()
         - name: after
           in: query
           schema:
             type: integer
-          description: Epoch time
+          description: Unix timestamp (in seconds) for beginning of range. Default 1 hour ago.
         - name: cameras
           in: query
           schema:
             type: string
-          description: Comma-separated list of cameras
+          description: Comma-separated list of cameras. Default 'all'
+        - name: scale
+          in: query
+          schema:
+            type: number
+          description: Scale in seconds. Default 30
       responses:
         '200':
           description: Audio activity response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AudioActivityForPeriod'
 
   /api/timeline:
     get:
@@ -1864,4 +1875,19 @@ components:
         - start_time
       additionalProperties: false
       title: MotionActivityForPeriod
+      type: object
+
+    AudioActivityForPeriod:
+      properties:
+        audio:
+          title: audio
+          type: number
+        start_time:
+          title: start_time
+          type: number
+      required:
+        - audio
+        - start_time
+      additionalProperties: false
+      title: AudioActivityForPeriod
       type: object

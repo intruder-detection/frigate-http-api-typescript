@@ -61,6 +61,7 @@ import { MarkViewedManyBody } from './body/reviews/mark-reviewed-many-body.inter
 import { DeleteReviewManyBody } from './body/reviews/delete-review-many-body.interface';
 import { MotionActivityForPeriodQueryParameters } from './query-params/reviews/motion-activity-for-period.interface';
 import { MotionActivityForPeriod } from './responses/reviews/motion-activity-for-period-response.interface';
+import { AudioActivityForPeriod } from './responses/reviews/audio-activity-for-period-response.interface';
 
 /**
  * API Functions Mapping.
@@ -256,6 +257,11 @@ export interface FrigateApiGetEndpointsMapping {
     urlParams: undefined;
     queryParams: MotionActivityForPeriodQueryParameters;
     response: MotionActivityForPeriod[];
+  };
+  [Reviews.AudioActivityForPeriod]: {
+    urlParams: undefined;
+    queryParams: MotionActivityForPeriodQueryParameters;
+    response: AudioActivityForPeriod[];
   };
 }
 

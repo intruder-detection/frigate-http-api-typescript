@@ -440,9 +440,16 @@ async function reviews() {
   const motionActivityForPeriod = await FrigateHTTPAPI.get(Reviews.MotionActivityForPeriod, undefined, {
     after: new Date(Date.now() - 30 * 60 * 1000).getTime() / 1000,
     before: new Date().getTime() / 1000,
-    scale: 30,
+    scale: 100,
   });
   console.log(motionActivityForPeriod);
+
+  const audioActivityForPeriod = await FrigateHTTPAPI.get(Reviews.AudioActivityForPeriod, undefined, {
+    after: new Date(Date.now() - 30 * 60 * 1000).getTime() / 1000,
+    before: new Date().getTime() / 1000,
+    scale: 60,
+  });
+  console.log(audioActivityForPeriod);
 }
 
 async function main() {
