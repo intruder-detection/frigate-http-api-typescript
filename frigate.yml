@@ -10,6 +10,7 @@ tags:
   - name: Camera Media
     description: Camera Media
 paths:
+  # Management && Information
   /api/config:
     get:
       tags:
@@ -22,7 +23,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/ConfigResponse'
   /api/restart:
     post:
       tags:
@@ -32,6 +33,10 @@ paths:
       responses:
         '200':
           description: Successfully restarted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
   /api/stats:
     get:
       tags:
@@ -44,82 +49,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  cameras:
-                    type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        camera_fps:
-                          type: number
-                        detection_fps:
-                          type: number
-                        capture_pid:
-                          type: integer
-                        pid:
-                          type: integer
-                        process_fps:
-                          type: number
-                        skipped_fps:
-                          type: number
-                  detection_fps:
-                    type: number
-                  detectors:
-                    type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        detection_start:
-                          type: number
-                        inference_speed:
-                          type: number
-                        pid:
-                          type: integer
-                  service:
-                    type: object
-                    properties:
-                      uptime:
-                        type: integer
-                      version:
-                        type: string
-                      latest_version:
-                        type: string
-                      storage:
-                        type: object
-                        additionalProperties:
-                          type: object
-                          properties:
-                            total:
-                              type: integer
-                            used:
-                              type: integer
-                            free:
-                              type: integer
-                            mnt_type:
-                              type: string
-                  cpu_usages:
-                    type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        cmdline:
-                          type: string
-                        cpu:
-                          type: string
-                        cpu_average:
-                          type: string
-                        mem:
-                          type: string
-                  gpu_usages:
-                    type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        gpu:
-                          type: string
-                        mem:
-                          type: string
+                $ref: '#/components/schemas/StatsResponse'
   /api/version:
     get:
       tags:
@@ -129,6 +59,11 @@ paths:
       responses:
         '200':
           description: Version info response
+          content:
+            application/json:
+              schema:
+                type: string
+                example: 0.14.0-402c16e
   /api/ffprobe:
     get:
       tags:
@@ -145,6 +80,17 @@ paths:
       responses:
         '200':
           description: ffprobe output response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  return_code:
+                    type: number
+                  stderr:
+                    type: string
+                  stdout:
+                    type: object
   /api/{camera_name}/ptz/info:
     get:
       tags:
@@ -162,6 +108,7 @@ paths:
           description: PTZ info response
 
 
+  # Media
   /api/{camera_name}:
     get:
       tags:
@@ -209,6 +156,11 @@ paths:
       responses:
         '200':
           description: MJPEG stream response
+          content:
+            video/mpeg:
+              schema:
+                type: string
+                format: binary
   /api/{camera_name}/latest.jpg:
     get:
       tags:
@@ -256,6 +208,11 @@ paths:
       responses:
         '200':
           description: Latest frame response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
   /api/{camera_name}/{label}/thumbnail.jpg:
     get:
       tags:
@@ -276,6 +233,11 @@ paths:
       responses:
         '200':
           description: Thumbnail response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
   /api/{camera_name}/{label}/clip.mp4:
     get:
       tags:
@@ -296,6 +258,11 @@ paths:
       responses:
         '200':
           description: Clip response
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
   /api/{camera_name}/{label}/snapshot.jpg:
     get:
       tags:
@@ -316,6 +283,11 @@ paths:
       responses:
         '200':
           description: Snapshot response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
   /api/{camera_name}/grid.jpg:
     get:
       tags:
@@ -339,28 +311,14 @@ paths:
       responses:
         '200':
           description: Grid image response
-  /clips/{camera}-{id}.jpg:
-    get:
-      tags:
-        - Camera Media
-      summary: Get Snapshot by Event ID
-      description: JPG snapshot for the given camera and event id
-      parameters:
-        - name: camera
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Snapshot response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
 
 
+  # Events
   /api/events:
     get:
       tags:
@@ -372,18 +330,22 @@ paths:
           in: query
           schema:
             type: integer
+          description: Unix timestamp (in seconds) for end of range
         - name: after
           in: query
           schema:
             type: integer
+          description: Unix timestamp (in seconds) for beginning of range
         - name: cameras
           in: query
           schema:
             type: string
+          description: Comma-separated list of cameras. If not provided all cameras will be used.
         - name: labels
           in: query
           schema:
             type: string
+          description: Comma-separated list of labels
         - name: zones
           in: query
           schema:
@@ -392,14 +354,17 @@ paths:
           in: query
           schema:
             type: integer
+          description: Maximum list of events to return. If not provided the maximum will be 100
         - name: has_snapshot
           in: query
           schema:
             type: integer
+          description: Filter by existence of snapshot
         - name: has_clip
           in: query
           schema:
             type: integer
+          description: Filter by existence of clip
         - name: include_thumbnails
           in: query
           schema:
@@ -416,6 +381,7 @@ paths:
           in: query
           schema:
             type: string
+          description: Timezone. If not provided UTC will be used
         - name: min_score
           in: query
           schema:
@@ -432,13 +398,27 @@ paths:
           in: query
           schema:
             type: number
+          description: Minimum length of the event in seconds
         - name: max_length
           in: query
           schema:
             type: number
+          description: Maximum length of the event in seconds
+        - name: sort
+          in: query
+          description: Sort by one of the possible values. If not provided 'date_desc' will be used
+          schema:
+            type: string
+            enum: [ 'score_asc', 'score_desc', 'date_asc', 'date_desc' ]
       responses:
         '200':
           description: Events response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventsResponse'
   /api/events/summary:
     get:
       tags:
@@ -448,6 +428,12 @@ paths:
       responses:
         '200':
           description: Events summary response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventsSummaryResponse'
   /api/events/{id}:
     get:
       tags:
@@ -463,6 +449,12 @@ paths:
       responses:
         '200':
           description: Event response
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/EventsByIDResponse'
     delete:
       tags:
         - Events
@@ -477,6 +469,10 @@ paths:
       responses:
         '200':
           description: Event deleted response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
   /api/events/{id}/retain:
     post:
       tags:
@@ -492,6 +488,10 @@ paths:
       responses:
         '200':
           description: Event retained response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
     delete:
       tags:
         - Events
@@ -506,14 +506,18 @@ paths:
       responses:
         '200':
           description: Event retain removed response
-  /api/events/{id}/plus:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/events/{event_id}/plus:
     post:
       tags:
         - Events
       summary: Submit Event to Frigate+
       description: Submits the snapshot of the event to Frigate+ for labeling
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -525,14 +529,18 @@ paths:
       responses:
         '200':
           description: Event submitted response
-  /api/events/{id}/false_positive:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/events/{event_id}/false_positive:
     put:
       tags:
         - Events
       summary: Mark Event as False Positive
       description: Submits the snapshot of the event to Frigate+ for labeling and adds the detection as a false positive
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -540,14 +548,18 @@ paths:
       responses:
         '200':
           description: Event marked as false positive response
-  /api/events/{id}/sub_label:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/events/{event_id}/sub_label:
     post:
       tags:
         - Events
       summary: Set Sub Label for Event
       description: Set a sub label for an event
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -566,6 +578,10 @@ paths:
       responses:
         '200':
           description: Sub label set response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
   /api/events/{id}/thumbnail.jpg:
     get:
       tags:
@@ -585,6 +601,11 @@ paths:
       responses:
         '200':
           description: Event thumbnail response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
   /api/events/{id}/clip.mp4:
     get:
       tags:
@@ -600,6 +621,11 @@ paths:
       responses:
         '200':
           description: Event clip response
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
   /api/events/{id}/snapshot-clean.png:
     get:
       tags:
@@ -619,6 +645,11 @@ paths:
       responses:
         '200':
           description: Clean snapshot response
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
   /api/events/{id}/snapshot.jpg:
     get:
       tags:
@@ -664,6 +695,11 @@ paths:
       responses:
         '200':
           description: Snapshot image response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
   /api/events/{camera_name}/{label}/create:
     post:
       tags:
@@ -749,14 +785,21 @@ paths:
       responses:
         '200':
           description: Event ended response
-  /api/events/{id}/preview.gif:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+
+
+  # Previews
+  /api/events/{event_id}/preview.gif:
     get:
       tags:
         - Previews
       summary: Get Event Preview Gif
       description: Gif covering the first 20 seconds of a specific event.
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -764,14 +807,19 @@ paths:
       responses:
         '200':
           description: Preview gif response
-  /api/preview/{camera}/start/{start-timestamp}/end/{end-timestamp}:
+          content:
+            image/gif:
+              schema:
+                type: string
+                format: binary
+  /api/preview/{camera_name}/start/{start-timestamp}/end/{end-timestamp}:
     get:
       tags:
         - Previews
       summary: Get Preview Metadata
       description: Metadata about previews for this time range.
       parameters:
-        - name: camera
+        - name: camera_name
           in: path
           required: true
           schema:
@@ -789,7 +837,13 @@ paths:
       responses:
         '200':
           description: Preview metadata response
-  /api/preview/{year}-{month}/{day}/{hour}/{camera}/{timezone}:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MetadataForPreviewsInRangeResponse'
+  /api/preview/{year}-{month}/{day}/{hour}/{camera_name}/{timezone}:
     get:
       tags:
         - Previews
@@ -816,7 +870,7 @@ paths:
           required: true
           schema:
             type: integer
-        - name: camera
+        - name: camera_name
           in: path
           required: true
           schema:
@@ -829,6 +883,12 @@ paths:
       responses:
         '200':
           description: Hourly preview metadata response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MetadataForPreviewsInRangeResponse'
   /api/preview/{file_name}/thumbnail.jpg:
     get:
       tags:
@@ -844,14 +904,19 @@ paths:
       responses:
         '200':
           description: Preview frame response
-  /{camera}/start/{start-timestamp}/end/{end-timestamp}/preview.gif:
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+  /api/{camera_name}/start/{start-timestamp}/end/{end-timestamp}/preview.gif:
     get:
       tags:
         - Previews
       summary: Get Preview Gif
       description: Gif made from preview video/frames during this time range.
       parameters:
-        - name: camera
+        - name: camera_name
           in: path
           required: true
           schema:
@@ -869,12 +934,20 @@ paths:
       responses:
         '200':
           description: Preview gif response
-  /vod/{year}-{month}-{day}-{hour}-{camera}/master.m3u8:
+          content:
+            image/gif:
+              schema:
+                type: string
+                format: binary
+
+
+  # Recordings
+  /api/vod/{year}-{month}/{day}/{hour}/{camera_name}:
     get:
       tags:
         - Recordings
-      summary: Get HLS VOD URL for Hour
-      description: HTTP Live Streaming Video on Demand URL for the specified hour and camera. Can be viewed in an application like VLC.
+      summary: Get VOD for specific hour without timezone (uses the get_localzone_name value)
+      description: Get VOD for specific hour without timezone (uses the get_localzone_name value)
       parameters:
         - name: year
           in: path
@@ -896,37 +969,93 @@ paths:
           required: true
           schema:
             type: integer
-        - name: camera
+        - name: camera_name
           in: path
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: HLS VOD URL response
-  /vod/event/{event-id}/index.m3u8:
+          description: VOD for specific hour response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VodSpecificHourResponse'
+  /api/vod/{year}-{month}/{day}/{hour}/{camera_name}/{timezone_name}:
     get:
       tags:
         - Recordings
-      summary: Get HLS VOD URL for Event
-      description: HTTP Live Streaming Video on Demand URL for the specified event. Can be viewed in an application like VLC.
+      summary: Get VOD for specific hour with timezone
+      description: Get VOD for specific hour with timezone
       parameters:
-        - name: event-id
+        - name: year
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: month
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: day
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: hour
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: timezone_name
           in: path
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: HLS VOD URL response
-  /vod/{camera}/start/{start-timestamp}/end/{end-timestamp}/index.m3u8:
+          description: VOD for specific hour response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VodSpecificHourResponse'
+  /api/vod/event/{event_id}:
     get:
       tags:
         - Recordings
-      summary: Get HLS VOD URL for Time Range
-      description: HTTP Live Streaming Video on Demand URL for the camera with the specified time range. Can be viewed in an application like VLC.
+      summary: Get VOD for specific event
+      description: Get VOD for specific event
       parameters:
-        - name: camera
+        - name: event_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: VOD for specific event response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VodSpecificHourResponse'
+  /api/vod/{camera_name}/start/{start-timestamp}/end/{end-timestamp}:
+    get:
+      tags:
+        - Recordings
+      summary: Get VOD for given range
+      description: Get VOD for given range
+      parameters:
+        - name: camera_name
           in: path
           required: true
           schema:
@@ -936,15 +1065,102 @@ paths:
           required: true
           schema:
             type: integer
+          description: The start UNIX timestamp in seconds
         - name: end-timestamp
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The end UNIX timestamp in seconds
+      responses:
+        '200':
+          description: VOD for events in the range
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VodSpecificHourResponse'
+  /api/{camera_name}/recordings/summary:
+    get:
+      tags:
+        - Recordings
+      summary: Get Hourly Summary of Recordings
+      description: Hourly summary of recordings data for a camera.
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Hourly summary response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecordingsPerHourResponse'
+  /api/{camera_name}/recordings:
+    get:
+      tags:
+        - Recordings
+      summary: Get Recording Segment Details
+      description: Get recording segment details for the given timestamp range.
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: after
+          in: query
+          schema:
+            type: integer
+          description: Unix timestamp (in seconds) for beginning of range
+        - name: before
+          in: query
+          schema:
+            type: integer
+          description: Unix timestamp (in seconds) for end of range
+      responses:
+        '200':
+          description: Recording segment details response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecordingsForRange'
+  /api/{camera_name}/recordings/{frame_time}/snapshot.png:
+    get:
+      tags:
+        - Recordings
+      summary: Get Recording Snapshot
+      description: Returns the snapshot image from the specific point in that camera's recordings.
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: frame_time
           in: path
           required: true
           schema:
             type: integer
       responses:
         '200':
-          description: HLS VOD URL response
+          description: Recording snapshot response
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
 
+
+  # Exports
   /api/exports:
     get:
       tags:
@@ -1044,84 +1260,8 @@ paths:
         '200':
           description: Export renamed response
 
-  /api/{camera_name}/recordings/summary:
-    get:
-      tags:
-        - Recordings
-      summary: Get Hourly Summary of Recordings
-      description: Hourly summary of recordings data for a camera.
-      parameters:
-        - name: camera_name
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Hourly summary response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/RecordingsPerHourResponse'
-  /api/{camera_name}/recordings:
-    get:
-      tags:
-        - Recordings
-      summary: Get Recording Segment Details
-      description: Get recording segment details for the given timestamp range.
-      parameters:
-        - name: camera_name
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: after
-          in: query
-          schema:
-            type: integer
-          description: Unix timestamp (in seconds) for beginning of range
-        - name: before
-          in: query
-          schema:
-            type: integer
-          description: Unix timestamp (in seconds) for end of range
-      responses:
-        '200':
-          description: Recording segment details response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/RecordingsForRange'
-  /api/{camera_name}/recordings/{frame_time}/snapshot.png:
-    get:
-      tags:
-        - Recordings
-      summary: Get Recording Snapshot
-      description: Returns the snapshot image from the specific point in that camera's recordings.
-      parameters:
-        - name: camera_name
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: frame_time
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Recording snapshot response
-          content:
-            image/png:
-              schema:
-                type: string
-                format: binary
 
+  # Reviews
   /api/review:
     get:
       tags:
@@ -1246,6 +1386,10 @@ paths:
       responses:
         '200':
           description: Reviews marked as viewed response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
   /api/review/{review_id}/viewed:
     delete:
       tags:
@@ -1261,6 +1405,10 @@ paths:
       responses:
         '200':
           description: Review unmarked as viewed response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
   /api/reviews/delete:
     post:
       tags:
@@ -1281,6 +1429,10 @@ paths:
       responses:
         '200':
           description: Reviews deleted response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
   /api/review/activity/motion:
     get:
       tags:
@@ -1439,131 +1591,6 @@ components:
           "name": "random_export",
           "thumb_path": "/media/frigate/clips/export/reolink_duo_2_wifi_ggg1iw.webp",
           "video_path": "/media/frigate/exports/reolink_duo_2_wifi_ggg1iw.mp4"
-        }
-
-    RecordingsPerHourResponse:
-      properties:
-        day:
-          title: day
-          type: Date
-        events:
-          title: events
-          type: number
-        hours:
-          items:
-            properties:
-              duration:
-                title: duration
-                type: number
-              events:
-                title: events
-                type: number
-              hour:
-                title: hour
-                type: string
-              motion:
-                title: motion
-                type: number
-              objects:
-                title: objects
-                type: number
-            required:
-              - duration
-              - events
-              - hour
-              - motion
-              - objects
-            additionalProperties: false
-            title: HourlyData
-            type: object
-          title: RecordingsPerHourResponse.hours
-          type: array
-      required:
-        - day
-        - events
-        - hours
-      additionalProperties: false
-      title: RecordingsPerHourResponse
-      type: object
-      example:
-        {
-          "day": "2024-06-11",
-          "events": 21,
-          "hours": [
-            {
-              "duration": 2389,
-              "events": 1,
-              "hour": "19",
-              "motion": 87852,
-              "objects": 2196
-            },
-            {
-              "duration": 3598,
-              "events": 1,
-              "hour": "18",
-              "motion": 136590,
-              "objects": 68
-            },
-            {
-              "duration": 3598,
-              "events": 10,
-              "hour": "17",
-              "motion": 117958,
-              "objects": 1277
-            },
-            {
-              "duration": 2080,
-              "events": 9,
-              "hour": "16",
-              "motion": 68417,
-              "objects": 559
-            }
-          ]
-        }
-
-    RecordingsForRange:
-      properties:
-        duration:
-          title: duration
-          type: number
-        end_time:
-          title: end_time
-          type: number
-        id:
-          title: id
-          type: string
-        motion:
-          title: motion
-          type: number
-        objects:
-          title: objects
-          type: number
-        segment_size:
-          title: segment_size
-          type: number
-        start_time:
-          title: start_time
-          type: number
-      required:
-        - duration
-        - end_time
-        - id
-        - motion
-        - objects
-        - segment_size
-        - start_time
-      additionalProperties: false
-      title: RecordingsForRange
-      type: object
-      example:
-        {
-          "duration": 10.181955555555554,
-          "end_time": 1718134676.181956,
-          "id": "1718134666.0-hzso98",
-          "motion": 411,
-          "objects": 0,
-          "segment_size": 5.9,
-          "start_time": 1718134666
         }
 
     TimelineResponse:
@@ -1762,22 +1789,16 @@ components:
         last24Hours:
           properties:
             reviewed_alert:
-              title: ReviewSummary.reviewed_alert
               type: number
             reviewed_detection:
-              title: ReviewSummary.reviewed_detection
               type: number
             reviewed_motion:
-              title: ReviewSummary.reviewed_motion
               type: number
             total_alert:
-              title: ReviewSummary.total_alert
               type: number
             total_detection:
-              title: ReviewSummary.total_detection
               type: number
             total_motion:
-              title: ReviewSummary.total_motion
               type: number
           required:
             - reviewed_alert
@@ -1827,25 +1848,18 @@ components:
     ReviewSummary:
       properties:
         day:
-          title: ReviewSummary.day
           type: string
         reviewed_alert:
-          title: ReviewSummary.reviewed_alert
           type: number
         reviewed_detection:
-          title: ReviewSummary.reviewed_detection
           type: number
         reviewed_motion:
-          title: ReviewSummary.reviewed_motion
           type: number
         total_alert:
-          title: ReviewSummary.total_alert
           type: number
         total_detection:
-          title: ReviewSummary.total_detection
           type: number
         total_motion:
-          title: ReviewSummary.total_motion
           type: number
       required:
         - reviewed_alert
@@ -1876,6 +1890,12 @@ components:
       additionalProperties: false
       title: MotionActivityForPeriod
       type: object
+      example:
+        {
+          "camera": "reolink_duo_2_wifi",
+          "motion": 3.258145363408521,
+          "start_time": 1718186500
+        }
 
     AudioActivityForPeriod:
       properties:
@@ -1890,4 +1910,2181 @@ components:
         - start_time
       additionalProperties: false
       title: AudioActivityForPeriod
+      type: object
+      example:
+        {
+          "audio": 88,
+          "start_time": 1718186500
+        }
+
+    # ---------- Media && Management ----
+    # Config
+    ConfigResponse:
+      properties:
+        audio:
+          $ref: '#/components/schemas/Audio'
+        birdseye:
+          $ref: '#/components/schemas/ConfigResponseBirdseye'
+        cameras:
+          additionalProperties:
+            $ref: '#/components/schemas/Camera'
+          type: object
+        database:
+          $ref: '#/components/schemas/Database'
+        detect:
+          $ref: '#/components/schemas/Detect'
+        detectors:
+          $ref: '#/components/schemas/Detectors'
+        environment_vars:
+          $ref: '#/components/schemas/EnvironmentVars'
+        ffmpeg:
+          $ref: '#/components/schemas/Ffmpeg'
+        go2rtc:
+          $ref: '#/components/schemas/Go2RTC'
+        live:
+          $ref: '#/components/schemas/Live'
+        logger:
+          $ref: '#/components/schemas/Logger'
+        model:
+          $ref: '#/components/schemas/ConfigResponseModel'
+        motion:
+          nullable: true
+        mqtt:
+          $ref: '#/components/schemas/Mqtt'
+        objects:
+          $ref: '#/components/schemas/ConfigResponseObjects'
+        plus:
+          $ref: '#/components/schemas/Plus'
+        record:
+          $ref: '#/components/schemas/Record'
+        rtmp:
+          $ref: '#/components/schemas/Plus'
+        snapshots:
+          $ref: '#/components/schemas/Snapshots'
+        telemetry:
+          $ref: '#/components/schemas/Telemetry'
+        timestamp_style:
+          $ref: '#/components/schemas/TimestampStyle'
+        ui:
+          $ref: '#/components/schemas/ConfigResponseUI'
+      required:
+        - audio
+        - birdseye
+        - cameras
+        - database
+        - detect
+        - detectors
+        - environment_vars
+        - ffmpeg
+        - go2rtc
+        - live
+        - logger
+        - model
+        - motion
+        - mqtt
+        - objects
+        - plus
+        - record
+        - rtmp
+        - snapshots
+        - telemetry
+        - timestamp_style
+        - ui
+      additionalProperties: false
+      title: ConfigResponse
+      type: object
+      example:
+        {
+          "audio": {
+            "enabled": false,
+            "listen": [
+              "bark",
+              "fire_alarm",
+              "scream",
+              "speech",
+              "yell"
+            ],
+            "max_not_heard": 30,
+            "min_volume": 500,
+            "num_threads": 2
+          },
+          "auth": {
+            "cookie_name": "frigate_token",
+            "cookie_secure": false,
+            "hash_iterations": 600000,
+            "header_map": { },
+            "mode": "native",
+            "refresh_time": 43200,
+            "reset_admin_password": false,
+            "session_length": 86400,
+            "trusted_proxies": [ ]
+          },
+          "birdseye": {
+            "enabled": true,
+            "height": 720,
+            "inactivity_threshold": 30,
+            "layout": {
+              "scaling_factor": 2
+            },
+            "mode": "objects",
+            "quality": 8,
+            "restream": false,
+            "width": 1280
+          },
+          "camera_groups": { },
+          "cameras": {
+            "reolink_duo_2_wifi": {
+              "audio": {
+                "enabled": false,
+                "enabled_in_config": false,
+                "listen": [
+                  "bark",
+                  "fire_alarm",
+                  "scream",
+                  "speech",
+                  "yell"
+                ],
+                "max_not_heard": 30,
+                "min_volume": 500,
+                "num_threads": 2
+              },
+              "best_image_timeout": 60,
+              "birdseye": {
+                "enabled": true,
+                "mode": "objects",
+                "order": 0
+              },
+              "detect": {
+                "annotation_offset": 0,
+                "enabled": true,
+                "fps": 20,
+                "height": 1728,
+                "max_disappeared": 100,
+                "min_initialized": 10,
+                "stationary": {
+                  "interval": 200,
+                  "max_frames": {
+                    "objects": { }
+                  },
+                  "threshold": 200
+                },
+                "width": 4608
+              },
+              "enabled": true,
+              "ffmpeg": {
+                "global_args": [
+                  "-hide_banner",
+                  "-loglevel",
+                  "warning",
+                  "-threads",
+                  "2"
+                ],
+                "hwaccel_args": "",
+                "input_args": "preset-rtsp-generic",
+                "inputs": [
+                  {
+                    "global_args": [ ],
+                    "hwaccel_args": [ ],
+                    "input_args": [ ],
+                    "path": "rtsp://*:*@192.168.1.3:554",
+                    "roles": [
+                      "record",
+                      "detect"
+                    ]
+                  }
+                ],
+                "output_args": {
+                  "detect": [
+                    "-threads",
+                    "2",
+                    "-f",
+                    "rawvideo",
+                    "-pix_fmt",
+                    "yuv420p"
+                  ],
+                  "record": "preset-record-generic"
+                },
+                "retry_interval": 10
+              },
+              "ffmpeg_cmds": [
+                {
+                  "cmd": "ffmpeg -hide_banner -loglevel warning -threads 2 -user_agent FFmpeg Frigate/0.14.0-402c16e -avoid_negative_ts make_zero -fflags +genpts+discardcorrupt -rtsp_transport tcp -timeout 5000000 -use_wallclock_as_timestamps 1 -i rtsp://*:*@192.168.1.3:554 -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c copy -an /tmp/cache/reolink_duo_2_wifi@%Y%m%d%H%M%S%z.mp4 -r 20 -vf fps=20,scale=4608:1728 -threads 2 -f rawvideo -pix_fmt yuv420p pipe:",
+                  "roles": [
+                    "record",
+                    "detect"
+                  ]
+                }
+              ],
+              "live": {
+                "height": 720,
+                "quality": 8,
+                "stream_name": "reolink_duo_2_wifi"
+              },
+              "motion": {
+                "contour_area": 10,
+                "delta_alpha": 0.2,
+                "enabled": true,
+                "enabled_in_config": true,
+                "frame_alpha": 0.01,
+                "frame_height": 100,
+                "improve_contrast": true,
+                "lightning_threshold": 0.8,
+                "mask": "",
+                "mqtt_off_delay": 30,
+                "raw_mask": null,
+                "threshold": 30
+              },
+              "mqtt": {
+                "bounding_box": true,
+                "crop": true,
+                "enabled": true,
+                "height": 270,
+                "quality": 70,
+                "required_zones": [ ],
+                "timestamp": true
+              },
+              "name": "reolink_duo_2_wifi",
+              "objects": {
+                "filters": {
+                  "car": {
+                    "max_area": 24000000,
+                    "max_ratio": 24000000,
+                    "min_area": 0,
+                    "min_ratio": 0,
+                    "min_score": 0.5,
+                    "threshold": 0.7
+                  },
+                  "person": {
+                    "max_area": 24000000,
+                    "max_ratio": 24000000,
+                    "min_area": 0,
+                    "min_ratio": 0,
+                    "min_score": 0.5,
+                    "threshold": 0.7
+                  }
+                },
+                "mask": "",
+                "track": [
+                  "person",
+                  "car"
+                ]
+              },
+              "onvif": {
+                "autotracking": {
+                  "calibrate_on_startup": false,
+                  "enabled": false,
+                  "enabled_in_config": false,
+                  "movement_weights": [ ],
+                  "required_zones": [ ],
+                  "return_preset": "home",
+                  "timeout": 10,
+                  "track": [
+                    "person"
+                  ],
+                  "zoom_factor": 0.3,
+                  "zooming": "disabled"
+                },
+                "host": "",
+                "port": 8000
+              },
+              "record": {
+                "enabled": true,
+                "enabled_in_config": true,
+                "events": {
+                  "post_capture": 5,
+                  "pre_capture": 5,
+                  "retain": {
+                    "default": 90,
+                    "mode": "motion",
+                    "objects": { }
+                  }
+                },
+                "expire_interval": 60,
+                "export": {
+                  "timelapse_args": "-vf scale=trunc(iw/2)*2:trunc(ih/2)*2 -vf setpts=0.00695*PTS -r 30 -crf 28 -preset veryslow"
+                },
+                "preview": {
+                  "quality": "medium"
+                },
+                "retain": {
+                  "days": 2,
+                  "mode": "motion"
+                },
+                "sync_recordings": false
+              },
+              "review": {
+                "alerts": {
+                  "labels": [
+                    "person",
+                    "car"
+                  ],
+                  "required_zones": [ ]
+                },
+                "detections": {
+                  "required_zones": [ ]
+                }
+              },
+              "snapshots": {
+                "bounding_box": true,
+                "clean_copy": true,
+                "crop": false,
+                "enabled": false,
+                "quality": 70,
+                "required_zones": [ ],
+                "retain": {
+                  "default": 10,
+                  "mode": "motion",
+                  "objects": { }
+                },
+                "timestamp": false
+              },
+              "timestamp_style": {
+                "color": {
+                  "blue": 255,
+                  "green": 255,
+                  "red": 255
+                },
+                "format": "%m/%d/%Y %H:%M:%S",
+                "position": "tl",
+                "thickness": 2
+              },
+              "ui": {
+                "dashboard": true,
+                "order": 0
+              },
+              "zones": { }
+            }
+          },
+          "database": {
+            "path": "/config/frigate.db"
+          },
+          "detect": {
+            "annotation_offset": 0,
+            "enabled": true,
+            "fps": 20,
+            "stationary": {
+              "max_frames": {
+                "objects": { }
+              }
+            }
+          },
+          "detectors": {
+            "coral": {
+              "model": {
+                "height": 320,
+                "input_pixel_format": "rgb",
+                "input_tensor": "nhwc",
+                "labelmap": {
+                  "0": "person",
+                  "1": "bicycle",
+                  "2": "car",
+                  "3": "motorcycle",
+                  "4": "airplane",
+                  "5": "bus",
+                  "6": "train",
+                  "7": "car",
+                  "8": "boat",
+                  "9": "traffic light",
+                  "10": "fire hydrant",
+                  "11": "street sign",
+                  "12": "stop sign",
+                  "13": "parking meter",
+                  "14": "bench",
+                  "15": "bird",
+                  "16": "cat",
+                  "17": "dog",
+                  "18": "horse",
+                  "19": "sheep",
+                  "20": "cow",
+                  "21": "elephant",
+                  "22": "bear",
+                  "23": "zebra",
+                  "24": "giraffe",
+                  "25": "hat",
+                  "26": "backpack",
+                  "27": "umbrella",
+                  "28": "shoe",
+                  "29": "eye glasses",
+                  "30": "handbag",
+                  "31": "tie",
+                  "32": "suitcase",
+                  "33": "frisbee",
+                  "34": "skis",
+                  "35": "snowboard",
+                  "36": "sports ball",
+                  "37": "kite",
+                  "38": "baseball bat",
+                  "39": "baseball glove",
+                  "40": "skateboard",
+                  "41": "surfboard",
+                  "42": "tennis racket",
+                  "43": "bottle",
+                  "44": "plate",
+                  "45": "wine glass",
+                  "46": "cup",
+                  "47": "fork",
+                  "48": "knife",
+                  "49": "spoon",
+                  "50": "bowl",
+                  "51": "banana",
+                  "52": "apple",
+                  "53": "sandwich",
+                  "54": "orange",
+                  "55": "broccoli",
+                  "56": "carrot",
+                  "57": "hot dog",
+                  "58": "pizza",
+                  "59": "donut",
+                  "60": "cake",
+                  "61": "chair",
+                  "62": "couch",
+                  "63": "potted plant",
+                  "64": "bed",
+                  "65": "mirror",
+                  "66": "dining table",
+                  "67": "window",
+                  "68": "desk",
+                  "69": "toilet",
+                  "70": "door",
+                  "71": "tv",
+                  "72": "laptop",
+                  "73": "mouse",
+                  "74": "remote",
+                  "75": "keyboard",
+                  "76": "cell phone",
+                  "77": "microwave",
+                  "78": "oven",
+                  "79": "toaster",
+                  "80": "sink",
+                  "81": "refrigerator",
+                  "82": "blender",
+                  "83": "book",
+                  "84": "clock",
+                  "85": "vase",
+                  "86": "scissors",
+                  "87": "teddy bear",
+                  "88": "hair drier",
+                  "89": "toothbrush",
+                  "90": "hair brush"
+                },
+                "model_type": "ssd",
+                "path": "/edgetpu_model.tflite",
+                "width": 320
+              },
+              "type": "edgetpu"
+            }
+          },
+          "environment_vars": { },
+          "ffmpeg": {
+            "global_args": [
+              "-hide_banner",
+              "-loglevel",
+              "warning",
+              "-threads",
+              "2"
+            ],
+            "hwaccel_args": "",
+            "input_args": "preset-rtsp-generic",
+            "output_args": {
+              "detect": [
+                "-threads",
+                "2",
+                "-f",
+                "rawvideo",
+                "-pix_fmt",
+                "yuv420p"
+              ],
+              "record": "preset-record-generic"
+            },
+            "retry_interval": 10
+          },
+          "go2rtc": {
+            "streams": {
+              "back": [
+                "rtsp://admin:Awsprimus1!@192.168.1.8:554"
+              ]
+            }
+          },
+          "live": {
+            "height": 720,
+            "quality": 8,
+            "stream_name": ""
+          },
+          "logger": {
+            "default": "info",
+            "logs": { }
+          },
+          "model": {
+            "colormap": {
+              "car": [
+                31,
+                119,
+                180
+              ],
+              "person": [
+                23,
+                190,
+                207
+              ]
+            },
+            "height": 320,
+            "input_pixel_format": "rgb",
+            "input_tensor": "nhwc",
+            "labelmap": { },
+            "model_type": "ssd",
+            "width": 320
+          },
+          "mqtt": {
+            "client_id": "frigate",
+            "enabled": true,
+            "host": "192.168.1.5",
+            "port": 1883,
+            "stats_interval": 60,
+            "topic_prefix": "frigate"
+          },
+          "objects": {
+            "filters": {
+              "amazon": {
+                "max_area": 24000000,
+                "max_ratio": 24000000,
+                "min_area": 0,
+                "min_ratio": 0,
+                "min_score": 0.7,
+                "raw_mask": null,
+                "threshold": 0.7
+              },
+              "face": {
+                "max_area": 24000000,
+                "max_ratio": 24000000,
+                "min_area": 0,
+                "min_ratio": 0,
+                "min_score": 0.7,
+                "raw_mask": null,
+                "threshold": 0.7
+              },
+              "fedex": {
+                "max_area": 24000000,
+                "max_ratio": 24000000,
+                "min_area": 0,
+                "min_ratio": 0,
+                "min_score": 0.7,
+                "raw_mask": null,
+                "threshold": 0.7
+              },
+              "license_plate": {
+                "max_area": 24000000,
+                "max_ratio": 24000000,
+                "min_area": 0,
+                "min_ratio": 0,
+                "min_score": 0.7,
+                "raw_mask": null,
+                "threshold": 0.7
+              },
+              "ups": {
+                "max_area": 24000000,
+                "max_ratio": 24000000,
+                "min_area": 0,
+                "min_ratio": 0,
+                "min_score": 0.7,
+                "raw_mask": null,
+                "threshold": 0.7
+              }
+            },
+            "mask": "",
+            "track": [
+              "person",
+              "car"
+            ]
+          },
+          "plus": {
+            "enabled": false
+          },
+          "record": {
+            "enabled": true,
+            "events": {
+              "post_capture": 5,
+              "pre_capture": 5,
+              "retain": {
+                "default": 90,
+                "mode": "motion",
+                "objects": { }
+              }
+            },
+            "expire_interval": 60,
+            "export": {
+              "timelapse_args": "-vf scale=trunc(iw/2)*2:trunc(ih/2)*2 -vf setpts=0.00695*PTS -r 30 -crf 28 -preset veryslow"
+            },
+            "preview": {
+              "quality": "medium"
+            },
+            "retain": {
+              "days": 2,
+              "mode": "motion"
+            },
+            "sync_recordings": false
+          },
+          "review": {
+            "alerts": {
+              "labels": [
+                "person",
+                "car"
+              ],
+              "required_zones": [ ]
+            },
+            "detections": {
+              "required_zones": [ ]
+            }
+          },
+          "snapshots": {
+            "bounding_box": true,
+            "clean_copy": true,
+            "crop": false,
+            "enabled": false,
+            "quality": 70,
+            "required_zones": [ ],
+            "retain": {
+              "default": 10,
+              "mode": "motion",
+              "objects": { }
+            },
+            "timestamp": false
+          },
+          "telemetry": {
+            "network_interfaces": [ ],
+            "stats": {
+              "amd_gpu_stats": true,
+              "intel_gpu_stats": true,
+              "network_bandwidth": false
+            },
+            "version_check": true
+          },
+          "timestamp_style": {
+            "color": {
+              "blue": 255,
+              "green": 255,
+              "red": 255
+            },
+            "format": "%m/%d/%Y %H:%M:%S",
+            "position": "tl",
+            "thickness": 2
+          },
+          "ui": {
+            "date_style": "short",
+            "time_format": "browser",
+            "time_style": "medium"
+          },
+          "version": 0.14
+        }
+    Audio:
+      properties:
+        enabled:
+          type: boolean
+        enabled_in_config:
+          nullable: true
+          type: boolean
+        filters:
+          type: object
+        listen:
+          items:
+            type: string
+          type: array
+        max_not_heard:
+          type: number
+        min_volume:
+          type: number
+        num_threads:
+          type: number
+      required:
+        - enabled
+        - enabled_in_config
+        - filters
+        - listen
+        - max_not_heard
+        - min_volume
+        - num_threads
+      additionalProperties: false
+      title: Audio
+      type: object
+    ConfigResponseBirdseye:
+      properties:
+        enabled:
+          type: boolean
+        height:
+          type: number
+        inactivity_threshold:
+          type: number
+        layout:
+          type: object
+        mode:
+          type: string
+        quality:
+          type: number
+        restream:
+          type: boolean
+        width:
+          type: number
+      required:
+        - enabled
+        - height
+        - inactivity_threshold
+        - layout
+        - mode
+        - quality
+        - restream
+        - width
+      additionalProperties: false
+      title: ConfigResponseBirdseye
+      type: object
+    Camera:
+      properties:
+        audio:
+          $ref: '#/components/schemas/Audio'
+        best_image_timeout:
+          type: number
+        birdseye:
+          type: object
+        detect:
+          $ref: '#/components/schemas/Detect'
+        enabled:
+          type: boolean
+        ffmpeg:
+          $ref: '#/components/schemas/Ffmpeg'
+        ffmpeg_cmds:
+          items:
+            type: object
+          type: array
+        live:
+          $ref: '#/components/schemas/Live'
+        motion:
+          type: object
+        mqtt:
+          $ref: '#/components/schemas/Snapshots'
+        name:
+          type: string
+        objects:
+          type: object
+        onvif:
+          type: object
+        record:
+          $ref: '#/components/schemas/Record'
+        rtmp:
+          $ref: '#/components/schemas/Plus'
+        snapshots:
+          $ref: '#/components/schemas/Snapshots'
+        timestamp_style:
+          $ref: '#/components/schemas/TimestampStyle'
+        ui:
+          type: object
+        webui_url:
+          nullable: true
+        zones:
+          $ref: '#/components/schemas/EnvironmentVars'
+      required:
+        - audio
+        - best_image_timeout
+        - birdseye
+        - detect
+        - enabled
+        - ffmpeg
+        - ffmpeg_cmds
+        - live
+        - motion
+        - mqtt
+        - name
+        - objects
+        - onvif
+        - record
+        - rtmp
+        - snapshots
+        - timestamp_style
+        - ui
+        - webui_url
+        - zones
+      additionalProperties: false
+      title: Camera
+      type: object
+    Database:
+      properties:
+        path:
+          type: string
+      required:
+        - path
+      additionalProperties: false
+      title: Database
+      type: object
+    Detect:
+      properties:
+        annotation_offset:
+          type: number
+        enabled:
+          type: boolean
+        fps:
+          type: number
+        height:
+          nullable: true
+          type: number
+        max_disappeared:
+          nullable: true
+          type: number
+        min_initialized:
+          nullable: true
+          type: number
+        stationary:
+          type: object
+        width:
+          nullable: true
+          type: number
+      required:
+        - annotation_offset
+        - enabled
+        - fps
+        - height
+        - max_disappeared
+        - min_initialized
+        - stationary
+        - width
+      additionalProperties: false
+      title: Detect
+      type: object
+    Detectors:
+      properties:
+        coral:
+          type: object
+      required:
+        - coral
+      additionalProperties: false
+      title: Detectors
+      type: object
+    EnvironmentVars:
+      additionalProperties: false
+      title: EnvironmentVars
+      type: object
+    Ffmpeg:
+      properties:
+        global_args:
+          items:
+            type: string
+          type: array
+        hwaccel_args:
+          items:
+          type: array
+        input_args:
+          type: string
+        inputs:
+          items:
+            type: object
+          type: array
+        output_args:
+          type: object
+        retry_interval:
+          type: number
+      required:
+        - global_args
+        - hwaccel_args
+        - input_args
+        - output_args
+        - retry_interval
+      additionalProperties: false
+      title: Ffmpeg
+      type: object
+    Go2RTC:
+      properties:
+        streams:
+          type: object
+      required:
+        - streams
+      additionalProperties: false
+      title: Go2RTC
+      type: object
+    Live:
+      properties:
+        height:
+          type: number
+        quality:
+          type: number
+        stream_name:
+          type: string
+      required:
+        - height
+        - quality
+        - stream_name
+      additionalProperties: false
+      title: Live
+      type: object
+    Logger:
+      properties:
+        default:
+          type: string
+        logs:
+          $ref: '#/components/schemas/EnvironmentVars'
+      required:
+        - default
+        - logs
+      additionalProperties: false
+      title: Logger
+      type: object
+    ConfigResponseModel:
+      properties:
+        height:
+          type: number
+        input_pixel_format:
+          type: string
+        input_tensor:
+          type: string
+        labelmap:
+          $ref: '#/components/schemas/EnvironmentVars'
+        labelmap_path:
+          nullable: true
+        model_type:
+          type: string
+        path:
+          nullable: true
+        width:
+          type: number
+      required:
+        - height
+        - input_pixel_format
+        - input_tensor
+        - labelmap
+        - labelmap_path
+        - model_type
+        - path
+        - width
+      additionalProperties: false
+      title: ConfigResponseModel
+      type: object
+    Mqtt:
+      properties:
+        client_id:
+          type: string
+        enabled:
+          type: boolean
+        host:
+          type: string
+        port:
+          type: number
+        stats_interval:
+          type: number
+        tls_ca_certs:
+          nullable: true
+        tls_client_cert:
+          nullable: true
+        tls_client_key:
+          nullable: true
+        tls_insecure:
+          nullable: true
+        topic_prefix:
+          type: string
+        user:
+          nullable: true
+      required:
+        - client_id
+        - enabled
+        - host
+        - port
+        - stats_interval
+        - tls_ca_certs
+        - tls_client_cert
+        - tls_client_key
+        - tls_insecure
+        - topic_prefix
+        - user
+      additionalProperties: false
+      title: Mqtt
+      type: object
+    ConfigResponseObjects:
+      properties:
+        filters:
+          type: object
+        mask:
+          type: string
+        track:
+          items:
+            type: string
+          type: array
+      required:
+        - filters
+        - mask
+        - track
+      additionalProperties: false
+      title: ConfigResponseObjects
+      type: object
+    Plus:
+      properties:
+        enabled:
+          type: boolean
+      required:
+        - enabled
+      additionalProperties: false
+      title: Plus
+      type: object
+    Record:
+      properties:
+        enabled:
+          type: boolean
+        enabled_in_config:
+          nullable: true
+          type: boolean
+        events:
+          type: object
+        expire_interval:
+          type: number
+        export:
+          type: object
+        retain:
+          type: object
+        sync_recordings:
+          type: boolean
+      required:
+        - enabled
+        - enabled_in_config
+        - events
+        - expire_interval
+        - export
+        - retain
+        - sync_recordings
+      additionalProperties: false
+      title: Record
+      type: object
+    Snapshots:
+      properties:
+        bounding_box:
+          type: boolean
+        crop:
+          type: boolean
+        enabled:
+          type: boolean
+        height:
+          nullable: true
+          type: number
+        quality:
+          type: number
+        required_zones:
+          items:
+            type: object
+          type: array
+        timestamp:
+          type: boolean
+        clean_copy:
+          type: boolean
+        retain:
+          type: object
+      required:
+        - bounding_box
+        - crop
+        - enabled
+        - height
+        - quality
+        - required_zones
+        - timestamp
+      additionalProperties: false
+      title: Snapshots
+      type: object
+    Telemetry:
+      properties:
+        network_interfaces:
+          items:
+            type: object
+          type: array
+        stats:
+          type: object
+        version_check:
+          type: boolean
+      required:
+        - network_interfaces
+        - stats
+        - version_check
+      additionalProperties: false
+      title: Telemetry
+      type: object
+    TimestampStyle:
+      properties:
+        color:
+          type: object
+        effect:
+          nullable: true
+        format:
+          type: string
+        position:
+          type: string
+        thickness:
+          type: number
+      required:
+        - color
+        - effect
+        - format
+        - position
+        - thickness
+      additionalProperties: false
+      title: TimestampStyle
+      type: object
+    ConfigResponseUI:
+      properties:
+        date_style:
+          type: string
+        live_mode:
+          type: string
+        strftime_fmt:
+          nullable: true
+        time_format:
+          type: string
+        time_style:
+          type: string
+        timezone:
+          nullable: true
+        use_experimental:
+          type: boolean
+      required:
+        - date_style
+        - live_mode
+        - strftime_fmt
+        - time_format
+        - time_style
+        - timezone
+        - use_experimental
+      additionalProperties: false
+      title: ConfigResponseUI
+      type: object
+
+    # Stats
+    StatsResponse:
+      properties:
+        cameras:
+          additionalProperties:
+            $ref: '#/components/schemas/CameraStatsResponse'
+          type: object
+        cpu_usages:
+          additionalProperties:
+            $ref: '#/components/schemas/CPUUsage'
+          type: object
+        detection_fps:
+          type: number
+        detectors:
+          $ref: '#/components/schemas/Detectors'
+        processes:
+          $ref: '#/components/schemas/Processes'
+        service:
+          $ref: '#/components/schemas/Service'
+      required:
+        - cameras
+        - cpu_usages
+        - detection_fps
+        - detectors
+        - processes
+        - service
+      additionalProperties: false
+      title: StatsResponse
+      type: object
+      example:
+        {
+          "cameras": {
+            "reolink_duo_2_wifi": {
+              "audio_dBFS": 0,
+              "audio_rms": 0,
+              "camera_fps": 20.1,
+              "capture_pid": 364,
+              "detection_enabled": true,
+              "detection_fps": 28.1,
+              "ffmpeg_pid": 89189,
+              "pid": 363,
+              "process_fps": 4.4,
+              "skipped_fps": 15.7
+            }
+          },
+          "cpu_usages": {
+            "1": {
+              "cmdline": "/package/admin/s6/command/s6-svscan -d4 -- /run/service",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "15": {
+              "cmdline": "s6-supervise s6-linux-init-shutdownd",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "17": {
+              "cmdline": "/package/admin/s6-linux-init/command/s6-linux-init-shutdownd -c /run/s6/basedir -g 3000 -C -B",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "24": {
+              "cmdline": "s6-supervise go2rtc",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "25": {
+              "cmdline": "s6-supervise go2rtc-log",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "26": {
+              "cmdline": "s6-supervise frigate",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "27": {
+              "cmdline": "s6-supervise go2rtc-healthcheck",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "28": {
+              "cmdline": "s6-supervise frigate-log",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "29": {
+              "cmdline": "s6-supervise nginx-log",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "30": {
+              "cmdline": "s6-supervise nginx",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "31": {
+              "cmdline": "s6-supervise s6rc-fdholder",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "32": {
+              "cmdline": "s6-supervise s6rc-oneshot-runner",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "43": {
+              "cmdline": "/package/admin/s6-2.11.3.2/command/s6-fdholderd -1 -i data/rules",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "44": {
+              "cmdline": "/package/admin/s6/command/s6-ipcserverd -1 -- /package/admin/s6/command/s6-ipcserver-access -v0 -E -l0 -i data/rules -- /package/admin/s6/command/s6-sudod -t 30000 -- /package/admin/s6-rc/command/s6-rc-oneshot-run -l ../.. --",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "81": {
+              "cmdline": "s6-log -b -- T 1 n0 s10000000 T /dev/shm/logs/nginx",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "83": {
+              "cmdline": "s6-log -b -- T 1 n0 s10000000 T /dev/shm/logs/go2rtc",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "84": {
+              "cmdline": "s6-log -b -- T 1 n0 s10000000 T /dev/shm/logs/frigate",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "91": {
+              "cmdline": "/usr/local/go2rtc/bin/go2rtc -config=/dev/shm/go2rtc.yaml",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.3"
+            },
+            "108": {
+              "cmdline": "python3 -u -m frigate",
+              "cpu": "0.7",
+              "cpu_average": "1",
+              "mem": "8.7"
+            },
+            "113": {
+              "cmdline": "bash ./run.user go2rtc-healthcheck",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "121": {
+              "cmdline": "nginx: master process nginx",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.2"
+            },
+            "147": {
+              "cmdline": "nginx: worker process",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.5"
+            },
+            "148": {
+              "cmdline": "nginx: worker process",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.4"
+            },
+            "149": {
+              "cmdline": "nginx: worker process",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.5"
+            },
+            "150": {
+              "cmdline": "nginx: worker process",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.4"
+            },
+            "155": {
+              "cmdline": "nginx: cache manager process",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.1"
+            },
+            "297": {
+              "cmdline": "frigate.logger       ",
+              "cpu": "0.1",
+              "cpu_average": "0",
+              "mem": "1.5"
+            },
+            "308": {
+              "cmdline": "frigate.recording_manager",
+              "cpu": "0.2",
+              "cpu_average": "0",
+              "mem": "2.4"
+            },
+            "317": {
+              "cmdline": "frigate.review_segment_manager",
+              "cpu": "0.1",
+              "cpu_average": "0",
+              "mem": "2.3"
+            },
+            "336": {
+              "cmdline": "/usr/bin/python3 -c from multiprocessing.resource_tracker import main;main(57)",
+              "cpu": "0.2",
+              "cpu_average": "0",
+              "mem": "0.1"
+            },
+            "337": {
+              "cmdline": "frigate.detector.coral",
+              "cpu": "34.3",
+              "cpu_average": "33",
+              "mem": "2.1"
+            },
+            "339": {
+              "cmdline": "frigate.output       ",
+              "cpu": "5.3",
+              "cpu_average": "6",
+              "mem": "2.4"
+            },
+            "363": {
+              "cmdline": "frigate.process:reolink_duo_2_wifi",
+              "cpu": "38.8",
+              "cpu_average": "39",
+              "mem": "2.9"
+            },
+            "364": {
+              "cmdline": "frigate.capture:reolink_duo_2_wifi",
+              "cpu": "37.9",
+              "cpu_average": "37",
+              "mem": "2.5"
+            },
+            "396": {
+              "cmdline": "ffmpeg -f rawvideo -pix_fmt yuv420p -video_size 4608x1728 -i pipe: -f mpegts -s 1920x720 -codec:v mpeg1video -q 8 -bf 0 pipe:",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "1.0"
+            },
+            "401": {
+              "cmdline": "ffmpeg -f rawvideo -pix_fmt yuv420p -video_size 1280x720 -i pipe: -f mpegts -s 1280x720 -codec:v mpeg1video -q 8 -bf 0 pipe:",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.2"
+            },
+            "1502": {
+              "cmdline": "/usr/bin/python3 -c from multiprocessing.resource_tracker import main;main(46)",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.1"
+            },
+            "89189": {
+              "cmdline": "ffmpeg -hide_banner -loglevel warning -threads 2 -user_agent FFmpeg Frigate/0.14.0-402c16e -avoid_negative_ts make_zero -fflags +genpts+discardcorrupt -rtsp_transport tcp -timeout 5000000 -use_wallclock_as_timestamps 1 -i rtsp://*:*@192.168.1.3:554 -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c copy -an /tmp/cache/reolink_duo_2_wifi@%Y%m%d%H%M%S%z.mp4 -r 20 -vf fps=20,scale=4608:1728 -threads 2 -f rawvideo -pix_fmt yuv420p pipe:",
+              "cpu": "96.5",
+              "cpu_average": "91",
+              "mem": "2.6"
+            },
+            "104294": {
+              "cmdline": "sleep 30s",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "frigate.full_system": {
+              "cpu": "55.4",
+              "mem": "49.4"
+            }
+          },
+          "detection_fps": 28.1,
+          "detectors": {
+            "coral": {
+              "detection_start": 1718190234.354753,
+              "inference_speed": 28.55,
+              "pid": 337
+            }
+          },
+          "processes": {
+            "go2rtc": {
+              "pid": 91
+            },
+            "logger": {
+              "pid": 297
+            },
+            "recording": {
+              "pid": 308
+            },
+            "review_segment": {
+              "pid": 317
+            }
+          },
+          "service": {
+            "last_updated": 1718190234,
+            "latest_version": "0.13.2",
+            "storage": {
+              "/dev/shm": {
+                "free": 448.3,
+                "mount_type": "tmpfs",
+                "total": 500,
+                "used": 51.7
+              },
+              "/media/frigate/clips": {
+                "free": 3628.9,
+                "mount_type": "ext4",
+                "total": 237813.4,
+                "used": 222033
+              },
+              "/media/frigate/recordings": {
+                "free": 3628.9,
+                "mount_type": "ext4",
+                "total": 237813.4,
+                "used": 222033
+              },
+              "/tmp/cache": {
+                "free": 944.6,
+                "mount_type": "tmpfs",
+                "total": 953.7,
+                "used": 9.1
+              }
+            },
+            "temperatures": { },
+            "uptime": 65251,
+            "version": "0.14.0-402c16e"
+          }
+        }
+    CameraStatsResponse:
+      properties:
+        audio_dBFS:
+          type: number
+        audio_rms:
+          type: number
+        camera_fps:
+          type: number
+        capture_pid:
+          type: number
+        detection_enabled:
+          type: number
+        detection_fps:
+          type: number
+        ffmpeg_pid:
+          type: number
+        pid:
+          type: number
+        process_fps:
+          type: number
+        skipped_fps:
+          type: number
+      required:
+        - audio_dBFS
+        - audio_rms
+        - camera_fps
+        - capture_pid
+        - detection_enabled
+        - detection_fps
+        - ffmpeg_pid
+        - pid
+        - process_fps
+        - skipped_fps
+      additionalProperties: false
+      title: Camera
+      type: object
+    CPUUsage:
+      properties:
+        cmdline:
+          type: string
+        cpu:
+          type: string
+        cpu_average:
+          type: string
+        mem:
+          type: string
+      required:
+        - cmdline
+        - cpu
+        - cpu_average
+        - mem
+      additionalProperties: false
+      title: CPUUsage
+      type: object
+    Processes:
+      properties:
+        go2rtc:
+          type: object
+        logger:
+          type: object
+        recording:
+          type: object
+      required:
+        - go2rtc
+        - logger
+        - recording
+      additionalProperties: false
+      title: Processes
+      type: object
+    Service:
+      properties:
+        last_updated:
+          type: number
+        latest_version:
+          type: string
+        storage:
+          additionalProperties:
+            type: object
+          type: object
+        temperatures:
+          type: object
+        uptime:
+          type: number
+        version:
+          type: string
+      required:
+        - last_updated
+        - latest_version
+        - storage
+        - temperatures
+        - uptime
+        - version
+      additionalProperties: false
+      title: Service
+      type: object
+
+    # ---------- Events ----
+    EventsResponse:
+      properties:
+        box:
+          nullable: true
+        camera:
+          type: string
+        data:
+          $ref: '#/components/schemas/EventsData'
+        end_time:
+          type: number
+        false_positive:
+          nullable: true
+        has_clip:
+          type: boolean
+        has_snapshot:
+          type: boolean
+        id:
+          type: string
+        label:
+          type: string
+        plus_id:
+          nullable: true
+        retain_indefinitely:
+          type: boolean
+        start_time:
+          type: number
+        sub_label:
+          nullable: true
+        thumbnail:
+          type: string
+        top_score:
+          nullable: true
+        zones:
+          type: array
+      required:
+        - box
+        - camera
+        - data
+        - end_time
+        - false_positive
+        - has_clip
+        - has_snapshot
+        - id
+        - label
+        - plus_id
+        - retain_indefinitely
+        - start_time
+        - sub_label
+        - thumbnail
+        - top_score
+        - zones
+      additionalProperties: false
+      title: EventsResponse
+      type: object
+      example:
+        {
+          "box": null,
+          "camera": "reolink_duo_2_wifi",
+          "data": {
+            "attributes": [ ],
+            "box": [
+              0.3548177083333333,
+              0.014467592592592593,
+              0.1506076388888889,
+              0.6493055555555556
+            ],
+            "region": [
+              0.2595486111111111,
+              0,
+              0.3324652777777778,
+              0.8865740740740741
+            ],
+            "score": 0.68359375,
+            "top_score": 0.75,
+            "type": "object"
+          },
+          "end_time": 1718198394.611985,
+          "false_positive": null,
+          "has_clip": true,
+          "has_snapshot": false,
+          "id": "1718198355.99788-rpfx62",
+          "label": "person",
+          "plus_id": null,
+          "retain_indefinitely": false,
+          "start_time": 1718198350.99788,
+          "sub_label": null,
+          "thumbnail": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+          "top_score": null,
+          "zones": [ ]
+        }
+    EventsData:
+      properties:
+        attributes:
+          items:
+            type: object
+          type: array
+        box:
+          items:
+            type: number
+          type: array
+        region:
+          items:
+            type: number
+          type: array
+        score:
+          type: number
+        top_score:
+          type: number
+        type:
+          type: string
+      required:
+        - attributes
+        - box
+        - region
+        - score
+        - top_score
+        - type
+      additionalProperties: false
+      title: EventsData
+      type: object
+    ## Summary
+    EventsSummaryResponse:
+      properties:
+        camera:
+          type: string
+        count:
+          type: number
+        day:
+          type: string
+        label:
+          type: string
+        sub_label:
+          nullable: true
+        zones:
+          items:
+          type: array
+      required:
+        - camera
+        - count
+        - day
+        - label
+        - sub_label
+        - zones
+      additionalProperties: false
+      title: EventsSummaryResponse
+      type: object
+      example:
+        {
+          "camera": "reolink_duo_2_wifi",
+          "count": 26,
+          "day": "2024-06-11",
+          "label": "person",
+          "sub_label": null,
+          "zones": [ ]
+        }
+    # EventsById
+    EventsByIDResponse:
+      properties:
+        area:
+          nullable: true
+        box:
+          nullable: true
+        camera:
+          type: string
+        data:
+          $ref: '#/components/schemas/EventsByIDData'
+        detector_type:
+          type: string
+        end_time:
+          type: number
+        false_positive:
+          nullable: true
+        has_clip:
+          type: boolean
+        has_snapshot:
+          type: boolean
+        id:
+          type: string
+        label:
+          type: string
+        model_hash:
+          type: string
+        model_type:
+          type: string
+        plus_id:
+          nullable: true
+        ratio:
+          type: number
+        region:
+          nullable: true
+        retain_indefinitely:
+          type: boolean
+        score:
+          nullable: true
+        start_time:
+          type: number
+        sub_label:
+          nullable: true
+        thumbnail:
+          type: string
+        top_score:
+          nullable: true
+        zones:
+          items:
+            type: object
+          type: array
+      required:
+        - area
+        - box
+        - camera
+        - data
+        - detector_type
+        - end_time
+        - false_positive
+        - has_clip
+        - has_snapshot
+        - id
+        - label
+        - model_hash
+        - model_type
+        - plus_id
+        - ratio
+        - region
+        - retain_indefinitely
+        - score
+        - start_time
+        - sub_label
+        - thumbnail
+        - top_score
+        - zones
+      additionalProperties: false
+      title: EventsByIDResponse
+      type: object
+      example:
+        {
+          "area": null,
+          "box": null,
+          "camera": "reolink_duo_2_wifi",
+          "data": {
+            "attributes": [ ],
+            "box": [
+              0.3643663194444444,
+              0.005208333333333333,
+              0.1267361111111111,
+              0.6417824074074074
+            ],
+            "region": [
+              0.2699652777777778,
+              0,
+              0.3142361111111111,
+              0.8379629629629629
+            ],
+            "score": 0.71484375,
+            "top_score": 0.701171875,
+            "type": "object"
+          },
+          "detector_type": "edgetpu",
+          "end_time": 1718199757.735656,
+          "false_positive": null,
+          "has_clip": true,
+          "has_snapshot": false,
+          "id": "1718199731.484731-xtyvtf",
+          "label": "person",
+          "model_hash": "381ddff7e02bc86b7e6c5b1b9cc894db",
+          "model_type": "ssd",
+          "plus_id": null,
+          "ratio": 1,
+          "region": null,
+          "retain_indefinitely": false,
+          "score": null,
+          "start_time": 1718199726.484731,
+          "sub_label": null,
+          "thumbnail": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+          "top_score": null,
+          "zones": [ ]
+        }
+    EventsByIDData:
+      properties:
+        attributes:
+          items:
+            type: object
+          type: array
+        box:
+          items:
+            type: number
+          type: array
+        region:
+          items:
+            type: number
+          type: array
+        score:
+          type: number
+        top_score:
+          type: number
+        type:
+          type: string
+      required:
+        - attributes
+        - box
+        - region
+        - score
+        - top_score
+        - type
+      additionalProperties: false
+      title: EventsByIDData
+      type: object
+
+    # ---------- Preview ----
+    MetadataForPreviewsInRangeResponse:
+      properties:
+        camera:
+          type: string
+        end:
+          type: number
+        src:
+          type: string
+        start:
+          type: number
+        type:
+          type: string
+      required:
+        - camera
+        - end
+        - src
+        - start
+        - type
+      additionalProperties: false
+      title: MetadataForPreviewsInRangeResponse
+      type: object
+      example:
+        {
+          "camera": "reolink_duo_2_wifi",
+          "end": 1718200800.04472,
+          "src": "/clips/previews/reolink_duo_2_wifi/1718197200.23219-1718200800.04472.mp4",
+          "start": 1718197200.23219,
+          "type": "video/mp4"
+        }
+
+    # ---------- Recordings ----
+    RecordingsPerHourResponse:
+      properties:
+        day:
+          title: day
+          type: string
+        events:
+          title: events
+          type: number
+        hours:
+          items:
+            properties:
+              duration:
+                title: duration
+                type: number
+              events:
+                title: events
+                type: number
+              hour:
+                title: hour
+                type: string
+              motion:
+                title: motion
+                type: number
+              objects:
+                title: objects
+                type: number
+            required:
+              - duration
+              - events
+              - hour
+              - motion
+              - objects
+            additionalProperties: false
+            title: HourlyData
+            type: object
+          type: array
+      required:
+        - day
+        - events
+        - hours
+      additionalProperties: false
+      title: RecordingsPerHourResponse
+      type: object
+      example:
+        {
+          "day": "2024-06-11",
+          "events": 21,
+          "hours": [
+            {
+              "duration": 2389,
+              "events": 1,
+              "hour": "19",
+              "motion": 87852,
+              "objects": 2196
+            },
+            {
+              "duration": 3598,
+              "events": 1,
+              "hour": "18",
+              "motion": 136590,
+              "objects": 68
+            },
+            {
+              "duration": 3598,
+              "events": 10,
+              "hour": "17",
+              "motion": 117958,
+              "objects": 1277
+            },
+            {
+              "duration": 2080,
+              "events": 9,
+              "hour": "16",
+              "motion": 68417,
+              "objects": 559
+            }
+          ]
+        }
+
+    RecordingsForRange:
+      properties:
+        duration:
+          title: duration
+          type: number
+        end_time:
+          title: end_time
+          type: number
+        id:
+          title: id
+          type: string
+        motion:
+          title: motion
+          type: number
+        objects:
+          title: objects
+          type: number
+        segment_size:
+          title: segment_size
+          type: number
+        start_time:
+          title: start_time
+          type: number
+      required:
+        - duration
+        - end_time
+        - id
+        - motion
+        - objects
+        - segment_size
+        - start_time
+      additionalProperties: false
+      title: RecordingsForRange
+      type: object
+      example:
+        {
+          "duration": 10.181955555555554,
+          "end_time": 1718134676.181956,
+          "id": "1718134666.0-hzso98",
+          "motion": 411,
+          "objects": 0,
+          "segment_size": 5.9,
+          "start_time": 1718134666
+        }
+
+    VodSpecificHourResponse:
+      properties:
+        cache:
+          type: boolean
+        consistentSequenceMediaInfo:
+          type: boolean
+        discontinuity:
+          type: boolean
+        durations:
+          items:
+            type: number
+          type: array
+        segment_duration:
+          type: number
+        sequences:
+          items:
+            $ref: '#/components/schemas/Sequence'
+          type: array
+      required:
+        - cache
+        - consistentSequenceMediaInfo
+        - discontinuity
+        - durations
+        - segment_duration
+        - sequences
+      additionalProperties: false
+      title: VodSpecificHourResponse
+      type: object
+      example:
+        {
+          "cache": false,
+          "consistentSequenceMediaInfo": true,
+          "discontinuity": false,
+          "durations": [
+            10406,
+            9817,
+            10295,
+            10148,
+            10122,
+            10208,
+            10073,
+            10207,
+            10245,
+            10069,
+            8055,
+            10094,
+            10199
+          ],
+          "segment_duration": 10406,
+          "sequences": [
+            {
+              "clips": [
+                {
+                  "keyFrameDurations": [
+                    10406
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/14/reolink_duo_2_wifi/59.53.mp4",
+                  "type": "source"
+                },
+                {
+                  "keyFrameDurations": [
+                    9817
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/15/reolink_duo_2_wifi/00.03.mp4",
+                  "type": "source"
+                },
+                {
+                  "keyFrameDurations": [
+                    10295
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/15/reolink_duo_2_wifi/00.13.mp4",
+                  "type": "source"
+                },
+                {
+                  "keyFrameDurations": [
+                    10148
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/15/reolink_duo_2_wifi/00.23.mp4",
+                  "type": "source"
+                },
+                {
+                  "keyFrameDurations": [
+                    10122
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/15/reolink_duo_2_wifi/00.34.mp4",
+                  "type": "source"
+                },
+                {
+                  "keyFrameDurations": [
+                    10208
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/15/reolink_duo_2_wifi/00.44.mp4",
+                  "type": "source"
+                },
+                {
+                  "keyFrameDurations": [
+                    10073
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/15/reolink_duo_2_wifi/00.54.mp4",
+                  "type": "source"
+                },
+                {
+                  "keyFrameDurations": [
+                    10207
+                  ],
+                  "path": "/media/frigate/recordings/2024-06-12/15/reolink_duo_2_wifi/01.04.mp4",
+                  "type": "source"
+                }
+              ]
+            }
+          ]
+        }
+    Sequence:
+      properties:
+        clips:
+          items:
+            $ref: '#/components/schemas/Clip'
+          type: array
+      required:
+        - clips
+      additionalProperties: false
+      title: Sequence
+      type: object
+    Clip:
+      properties:
+        keyFrameDurations:
+          items:
+            type: number
+          type: array
+        path:
+          type: string
+        type:
+          type: string
+          enum: [ source ]
+      required:
+        - keyFrameDurations
+        - path
+        - type
+      additionalProperties: false
+      title: Clip
       type: object
