@@ -1876,6 +1876,12 @@ components:
       additionalProperties: false
       title: MotionActivityForPeriod
       type: object
+      example:
+        {
+          "camera": "reolink_duo_2_wifi",
+          "motion": 3.258145363408521,
+          "start_time": 1718186500
+        }
 
     AudioActivityForPeriod:
       properties:
@@ -1891,3 +1897,8 @@ components:
       additionalProperties: false
       title: AudioActivityForPeriod
       type: object
+      example:
+        {
+          "audio": 88,
+          "start_time": 1718186500
+        }
