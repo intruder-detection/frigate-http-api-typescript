@@ -154,6 +154,11 @@ paths:
       responses:
         '200':
           description: MJPEG stream response
+          content:
+            video/mpeg:
+              schema:
+                type: string
+                format: binary
   /api/{camera_name}/latest.jpg:
     get:
       tags:
@@ -201,6 +206,11 @@ paths:
       responses:
         '200':
           description: Latest frame response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
   /api/{camera_name}/{label}/thumbnail.jpg:
     get:
       tags:
@@ -221,6 +231,11 @@ paths:
       responses:
         '200':
           description: Thumbnail response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
   /api/{camera_name}/{label}/clip.mp4:
     get:
       tags:
@@ -241,6 +256,11 @@ paths:
       responses:
         '200':
           description: Clip response
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
   /api/{camera_name}/{label}/snapshot.jpg:
     get:
       tags:
@@ -261,6 +281,11 @@ paths:
       responses:
         '200':
           description: Snapshot response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
   /api/{camera_name}/grid.jpg:
     get:
       tags:
@@ -284,8 +309,13 @@ paths:
       responses:
         '200':
           description: Grid image response
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
 
-
+  # Events
   /api/events:
     get:
       tags:
@@ -674,6 +704,9 @@ paths:
       responses:
         '200':
           description: Event ended response
+
+
+  # Previews
   /api/events/{id}/preview.gif:
     get:
       tags:
