@@ -16,4 +16,5 @@ export interface EventsQueryParams {
   is_submitted?: 0 | 1; // Filter events submitted to Frigate+ (0 or 1) (optional)
   min_length?: number; // Minimum length of the event (optional)
   max_length?: number; // Maximum length of the event (optional)
+  sort?: 'score_asc' | 'score_desc' | 'date_asc' | 'date_desc'; // Sort by
 }

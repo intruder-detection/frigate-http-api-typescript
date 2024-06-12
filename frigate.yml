@@ -327,18 +327,22 @@ paths:
           in: query
           schema:
             type: integer
+          description: Unix timestamp (in seconds) for end of range
         - name: after
           in: query
           schema:
             type: integer
+          description: Unix timestamp (in seconds) for beginning of range
         - name: cameras
           in: query
           schema:
             type: string
+          description: Comma-separated list of cameras. If not provided all cameras will be used.
         - name: labels
           in: query
           schema:
             type: string
+          description: Comma-separated list of labels
         - name: zones
           in: query
           schema:
@@ -347,14 +351,17 @@ paths:
           in: query
           schema:
             type: integer
+          description: Maximum list of events to return. If not provided the maximum will be 100
         - name: has_snapshot
           in: query
           schema:
             type: integer
+          description: Filter by existence of snapshot
         - name: has_clip
           in: query
           schema:
             type: integer
+          description: Filter by existence of clip
         - name: include_thumbnails
           in: query
           schema:
@@ -371,6 +378,7 @@ paths:
           in: query
           schema:
             type: string
+          description: Timezone. If not provided UTC will be used
         - name: min_score
           in: query
           schema:
@@ -387,13 +395,27 @@ paths:
           in: query
           schema:
             type: number
+          description: Minimum length of the event in seconds
         - name: max_length
           in: query
           schema:
             type: number
+          description: Maximum length of the event in seconds
+        - name: sort
+          in: query
+          description: Sort by one of the possible values. If not provided 'date_desc' will be used
+          schema:
+            type: string
+            enum: ['score_asc', 'score_desc', 'date_asc', 'date_desc']
       responses:
         '200':
           description: Events response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventsResponse'
   /api/events/summary:
     get:
       tags:
@@ -403,6 +425,12 @@ paths:
       responses:
         '200':
           description: Events summary response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventsSummaryResponse'
   /api/events/{id}:
     get:
       tags:
@@ -2903,6 +2931,7 @@ components:
           type: number
         required_zones:
           items:
+            type: object
           type: array
         timestamp:
           type: boolean
@@ -2925,6 +2954,7 @@ components:
       properties:
         network_interfaces:
           items:
+            type: object
           type: array
         stats:
           type: object
@@ -3422,3 +3452,159 @@ components:
       additionalProperties: false
       title: Service
       type: object
+
+    # Events
+    EventsResponse:
+      properties:
+        box:
+          nullable: true
+        camera:
+          type: string
+        data:
+          $ref: '#/components/schemas/EventsData'
+        end_time:
+          type: number
+        false_positive:
+          nullable: true
+        has_clip:
+          type: boolean
+        has_snapshot:
+          type: boolean
+        id:
+          type: string
+        label:
+          type: string
+        plus_id:
+          nullable: true
+        retain_indefinitely:
+          type: boolean
+        start_time:
+          type: number
+        sub_label:
+          nullable: true
+        thumbnail:
+          type: string
+        top_score:
+          nullable: true
+        zones:
+          type: array
+      required:
+        - box
+        - camera
+        - data
+        - end_time
+        - false_positive
+        - has_clip
+        - has_snapshot
+        - id
+        - label
+        - plus_id
+        - retain_indefinitely
+        - start_time
+        - sub_label
+        - thumbnail
+        - top_score
+        - zones
+      additionalProperties: false
+      title: EventsResponse
+      type: object
+      example:
+        {
+          "box": null,
+          "camera": "reolink_duo_2_wifi",
+          "data": {
+            "attributes": [],
+            "box": [
+              0.3548177083333333,
+              0.014467592592592593,
+              0.1506076388888889,
+              0.6493055555555556
+            ],
+            "region": [
+              0.2595486111111111,
+              0,
+              0.3324652777777778,
+              0.8865740740740741
+            ],
+            "score": 0.68359375,
+            "top_score": 0.75,
+            "type": "object"
+          },
+          "end_time": 1718198394.611985,
+          "false_positive": null,
+          "has_clip": true,
+          "has_snapshot": false,
+          "id": "1718198355.99788-rpfx62",
+          "label": "person",
+          "plus_id": null,
+          "retain_indefinitely": false,
+          "start_time": 1718198350.99788,
+          "sub_label": null,
+          "thumbnail": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+          "top_score": null,
+          "zones": [ ]
+        }
+    EventsData:
+      properties:
+        attributes:
+          items:
+            type: object
+          type: array
+        box:
+          items:
+            type: number
+          type: array
+        region:
+          items:
+            type: number
+          type: array
+        score:
+          type: number
+        top_score:
+          type: number
+        type:
+          type: string
+      required:
+        - attributes
+        - box
+        - region
+        - score
+        - top_score
+        - type
+      additionalProperties: false
+      title: EventsData
+      type: object
+    EventsSummaryResponse:
+      properties:
+        camera:
+          type: string
+        count:
+          type: number
+        day:
+          type: string
+        label:
+          type: string
+        sub_label:
+          nullable: true
+        zones:
+          items:
+          type: array
+      required:
+        - camera
+        - count
+        - day
+        - label
+        - sub_label
+        - zones
+      additionalProperties: false
+      title: EventsSummaryResponse
+      type: object
+      example:
+        {
+          "camera": "reolink_duo_2_wifi",
+          "count": 26,
+          "day": "2024-06-11",
+          "label": "person",
+          "sub_label": null,
+          "zones": [ ]
+        }
