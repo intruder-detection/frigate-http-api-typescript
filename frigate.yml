@@ -446,6 +446,12 @@ paths:
       responses:
         '200':
           description: Event response
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/EventsByIDResponse'
     delete:
       tags:
         - Events
@@ -460,6 +466,10 @@ paths:
       responses:
         '200':
           description: Event deleted response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
   /api/events/{id}/retain:
     post:
       tags:
@@ -475,6 +485,10 @@ paths:
       responses:
         '200':
           description: Event retained response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
     delete:
       tags:
         - Events
@@ -489,14 +503,18 @@ paths:
       responses:
         '200':
           description: Event retain removed response
-  /api/events/{id}/plus:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/events/{event_id}/plus:
     post:
       tags:
         - Events
       summary: Submit Event to Frigate+
       description: Submits the snapshot of the event to Frigate+ for labeling
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -508,14 +526,18 @@ paths:
       responses:
         '200':
           description: Event submitted response
-  /api/events/{id}/false_positive:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/events/{event_id}/false_positive:
     put:
       tags:
         - Events
       summary: Mark Event as False Positive
       description: Submits the snapshot of the event to Frigate+ for labeling and adds the detection as a false positive
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -523,14 +545,18 @@ paths:
       responses:
         '200':
           description: Event marked as false positive response
-  /api/events/{id}/sub_label:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/events/{event_id}/sub_label:
     post:
       tags:
         - Events
       summary: Set Sub Label for Event
       description: Set a sub label for an event
       parameters:
-        - name: id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -549,6 +575,10 @@ paths:
       responses:
         '200':
           description: Sub label set response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
   /api/events/{id}/thumbnail.jpg:
     get:
       tags:
@@ -3453,7 +3483,7 @@ components:
       title: Service
       type: object
 
-    # Events
+    # ---------- Events ----
     EventsResponse:
       properties:
         box:
@@ -3574,6 +3604,7 @@ components:
       additionalProperties: false
       title: EventsData
       type: object
+    ## Summary
     EventsSummaryResponse:
       properties:
         camera:
@@ -3608,3 +3639,154 @@ components:
           "sub_label": null,
           "zones": [ ]
         }
+    # EventsById
+    EventsByIDResponse:
+      properties:
+        area:
+          nullable: true
+        box:
+          nullable: true
+        camera:
+          type: string
+        data:
+          $ref: '#/components/schemas/EventsByIDData'
+        detector_type:
+          type: string
+        end_time:
+          type: number
+        false_positive:
+          nullable: true
+        has_clip:
+          type: boolean
+        has_snapshot:
+          type: boolean
+        id:
+          type: string
+        label:
+          type: string
+        model_hash:
+          type: string
+        model_type:
+          type: string
+        plus_id:
+          nullable: true
+        ratio:
+          type: number
+        region:
+          nullable: true
+        retain_indefinitely:
+          type: boolean
+        score:
+          nullable: true
+        start_time:
+          type: number
+        sub_label:
+          nullable: true
+        thumbnail:
+          type: string
+        top_score:
+          nullable: true
+        zones:
+          items:
+            type: object
+          type: array
+      required:
+        - area
+        - box
+        - camera
+        - data
+        - detector_type
+        - end_time
+        - false_positive
+        - has_clip
+        - has_snapshot
+        - id
+        - label
+        - model_hash
+        - model_type
+        - plus_id
+        - ratio
+        - region
+        - retain_indefinitely
+        - score
+        - start_time
+        - sub_label
+        - thumbnail
+        - top_score
+        - zones
+      additionalProperties: false
+      title: EventsByIDResponse
+      type: object
+      example:
+        {
+          "area": null,
+          "box": null,
+          "camera": "reolink_duo_2_wifi",
+          "data": {
+            "attributes": [ ],
+            "box": [
+              0.3643663194444444,
+              0.005208333333333333,
+              0.1267361111111111,
+              0.6417824074074074
+            ],
+            "region": [
+              0.2699652777777778,
+              0,
+              0.3142361111111111,
+              0.8379629629629629
+            ],
+            "score": 0.71484375,
+            "top_score": 0.701171875,
+            "type": "object"
+          },
+          "detector_type": "edgetpu",
+          "end_time": 1718199757.735656,
+          "false_positive": null,
+          "has_clip": true,
+          "has_snapshot": false,
+          "id": "1718199731.484731-xtyvtf",
+          "label": "person",
+          "model_hash": "381ddff7e02bc86b7e6c5b1b9cc894db",
+          "model_type": "ssd",
+          "plus_id": null,
+          "ratio": 1,
+          "region": null,
+          "retain_indefinitely": false,
+          "score": null,
+          "start_time": 1718199726.484731,
+          "sub_label": null,
+          "thumbnail": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+          "top_score": null,
+          "zones": [ ]
+        }
+    EventsByIDData:
+      properties:
+        attributes:
+          items:
+            type: object
+          type: array
+        box:
+          items:
+            type: number
+          type: array
+        region:
+          items:
+            type: number
+          type: array
+        score:
+          type: number
+        top_score:
+          type: number
+        type:
+          type: string
+      required:
+        - attributes
+        - box
+        - region
+        - score
+        - top_score
+        - type
+      additionalProperties: false
+      title: EventsByIDData
+      type: object
