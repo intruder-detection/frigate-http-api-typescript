@@ -32,6 +32,10 @@ paths:
       responses:
         '200':
           description: Successfully restarted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
   /api/stats:
     get:
       tags:
@@ -44,82 +48,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  cameras:
-                    type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        camera_fps:
-                          type: number
-                        detection_fps:
-                          type: number
-                        capture_pid:
-                          type: integer
-                        pid:
-                          type: integer
-                        process_fps:
-                          type: number
-                        skipped_fps:
-                          type: number
-                  detection_fps:
-                    type: number
-                  detectors:
-                    type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        detection_start:
-                          type: number
-                        inference_speed:
-                          type: number
-                        pid:
-                          type: integer
-                  service:
-                    type: object
-                    properties:
-                      uptime:
-                        type: integer
-                      version:
-                        type: string
-                      latest_version:
-                        type: string
-                      storage:
-                        type: object
-                        additionalProperties:
-                          type: object
-                          properties:
-                            total:
-                              type: integer
-                            used:
-                              type: integer
-                            free:
-                              type: integer
-                            mnt_type:
-                              type: string
-                  cpu_usages:
-                    type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        cmdline:
-                          type: string
-                        cpu:
-                          type: string
-                        cpu_average:
-                          type: string
-                        mem:
-                          type: string
-                  gpu_usages:
-                    type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        gpu:
-                          type: string
-                        mem:
-                          type: string
+                $ref: '#/components/schemas/StatsResponse'
   /api/version:
     get:
       tags:
@@ -1457,7 +1386,7 @@ components:
       properties:
         day:
           title: day
-          type: Date
+          type: string
         events:
           title: events
           type: number
@@ -1488,7 +1417,6 @@ components:
             additionalProperties: false
             title: HourlyData
             type: object
-          title: RecordingsPerHourResponse.hours
           type: array
       required:
         - day
@@ -1774,22 +1702,16 @@ components:
         last24Hours:
           properties:
             reviewed_alert:
-              title: ReviewSummary.reviewed_alert
               type: number
             reviewed_detection:
-              title: ReviewSummary.reviewed_detection
               type: number
             reviewed_motion:
-              title: ReviewSummary.reviewed_motion
               type: number
             total_alert:
-              title: ReviewSummary.total_alert
               type: number
             total_detection:
-              title: ReviewSummary.total_detection
               type: number
             total_motion:
-              title: ReviewSummary.total_motion
               type: number
           required:
             - reviewed_alert
@@ -1839,25 +1761,18 @@ components:
     ReviewSummary:
       properties:
         day:
-          title: ReviewSummary.day
           type: string
         reviewed_alert:
-          title: ReviewSummary.reviewed_alert
           type: number
         reviewed_detection:
-          title: ReviewSummary.reviewed_detection
           type: number
         reviewed_motion:
-          title: ReviewSummary.reviewed_motion
           type: number
         total_alert:
-          title: ReviewSummary.total_alert
           type: number
         total_detection:
-          title: ReviewSummary.total_detection
           type: number
         total_motion:
-          title: ReviewSummary.total_motion
           type: number
       required:
         - reviewed_alert
@@ -1915,6 +1830,7 @@ components:
           "start_time": 1718186500
         }
 
+    # ---------- Media && Management ----
     # Config
     ConfigResponse:
       properties:
@@ -1945,7 +1861,6 @@ components:
         model:
           $ref: '#/components/schemas/ConfigResponseModel'
         motion:
-          title: ConfigResponse.motion
           nullable: true
         mqtt:
           $ref: '#/components/schemas/Mqtt'
@@ -2576,28 +2491,21 @@ components:
     Audio:
       properties:
         enabled:
-          title: Audio.enabled
           type: boolean
         enabled_in_config:
-          title: Audio.enabled_in_config
           nullable: true
           type: boolean
         filters:
           type: object
         listen:
           items:
-            title: Audio.listen.[]
             type: string
-          title: Audio.listen
           type: array
         max_not_heard:
-          title: Audio.max_not_heard
           type: number
         min_volume:
-          title: Audio.min_volume
           type: number
         num_threads:
-          title: Audio.num_threads
           type: number
       required:
         - enabled
@@ -2613,27 +2521,20 @@ components:
     ConfigResponseBirdseye:
       properties:
         enabled:
-          title: ConfigResponseBirdseye.enabled
           type: boolean
         height:
-          title: ConfigResponseBirdseye.height
           type: number
         inactivity_threshold:
-          title: ConfigResponseBirdseye.inactivity_threshold
           type: number
         layout:
           type: object
         mode:
-          title: ConfigResponseBirdseye.mode
           type: string
         quality:
-          title: ConfigResponseBirdseye.quality
           type: number
         restream:
-          title: ConfigResponseBirdseye.restream
           type: boolean
         width:
-          title: ConfigResponseBirdseye.width
           type: number
       required:
         - enabled
@@ -2652,32 +2553,26 @@ components:
         audio:
           $ref: '#/components/schemas/Audio'
         best_image_timeout:
-          title: Camera.best_image_timeout
           type: number
         birdseye:
           type: object
         detect:
           $ref: '#/components/schemas/Detect'
         enabled:
-          title: Camera.enabled
           type: boolean
         ffmpeg:
           $ref: '#/components/schemas/Ffmpeg'
         ffmpeg_cmds:
           items:
             type: object
-          title: Camera.ffmpeg_cmds
           type: array
         live:
           $ref: '#/components/schemas/Live'
-          title: Camera.live
         motion:
           type: object
         mqtt:
           $ref: '#/components/schemas/Snapshots'
-          title: Camera.mqtt
         name:
-          title: Camera.name
           type: string
         objects:
           type: object
@@ -2694,11 +2589,9 @@ components:
         ui:
           type: object
         webui_url:
-          title: Camera.webui_url
           nullable: true
         zones:
           $ref: '#/components/schemas/EnvironmentVars'
-          title: Camera.zones
       required:
         - audio
         - best_image_timeout
@@ -2726,7 +2619,6 @@ components:
     Database:
       properties:
         path:
-          title: Database.path
           type: string
       required:
         - path
@@ -2736,30 +2628,23 @@ components:
     Detect:
       properties:
         annotation_offset:
-          title: Detect.annotation_offset
           type: number
         enabled:
-          title: Detect.enabled
           type: boolean
         fps:
-          title: Detect.fps
           type: number
         height:
-          title: Detect.height
           nullable: true
           type: number
         max_disappeared:
-          title: Detect.max_disappeared
           nullable: true
           type: number
         min_initialized:
-          title: Detect.min_initialized
           nullable: true
           type: number
         stationary:
           type: object
         width:
-          title: Detect.width
           nullable: true
           type: number
       required:
@@ -2791,27 +2676,20 @@ components:
       properties:
         global_args:
           items:
-            title: Ffmpeg.global_args.[]
             type: string
-          title: Ffmpeg.global_args
           type: array
         hwaccel_args:
           items:
-            title: Ffmpeg.hwaccel_args.[]
-          title: Ffmpeg.hwaccel_args
           type: array
         input_args:
-          title: Ffmpeg.input_args
           type: string
         inputs:
           items:
             type: object
-          title: Ffmpeg.inputs
           type: array
         output_args:
           type: object
         retry_interval:
-          title: Ffmpeg.retry_interval
           type: number
       required:
         - global_args
@@ -2834,13 +2712,10 @@ components:
     Live:
       properties:
         height:
-          title: Live.height
           type: number
         quality:
-          title: Live.quality
           type: number
         stream_name:
-          title: Live.stream_name
           type: string
       required:
         - height
@@ -2852,11 +2727,9 @@ components:
     Logger:
       properties:
         default:
-          title: Logger.default
           type: string
         logs:
           $ref: '#/components/schemas/EnvironmentVars'
-          title: Logger.logs
       required:
         - default
         - logs
@@ -2866,28 +2739,20 @@ components:
     ConfigResponseModel:
       properties:
         height:
-          title: ConfigResponseModel.height
           type: number
         input_pixel_format:
-          title: ConfigResponseModel.input_pixel_format
           type: string
         input_tensor:
-          title: ConfigResponseModel.input_tensor
           type: string
         labelmap:
           $ref: '#/components/schemas/EnvironmentVars'
-          title: ConfigResponseModel.labelmap
         labelmap_path:
-          title: ConfigResponseModel.labelmap_path
           nullable: true
         model_type:
-          title: ConfigResponseModel.model_type
           type: string
         path:
-          title: ConfigResponseModel.path
           nullable: true
         width:
-          title: ConfigResponseModel.width
           type: number
       required:
         - height
@@ -2904,37 +2769,26 @@ components:
     Mqtt:
       properties:
         client_id:
-          title: Mqtt.client_id
           type: string
         enabled:
-          title: Mqtt.enabled
           type: boolean
         host:
-          title: Mqtt.host
           type: string
         port:
-          title: Mqtt.port
           type: number
         stats_interval:
-          title: Mqtt.stats_interval
           type: number
         tls_ca_certs:
-          title: Mqtt.tls_ca_certs
           nullable: true
         tls_client_cert:
-          title: Mqtt.tls_client_cert
           nullable: true
         tls_client_key:
-          title: Mqtt.tls_client_key
           nullable: true
         tls_insecure:
-          title: Mqtt.tls_insecure
           nullable: true
         topic_prefix:
-          title: Mqtt.topic_prefix
           type: string
         user:
-          title: Mqtt.user
           nullable: true
       required:
         - client_id
@@ -2956,13 +2810,10 @@ components:
         filters:
           type: object
         mask:
-          title: ConfigResponseObjects.mask
           type: string
         track:
           items:
-            title: ConfigResponseObjects.track.[]
             type: string
-          title: ConfigResponseObjects.track
           type: array
       required:
         - filters
@@ -2974,7 +2825,6 @@ components:
     Plus:
       properties:
         enabled:
-          title: Plus.enabled
           type: boolean
       required:
         - enabled
@@ -2984,23 +2834,19 @@ components:
     Record:
       properties:
         enabled:
-          title: Record.enabled
           type: boolean
         enabled_in_config:
-          title: Record.enabled_in_config
           nullable: true
           type: boolean
         events:
           type: object
         expire_interval:
-          title: Record.expire_interval
           type: number
         export:
           type: object
         retain:
           type: object
         sync_recordings:
-          title: Record.sync_recordings
           type: boolean
       required:
         - enabled
@@ -3016,31 +2862,22 @@ components:
     Snapshots:
       properties:
         bounding_box:
-          title: Snapshots.bounding_box
           type: boolean
         crop:
-          title: Snapshots.crop
           type: boolean
         enabled:
-          title: Snapshots.enabled
           type: boolean
         height:
-          title: Snapshots.height
           nullable: true
           type: number
         quality:
-          title: Snapshots.quality
           type: number
         required_zones:
           items:
-            title: Snapshots.required_zones.[]
-          title: Snapshots.required_zones
           type: array
         timestamp:
-          title: Snapshots.timestamp
           type: boolean
         clean_copy:
-          title: Snapshots.clean_copy
           type: boolean
         retain:
           type: object
@@ -3059,13 +2896,10 @@ components:
       properties:
         network_interfaces:
           items:
-            title: Telemetry.network_interfaces.[]
-          title: Telemetry.network_interfaces
           type: array
         stats:
           type: object
         version_check:
-          title: Telemetry.version_check
           type: boolean
       required:
         - network_interfaces
@@ -3079,16 +2913,12 @@ components:
         color:
           type: object
         effect:
-          title: TimestampStyle.effect
           nullable: true
         format:
-          title: TimestampStyle.format
           type: string
         position:
-          title: TimestampStyle.position
           type: string
         thickness:
-          title: TimestampStyle.thickness
           type: number
       required:
         - color
@@ -3100,36 +2930,466 @@ components:
       title: TimestampStyle
       type: object
     ConfigResponseUI:
-          properties:
-            date_style:
-              title: ConfigResponseUI.date_style
-              type: string
-            live_mode:
-              title: ConfigResponseUI.live_mode
-              type: string
-            strftime_fmt:
-              title: ConfigResponseUI.strftime_fmt
-              nullable: true
-            time_format:
-              title: ConfigResponseUI.time_format
-              type: string
-            time_style:
-              title: ConfigResponseUI.time_style
-              type: string
-            timezone:
-              title: ConfigResponseUI.timezone
-              nullable: true
-            use_experimental:
-              title: ConfigResponseUI.use_experimental
-              type: boolean
-          required:
-            - date_style
-            - live_mode
-            - strftime_fmt
-            - time_format
-            - time_style
-            - timezone
-            - use_experimental
-          additionalProperties: false
-          title: ConfigResponseUI
+      properties:
+        date_style:
+          type: string
+        live_mode:
+          type: string
+        strftime_fmt:
+          nullable: true
+        time_format:
+          type: string
+        time_style:
+          type: string
+        timezone:
+          nullable: true
+        use_experimental:
+          type: boolean
+      required:
+        - date_style
+        - live_mode
+        - strftime_fmt
+        - time_format
+        - time_style
+        - timezone
+        - use_experimental
+      additionalProperties: false
+      title: ConfigResponseUI
+      type: object
+
+    # Stats
+    StatsResponse:
+      properties:
+        cameras:
+          additionalProperties:
+            $ref: '#/components/schemas/CameraStatsResponse'
           type: object
+        cpu_usages:
+          additionalProperties:
+            $ref: '#/components/schemas/CPUUsage'
+          type: object
+        detection_fps:
+          type: number
+        detectors:
+          $ref: '#/components/schemas/Detectors'
+        processes:
+          $ref: '#/components/schemas/Processes'
+        service:
+          $ref: '#/components/schemas/Service'
+      required:
+        - cameras
+        - cpu_usages
+        - detection_fps
+        - detectors
+        - processes
+        - service
+      additionalProperties: false
+      title: StatsResponse
+      type: object
+      example:
+        {
+          "cameras": {
+            "reolink_duo_2_wifi": {
+              "audio_dBFS": 0,
+              "audio_rms": 0,
+              "camera_fps": 20.1,
+              "capture_pid": 364,
+              "detection_enabled": true,
+              "detection_fps": 28.1,
+              "ffmpeg_pid": 89189,
+              "pid": 363,
+              "process_fps": 4.4,
+              "skipped_fps": 15.7
+            }
+          },
+          "cpu_usages": {
+            "1": {
+              "cmdline": "/package/admin/s6/command/s6-svscan -d4 -- /run/service",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "15": {
+              "cmdline": "s6-supervise s6-linux-init-shutdownd",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "17": {
+              "cmdline": "/package/admin/s6-linux-init/command/s6-linux-init-shutdownd -c /run/s6/basedir -g 3000 -C -B",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "24": {
+              "cmdline": "s6-supervise go2rtc",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "25": {
+              "cmdline": "s6-supervise go2rtc-log",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "26": {
+              "cmdline": "s6-supervise frigate",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "27": {
+              "cmdline": "s6-supervise go2rtc-healthcheck",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "28": {
+              "cmdline": "s6-supervise frigate-log",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "29": {
+              "cmdline": "s6-supervise nginx-log",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "30": {
+              "cmdline": "s6-supervise nginx",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "31": {
+              "cmdline": "s6-supervise s6rc-fdholder",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "32": {
+              "cmdline": "s6-supervise s6rc-oneshot-runner",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "43": {
+              "cmdline": "/package/admin/s6-2.11.3.2/command/s6-fdholderd -1 -i data/rules",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "44": {
+              "cmdline": "/package/admin/s6/command/s6-ipcserverd -1 -- /package/admin/s6/command/s6-ipcserver-access -v0 -E -l0 -i data/rules -- /package/admin/s6/command/s6-sudod -t 30000 -- /package/admin/s6-rc/command/s6-rc-oneshot-run -l ../.. --",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "81": {
+              "cmdline": "s6-log -b -- T 1 n0 s10000000 T /dev/shm/logs/nginx",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "83": {
+              "cmdline": "s6-log -b -- T 1 n0 s10000000 T /dev/shm/logs/go2rtc",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "84": {
+              "cmdline": "s6-log -b -- T 1 n0 s10000000 T /dev/shm/logs/frigate",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "91": {
+              "cmdline": "/usr/local/go2rtc/bin/go2rtc -config=/dev/shm/go2rtc.yaml",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.3"
+            },
+            "108": {
+              "cmdline": "python3 -u -m frigate",
+              "cpu": "0.7",
+              "cpu_average": "1",
+              "mem": "8.7"
+            },
+            "113": {
+              "cmdline": "bash ./run.user go2rtc-healthcheck",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "121": {
+              "cmdline": "nginx: master process nginx",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.2"
+            },
+            "147": {
+              "cmdline": "nginx: worker process",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.5"
+            },
+            "148": {
+              "cmdline": "nginx: worker process",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.4"
+            },
+            "149": {
+              "cmdline": "nginx: worker process",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.5"
+            },
+            "150": {
+              "cmdline": "nginx: worker process",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.4"
+            },
+            "155": {
+              "cmdline": "nginx: cache manager process",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.1"
+            },
+            "297": {
+              "cmdline": "frigate.logger       ",
+              "cpu": "0.1",
+              "cpu_average": "0",
+              "mem": "1.5"
+            },
+            "308": {
+              "cmdline": "frigate.recording_manager",
+              "cpu": "0.2",
+              "cpu_average": "0",
+              "mem": "2.4"
+            },
+            "317": {
+              "cmdline": "frigate.review_segment_manager",
+              "cpu": "0.1",
+              "cpu_average": "0",
+              "mem": "2.3"
+            },
+            "336": {
+              "cmdline": "/usr/bin/python3 -c from multiprocessing.resource_tracker import main;main(57)",
+              "cpu": "0.2",
+              "cpu_average": "0",
+              "mem": "0.1"
+            },
+            "337": {
+              "cmdline": "frigate.detector.coral",
+              "cpu": "34.3",
+              "cpu_average": "33",
+              "mem": "2.1"
+            },
+            "339": {
+              "cmdline": "frigate.output       ",
+              "cpu": "5.3",
+              "cpu_average": "6",
+              "mem": "2.4"
+            },
+            "363": {
+              "cmdline": "frigate.process:reolink_duo_2_wifi",
+              "cpu": "38.8",
+              "cpu_average": "39",
+              "mem": "2.9"
+            },
+            "364": {
+              "cmdline": "frigate.capture:reolink_duo_2_wifi",
+              "cpu": "37.9",
+              "cpu_average": "37",
+              "mem": "2.5"
+            },
+            "396": {
+              "cmdline": "ffmpeg -f rawvideo -pix_fmt yuv420p -video_size 4608x1728 -i pipe: -f mpegts -s 1920x720 -codec:v mpeg1video -q 8 -bf 0 pipe:",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "1.0"
+            },
+            "401": {
+              "cmdline": "ffmpeg -f rawvideo -pix_fmt yuv420p -video_size 1280x720 -i pipe: -f mpegts -s 1280x720 -codec:v mpeg1video -q 8 -bf 0 pipe:",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.2"
+            },
+            "1502": {
+              "cmdline": "/usr/bin/python3 -c from multiprocessing.resource_tracker import main;main(46)",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.1"
+            },
+            "89189": {
+              "cmdline": "ffmpeg -hide_banner -loglevel warning -threads 2 -user_agent FFmpeg Frigate/0.14.0-402c16e -avoid_negative_ts make_zero -fflags +genpts+discardcorrupt -rtsp_transport tcp -timeout 5000000 -use_wallclock_as_timestamps 1 -i rtsp://*:*@192.168.1.3:554 -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c copy -an /tmp/cache/reolink_duo_2_wifi@%Y%m%d%H%M%S%z.mp4 -r 20 -vf fps=20,scale=4608:1728 -threads 2 -f rawvideo -pix_fmt yuv420p pipe:",
+              "cpu": "96.5",
+              "cpu_average": "91",
+              "mem": "2.6"
+            },
+            "104294": {
+              "cmdline": "sleep 30s",
+              "cpu": "0.0",
+              "cpu_average": "0",
+              "mem": "0.0"
+            },
+            "frigate.full_system": {
+              "cpu": "55.4",
+              "mem": "49.4"
+            }
+          },
+          "detection_fps": 28.1,
+          "detectors": {
+            "coral": {
+              "detection_start": 1718190234.354753,
+              "inference_speed": 28.55,
+              "pid": 337
+            }
+          },
+          "processes": {
+            "go2rtc": {
+              "pid": 91
+            },
+            "logger": {
+              "pid": 297
+            },
+            "recording": {
+              "pid": 308
+            },
+            "review_segment": {
+              "pid": 317
+            }
+          },
+          "service": {
+            "last_updated": 1718190234,
+            "latest_version": "0.13.2",
+            "storage": {
+              "/dev/shm": {
+                "free": 448.3,
+                "mount_type": "tmpfs",
+                "total": 500,
+                "used": 51.7
+              },
+              "/media/frigate/clips": {
+                "free": 3628.9,
+                "mount_type": "ext4",
+                "total": 237813.4,
+                "used": 222033
+              },
+              "/media/frigate/recordings": {
+                "free": 3628.9,
+                "mount_type": "ext4",
+                "total": 237813.4,
+                "used": 222033
+              },
+              "/tmp/cache": {
+                "free": 944.6,
+                "mount_type": "tmpfs",
+                "total": 953.7,
+                "used": 9.1
+              }
+            },
+            "temperatures": { },
+            "uptime": 65251,
+            "version": "0.14.0-402c16e"
+          }
+        }
+    CameraStatsResponse:
+      properties:
+        audio_dBFS:
+          type: number
+        audio_rms:
+          type: number
+        camera_fps:
+          type: number
+        capture_pid:
+          type: number
+        detection_enabled:
+          type: number
+        detection_fps:
+          type: number
+        ffmpeg_pid:
+          type: number
+        pid:
+          type: number
+        process_fps:
+          type: number
+        skipped_fps:
+          type: number
+      required:
+        - audio_dBFS
+        - audio_rms
+        - camera_fps
+        - capture_pid
+        - detection_enabled
+        - detection_fps
+        - ffmpeg_pid
+        - pid
+        - process_fps
+        - skipped_fps
+      additionalProperties: false
+      title: Camera
+      type: object
+    CPUUsage:
+      properties:
+        cmdline:
+          type: string
+        cpu:
+          type: string
+        cpu_average:
+          type: string
+        mem:
+          type: string
+      required:
+        - cmdline
+        - cpu
+        - cpu_average
+        - mem
+      additionalProperties: false
+      title: CPUUsage
+      type: object
+    Processes:
+      properties:
+        go2rtc:
+          type: object
+        logger:
+          type: object
+        recording:
+          type: object
+      required:
+        - go2rtc
+        - logger
+        - recording
+      additionalProperties: false
+      title: Processes
+      type: object
+    Service:
+      properties:
+        last_updated:
+          type: number
+        latest_version:
+          type: string
+        storage:
+          additionalProperties:
+            type: object
+          type: object
+        temperatures:
+          type: object
+        uptime:
+          type: number
+        version:
+          type: string
+      required:
+        - last_updated
+        - latest_version
+        - storage
+        - temperatures
+        - uptime
+        - version
+      additionalProperties: false
+      title: Service
+      type: object
