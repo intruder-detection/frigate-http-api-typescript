@@ -1,6 +1,7 @@
 export enum Recordings {
   VodSpecificHour = 'vod/<year>-<month>/<day>/<hour>/<camera_name>',
-  LiveStreamURLEvent = 'vod/event/<event-id>/index.m3u8',
+  VodSpecificHourWithTimezone = 'vod/<year>-<month>/<day>/<hour>/<camera_name>/<timezone>',
+  VodForEvent = 'vod/event/<event_id>',
   LiveStreamURLTimeRange = 'vod/<camera_name>/start/<start_timestamp>/end/<end_timestamp>/index.m3u8',
   HourlySummaryRecordings = '<camera_name>/recordings/summary',
   RecordingSegmentsForRange = '<camera_name>/recordings',

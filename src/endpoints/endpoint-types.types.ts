@@ -64,6 +64,9 @@ import {
 } from './responses/preview/metadata-for-previews-in-range-response.interface';
 import { VodSpecificHourUrlParams } from './url-params/recordings/vod-specific-hour-url-params.interface';
 import { VodSpecificHourResponse } from './responses/recordings/vod-specific-hour-response.interface';
+import {
+  VodSpecificHourWithTimezoneUrlParams
+} from './url-params/recordings/vod-specific-hour-with-timezone-url-params.interface';
 
 /**
  * API Functions Mapping.
@@ -198,7 +201,12 @@ export interface FrigateApiGetEndpointsMapping {
     queryParams: undefined;
     response: VodSpecificHourResponse[];
   };
-  [Recordings.LiveStreamURLEvent]: {
+  [Recordings.VodSpecificHourWithTimezone]: {
+    urlParams: VodSpecificHourWithTimezoneUrlParams;
+    queryParams: undefined;
+    response: VodSpecificHourResponse[];
+  };
+  [Recordings.VodForEvent]: {
     urlParams: EventIdUrlParams;
     queryParams: undefined;
     response: any; // TODO: Verify

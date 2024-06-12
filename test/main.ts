@@ -384,11 +384,24 @@ async function recordings() {
       month: 6,
       day: 12,
       hour: 15,
-      timezone: 'utc',
     },
     undefined,
   );
   console.log(vodSpecificHour);
+
+  const vodSpecificHourWithTimezone = await FrigateHTTPAPI.get(
+    Recordings.VodSpecificHourWithTimezone,
+    {
+      ...cameraNameUrlParams,
+      year: 2024,
+      month: 6,
+      day: 12,
+      hour: 15,
+      timezone: 'utc',
+    },
+    undefined,
+  );
+  console.log(vodSpecificHourWithTimezone);
 
   const recordingsPerHourSummary = await FrigateHTTPAPI.get(Recordings.HourlySummaryRecordings, cameraNameUrlParams);
   console.log(recordingsPerHourSummary[0].hours[0].hour);

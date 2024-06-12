@@ -5,6 +5,4 @@ export interface VodSpecificHourUrlParams extends CameraNameUrlParams {
   month: number;
   day: number;
   hour: number;
-  // There's a specific endpoint that accepts the timezone
-  timezone?: string;
 }

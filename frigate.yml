@@ -935,6 +935,90 @@ paths:
               schema:
                 type: string
                 format: binary
+
+  # Recordings
+  /api/vod/{year}-{month}/{day}/{hour}/{camera_name}:
+    get:
+      tags:
+        - Recordings
+      summary: Get VOD for specific hour without timezone (uses the get_localzone_name value)
+      description: Get VOD for specific hour without timezone (uses the get_localzone_name value)
+      parameters:
+        - name: year
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: month
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: day
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: hour
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: VOD for specific hour response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VodSpecificHourResponse'
+  /api/vod/{year}-{month}/{day}/{hour}/{camera_name}/{timezone_name}:
+    get:
+      tags:
+        - Recordings
+      summary: Get VOD for specific hour without timezone (uses the get_localzone_name value)
+      description: Get VOD for specific hour without timezone (uses the get_localzone_name value)
+      parameters:
+        - name: year
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: month
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: day
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: hour
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: VOD for specific hour response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VodSpecificHourResponse'
   /api/vod/{year}-{month}-{day}-{hour}-{camera}:
     get:
       tags:
@@ -976,14 +1060,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/VodSpecificHourResponse'
-  /api/vod/event/{event-id}/index.m3u8:
+  /api/vod/event/{event_id}:
     get:
       tags:
         - Recordings
       summary: Get HLS VOD URL for Event
       description: HTTP Live Streaming Video on Demand URL for the specified event. Can be viewed in an application like VLC.
       parameters:
-        - name: event-id
+        - name: event_id
           in: path
           required: true
           schema:
@@ -991,7 +1075,11 @@ paths:
       responses:
         '200':
           description: HLS VOD URL response
-  /api/vod/{camera}/start/{start-timestamp}/end/{end-timestamp}/index.m3u8:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VodSpecificHourResponse'
+  /api/vod/{camera}/start/{start-timestamp}/end/{end-timestamp}:
     get:
       tags:
         - Recordings
