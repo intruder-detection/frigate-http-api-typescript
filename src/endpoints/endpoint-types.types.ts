@@ -35,16 +35,12 @@ import { ExportResponse } from './responses/exports/export-response.interface';
 import { BasicResponse } from './responses/basic-response.interface';
 import { RenameExportUrlParams } from './url-params/exports/rename-export-url-params.interface';
 import { DeleteExportUrlParams } from './url-params/exports/delete-export-url-params.interface';
-import {
-  ExportTimeRangeMp4ToDiskUrlParams,
-} from './url-params/exports/export-time-range-mp4-to-disk-url-params.interface';
+import { ExportTimeRangeMp4ToDiskUrlParams } from './url-params/exports/export-time-range-mp4-to-disk-url-params.interface';
 import { Exports } from './exports.enum';
 import { RecordingsPerHourResponse } from './responses/recordings/hourly-summary-recordings-response.interface';
 import { SegmentDetailsForRange } from './query-params/recordings/segment-details-for-range-body.interface';
 import { RecordingsForRange } from './responses/recordings/recordings-for-range-response.interface';
-import {
-  SnapshotPNGSpecificFrameUrlParameters,
-} from './url-params/recordings/snapshot-png-specific-frame-url-params.interface';
+import { SnapshotPNGSpecificFrameUrlParameters } from './url-params/recordings/snapshot-png-specific-frame-url-params.interface';
 import { Timeline } from './timeline.enum';
 import { TimelineQueryParameters } from './query-params/timeline/timeline-query-parameters.interface';
 import { TimelineResponse } from './responses/timeline/timeline-response.interface';
@@ -59,14 +55,10 @@ import { DeleteReviewManyBody } from './body/reviews/delete-review-many-body.int
 import { MotionActivityForPeriodQueryParameters } from './query-params/reviews/motion-activity-for-period.interface';
 import { MotionActivityForPeriod } from './responses/reviews/motion-activity-for-period-response.interface';
 import { AudioActivityForPeriod } from './responses/reviews/audio-activity-for-period-response.interface';
-import {
-  MetadataForPreviewsInRangeResponse,
-} from './responses/preview/metadata-for-previews-in-range-response.interface';
+import { MetadataForPreviewsInRangeResponse } from './responses/preview/metadata-for-previews-in-range-response.interface';
 import { VodSpecificHourUrlParams } from './url-params/recordings/vod-specific-hour-url-params.interface';
 import { VodSpecificHourResponse } from './responses/recordings/vod-specific-hour-response.interface';
-import {
-  VodSpecificHourWithTimezoneUrlParams
-} from './url-params/recordings/vod-specific-hour-with-timezone-url-params.interface';
+import { VodSpecificHourWithTimezoneUrlParams } from './url-params/recordings/vod-specific-hour-with-timezone-url-params.interface';
 
 /**
  * API Functions Mapping.

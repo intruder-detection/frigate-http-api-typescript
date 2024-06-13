@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "bundler",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,

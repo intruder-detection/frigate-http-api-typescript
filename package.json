@@ -1,10 +1,13 @@
 {
   "name": "@intruder-detection/frigate-http-api-typescript",
-  "version": "0.14.1",
+  "version": "0.14.138",
   "description": "Typescript client for the Frigate HTTP API",
-  "main": "index.js",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "files": ["dist/src/**", "dist/environment.d.ts", "dist/environment.js"],
   "scripts": {
-    "debug": "dotenv -- npx tsx --inspect-brk test/main.ts"
+    "debug": "dotenv -- npx tsx --inspect-brk test/main.ts",
+    "build": "tsc"
   },
   "author": "Rui Alves",
   "license": "MIT",
