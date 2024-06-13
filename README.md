@@ -1,6 +1,6 @@
 # Frigate HTTP API for Nodejs
 
-This is a simple implementation of the Frigate HTTP API using Typescript. Each endpoint is strongly typed. The entire HTTP API Swagger documentation can be seen in the [Github pages](https://intruder-detection.github.io/frigate-http-api-typescript) of this project.
+This is a simple implementation of the Frigate HTTP API using Typescript. Each endpoint is strongly typed. The entire HTTP API Swagger documentation can be seen in the [GitHub pages](https://intruder-detection.github.io/frigate-http-api-typescript) of this project.
 
 ## Install
 
