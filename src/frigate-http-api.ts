@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosRequestConfig, ResponseType } from 'axios';
-import { environment } from '../environment';
 import { queryStringify } from './utils/querystring.utils';
 import {
   FrigateApiDeleteEndpointsMapping,
@@ -9,18 +8,43 @@ import {
   FrigateApiPutEndpointsMapping,
 } from './endpoints/endpoint-types.types';
 import { interpolateURLParams } from './utils/interpolate-url-params.utils';
+import { FrigateHttpApiConfiguration } from './config/frigate-http-api-configuration.interface';
 
 export class FrigateHTTPAPI {
-  static frigateAPIURL = `${environment.FRIGATE_HTTP_URL}/${environment.FRIGATE_API_PREFIX}`;
+  // By default, this value is 'api', and there is no reason to change it at the moment
+  static FRIGATE_API_PREFIX = 'api';
+  private static apiConfiguration: FrigateHttpApiConfiguration;
 
-  static defaultRequestConfig: AxiosRequestConfig = {
-    headers: {
-      contentType: 'application/json',
-    },
-    timeout: environment.DEFAULT_TIMEOUT,
-    transitional: { clarifyTimeoutError: true },
-    responseType: 'json',
-  };
+  static get defaultRequestConfig(): AxiosRequestConfig {
+    return {
+      headers: {
+        contentType: 'application/json',
+      },
+      timeout: this.defaultTimeout,
+      transitional: { clarifyTimeoutError: true },
+      responseType: 'json',
+    };
+  }
+
+  static set configuration(config: FrigateHttpApiConfiguration) {
+    this.apiConfiguration = config;
+  }
+
+  static throwIfConfigNotSet() {
+    if (!this.apiConfiguration) {
+      throw new Error(`To use the Frigate HTTP API you need to set the configuration (e.g., HTTP API URL). Missing call to FrigateHTTPAPI.configuration?`)
+    }
+  }
+
+  static get frigateAPIURL() {
+    this.throwIfConfigNotSet();
+    return `${this.apiConfiguration.frigateHTTPAPIURL}/${this.FRIGATE_API_PREFIX}`;
+  }
+
+  static get defaultTimeout(): number {
+    this.throwIfConfigNotSet();
+    return this.apiConfiguration.defaultTimeout || 5000;
+  }
 
   static getURL(endpoint: string, urlParams?: { [key: string]: any }, queryParams?: { [key: string]: any }) {
     const endpointWithReplacedParams = interpolateURLParams(endpoint, urlParams);

@@ -1,10 +1,10 @@
 {
   "name": "@intruder-detection/frigate-http-api-typescript",
-  "version": "0.14.138",
+  "version": "0.14.139",
   "description": "Typescript client for the Frigate HTTP API",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
-  "files": ["dist/src/**", "dist/environment.d.ts", "dist/environment.js"],
+  "files": ["dist/src/**"],
   "scripts": {
     "debug": "dotenv -- npx tsx --inspect-brk test/main.ts",
     "build": "tsc"

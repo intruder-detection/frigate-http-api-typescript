@@ -10,6 +10,7 @@ import { Exports } from '../src/endpoints/exports.enum';
 import { Timeline } from '../src/endpoints/timeline.enum';
 import { Reviews } from '../src/endpoints/reviews.enum';
 import { Preview } from '../src/endpoints/preview.enum';
+import { zodEnvironmentParse } from './zod-environment-parse';
 
 const defaultCameraName = 'reolink_duo_2_wifi';
 
@@ -505,12 +506,16 @@ async function reviews() {
 }
 
 async function main() {
+  FrigateHTTPAPI.configuration = {
+    defaultTimeout: zodEnvironmentParse.DEFAULT_TIMEOUT,
+    frigateHTTPAPIURL: zodEnvironmentParse.FRIGATE_HTTP_URL,
+  };
   // await managementAndInformation();
   // await media();
   // await events();
   // await previews();
   // await exportsTests();
-  await recordings();
+  // await recordings();
   // await timeline();
   // await reviews();
 }
