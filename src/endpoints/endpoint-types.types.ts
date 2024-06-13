@@ -11,16 +11,16 @@ import { LatestJPG } from './query-params/media/latest-jpg.interface';
 import { GridJPG } from './query-params/media/grid-jpg.interface';
 import { Events } from './events.enum';
 import { EventsQueryParams } from './query-params/events/events.interface';
-import { EventsResponse } from './responses/events/events.interface';
-import { EventsSummaryResponse } from './responses/events/events-summary.interface';
-import { EventsByIDResponse } from './responses/events/events-by-id.interface';
+import { EventsResponse } from './responses/events/events-response.interface';
+import { EventsSummaryResponse } from './responses/events/events-summary-response.interface';
+import { EventsByIDResponse } from './responses/events/events-by-id-response.interface';
 import { IdPlus } from './query-params/events/id-plus.interface';
 import { SubLabelBody } from './body/events/sub-label.interface';
 import { ThumbnailJPG } from './query-params/events/thumbnail-jpg.interface';
 import { SnapshotCleanPng } from './query-params/events/snapshot-clean-png.interface';
 import { SnapshotJPG } from './query-params/events/snapshot-jpg.interface';
 import { CreateLabel } from './body/events/create-label.interface';
-import { CreateLabelResponse } from './responses/events/create-label.interface';
+import { CreateLabelResponse } from './responses/events/create-label-response.interface';
 import { Preview } from './preview.enum';
 import { MetaDataForPreviewsInRangeUrlParams } from './url-params/previews/metadata-for-previews-in-range.interface';
 import { CameraAndLabelNameUrlParams } from './url-params/camera-and-label-name-url-params.interface';
@@ -59,6 +59,7 @@ import { MetadataForPreviewsInRangeResponse } from './responses/preview/metadata
 import { VodSpecificHourUrlParams } from './url-params/recordings/vod-specific-hour-url-params.interface';
 import { VodSpecificHourResponse } from './responses/recordings/vod-specific-hour-response.interface';
 import { VodSpecificHourWithTimezoneUrlParams } from './url-params/recordings/vod-specific-hour-with-timezone-url-params.interface';
+import { AudioActivityForPeriodQueryParameters } from './query-params/reviews/audio-activity-for-period-query-parameters.interface';
 
 /**
  * API Functions Mapping.
@@ -102,27 +103,27 @@ export interface FrigateApiGetEndpointsMapping {
   [Media.LatestJPG]: {
     urlParams: CameraNameUrlParams;
     queryParams: LatestJPG;
-    response: string;
+    response: Uint8Array;
   };
   [Media.ThumbnailJPG]: {
     urlParams: CameraAndLabelNameUrlParams;
     queryParams: undefined;
-    response: string;
+    response: Uint8Array;
   };
   [Media.ClipMP4]: {
     urlParams: CameraAndLabelNameUrlParams;
     queryParams: undefined;
-    response: string;
+    response: Uint8Array;
   };
   [Media.SnapshotJPG]: {
     urlParams: CameraAndLabelNameUrlParams;
     queryParams: undefined;
-    response: string;
+    response: Uint8Array;
   };
   [Media.GridJPG]: {
     urlParams: CameraNameUrlParams;
     queryParams: GridJPG;
-    response: string;
+    response: Uint8Array;
   };
   // Events
   [Events.Events]: {
@@ -153,12 +154,12 @@ export interface FrigateApiGetEndpointsMapping {
   [Events.SnapshotCleanPNG]: {
     urlParams: EventIdUrlParams;
     queryParams: SnapshotCleanPng;
-    response: string;
+    response: Uint8Array;
   };
   [Events.SnapshotJPG]: {
     urlParams: EventIdUrlParams;
     queryParams: SnapshotJPG;
-    response: string;
+    response: Uint8Array;
   };
   // Previews
   [Preview.GifFromEvent]: {
@@ -252,7 +253,7 @@ export interface FrigateApiGetEndpointsMapping {
   };
   [Reviews.AudioActivityForPeriod]: {
     urlParams: undefined;
-    queryParams: MotionActivityForPeriodQueryParameters;
+    queryParams: AudioActivityForPeriodQueryParameters;
     response: AudioActivityForPeriod[];
   };
 }

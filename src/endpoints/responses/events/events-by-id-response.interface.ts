@@ -1,15 +1,22 @@
-export interface EventsResponse {
+export interface EventsByIDResponse {
+  area: null;
   box: null;
   camera: string;
   data: Data;
+  detector_type: string;
   end_time: number;
   false_positive: null;
   has_clip: boolean;
   has_snapshot: boolean;
   id: string;
   label: string;
+  model_hash: string;
+  model_type: string;
   plus_id: null;
+  ratio: number;
+  region: null;
   retain_indefinitely: boolean;
+  score: null;
   start_time: number;
   sub_label: null;
   thumbnail: string;
@@ -17,7 +24,7 @@ export interface EventsResponse {
   zones: any[];
 }
 
-export interface Data {
+interface Data {
   attributes: any[];
   box: number[];
   region: number[];

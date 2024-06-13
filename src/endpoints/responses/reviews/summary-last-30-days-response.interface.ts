@@ -3,7 +3,7 @@ export interface SummaryLast30DaysResponse {
   last24Hours: Omit<ReviewSummary, 'day'>;
 }
 
-export interface ReviewSummary {
+interface ReviewSummary {
   day?: Date;
   reviewed_alert: number;
   reviewed_detection: number;

@@ -4,7 +4,7 @@ export interface RecordingsPerHourResponse {
   hours: Hour[];
 }
 
-export interface Hour {
+interface Hour {
   duration: number;
   events: number;
   hour: string;
