@@ -4,7 +4,7 @@ This is a simple implementation of the Frigate HTTP API using Typescript. Each e
 
 ## Install
 
-You can install it in a Typescript project by doing the following:
+You can install it in a Typescript/Javascript project by doing the following:
 
 ```bash
 npm i @intruder-detection/frigate-http-api-typescript
