@@ -1,13 +1,19 @@
 {
   "name": "@intruder-detection/frigate-http-api-typescript",
-  "version": "0.14.14",
+  "version": "0.14.15",
   "description": "Typescript client for the Frigate HTTP API",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "keywords": ["Frigate", "Frigate HTTP API", "Frigate HTTP API Nodejs", "Frigate HTTP API Typescript"],
+  "keywords": [
+    "Frigate",
+    "Frigate HTTP API",
+    "Frigate HTTP API Nodejs",
+    "Frigate HTTP API Typescript",
+    "Frigate HTTP API Javascript"
+  ],
   "repository": {
-    "url": "https://github.com/intruder-detection/frigate-http-api-typescript"
+    "url": "git+https://github.com/intruder-detection/frigate-http-api-typescript.git"
   },
   "homepage": "https://intruder-detection.github.io/frigate-http-api-typescript",
   "scripts": {
@@ -40,5 +46,8 @@
   },
   "directories": {
     "test": "test"
+  },
+  "bugs": {
+    "url": "https://github.com/intruder-detection/frigate-http-api-typescript/issues"
   }
 }
