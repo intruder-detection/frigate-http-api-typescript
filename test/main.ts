@@ -520,4 +520,4 @@ async function main() {
   // await reviews();
 }
 
-void main();
+await main();

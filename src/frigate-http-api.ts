@@ -1,14 +1,13 @@
 import axios, { AxiosError, AxiosRequestConfig, ResponseType } from 'axios';
-import { queryStringify } from './utils/querystring.utils';
 import {
   FrigateApiDeleteEndpointsMapping,
   FrigateApiGetEndpointsMapping,
   FrigateApiPatchEndpointsMapping,
   FrigateApiPostEndpointsMapping,
   FrigateApiPutEndpointsMapping,
-} from './endpoints/endpoint-types.types';
-import { interpolateURLParams } from './utils/interpolate-url-params.utils';
-import { FrigateHttpApiConfiguration } from './config/frigate-http-api-configuration.interface';
+} from './endpoints/endpoint-types.types.js';
+import { interpolateURLParams } from './utils/interpolate-url-params.utils.js';
+import { FrigateHttpApiConfiguration } from './config/frigate-http-api-configuration.interface.js';
 
 export class FrigateHTTPAPI {
   // By default, this value is 'api', and there is no reason to change it at the moment
@@ -30,12 +29,6 @@ export class FrigateHTTPAPI {
     this.apiConfiguration = config;
   }
 
-  static throwIfConfigNotSet() {
-    if (!this.apiConfiguration) {
-      throw new Error(`To use the Frigate HTTP API you need to set the configuration (e.g., HTTP API URL). Missing call to FrigateHTTPAPI.configuration?`)
-    }
-  }
-
   static get frigateAPIURL() {
     this.throwIfConfigNotSet();
     return `${this.apiConfiguration.frigateHTTPAPIURL}/${this.FRIGATE_API_PREFIX}`;
@@ -46,9 +39,17 @@ export class FrigateHTTPAPI {
     return this.apiConfiguration.defaultTimeout || 5000;
   }
 
+  static throwIfConfigNotSet() {
+    if (!this.apiConfiguration) {
+      throw new Error(
+        `To use the Frigate HTTP API you need to set the configuration (e.g., HTTP API URL). Missing call to FrigateHTTPAPI.configuration?`,
+      );
+    }
+  }
+
   static getURL(endpoint: string, urlParams?: { [key: string]: any }, queryParams?: { [key: string]: any }) {
     const endpointWithReplacedParams = interpolateURLParams(endpoint, urlParams);
-    return `${this.frigateAPIURL}/${endpointWithReplacedParams}${queryParams ? `?${queryStringify(queryParams as any)}` : ''}`;
+    return `${this.frigateAPIURL}/${endpointWithReplacedParams}${queryParams ? `?${this.queryStringify(queryParams as any)}` : ''}`;
   }
 
   static async get<E extends keyof FrigateApiGetEndpointsMapping>(
@@ -133,5 +134,42 @@ export class FrigateHTTPAPI {
   static throwError(endpoint: string, url: string, e: AxiosError) {
     const errorMessage = (e.response?.data as { message: string }).message;
     throw new Error(`Failed to run command ${endpoint}. URL: ${url}. Status: ${e.response.status}. Error is: ${errorMessage}`);
+  }
+
+  /**
+   * Converts a JavaScript object to a URL query string.
+   * @example:
+   *  queryStringify({ a: 1, b: 2 }) // returns 'a=1&b=2'
+   *  queryStringify({ a: 1, b: [2, 3] }) // returns 'a=1&b=2&b=3'
+   *  queryStringify({ a: 1, b: null }) // returns 'a=1'
+   *  queryStringify({ a: 1, b: undefined }) // returns 'a=1'
+   *  queryStringify({ a: 1, b: [null, undefined] }) // returns 'a=1'
+   *  queryStringify({ a: 1, b: [2, null, 3, undefined] }) // returns 'a=1&b=2&b=3'
+   * @param source - The object to convert.
+   * @returns The URL query string.
+   */
+  private static queryStringify(
+    source: Record<string, string | number | boolean | readonly string[] | readonly number[] | readonly boolean[] | null | undefined>,
+  ): string {
+    const urlSearch = new URLSearchParams();
+
+    Object.entries(source).forEach(([key, value]) => {
+      // The behavior of query parameters without a value is actually not well-defined by the URL specification,
+      // so we ignore it
+      if (value === null || value === undefined) {
+        return;
+      }
+      if (value instanceof Array) {
+        for (const innerValue of value) {
+          if (innerValue !== null && innerValue !== undefined) {
+            urlSearch.append(key, innerValue.toString());
+          }
+        }
+        return urlSearch;
+      }
+      return urlSearch.append(key, value.toString());
+    });
+
+    return urlSearch.toString();
   }
 }

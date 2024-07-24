@@ -3,7 +3,6 @@ import { FFProbeQueryParameters } from './query-params/app/ffprobe.interface';
 import { StatsResponse } from './responses/app/stats.interface';
 import { ConfigResponse } from './responses/app/config.interface';
 import { FFprobeResponse } from './responses/app/ffprobe.interface';
-import { RestartResponse } from './responses/app/restart.interface';
 import { Media } from './media';
 import { MJPEGDebugStream } from './query-params/media/mjpeg-stream.interface';
 import * as Stream from 'node:stream';
@@ -35,12 +34,16 @@ import { ExportResponse } from './responses/exports/export-response.interface';
 import { BasicResponse } from './responses/basic-response.interface';
 import { RenameExportUrlParams } from './url-params/exports/rename-export-url-params.interface';
 import { DeleteExportUrlParams } from './url-params/exports/delete-export-url-params.interface';
-import { ExportTimeRangeMp4ToDiskUrlParams } from './url-params/exports/export-time-range-mp4-to-disk-url-params.interface';
+import {
+  ExportTimeRangeMp4ToDiskUrlParams,
+} from './url-params/exports/export-time-range-mp4-to-disk-url-params.interface';
 import { Exports } from './exports.enum';
 import { RecordingsPerHourResponse } from './responses/recordings/hourly-summary-recordings-response.interface';
 import { SegmentDetailsForRange } from './query-params/recordings/segment-details-for-range-body.interface';
 import { RecordingsForRange } from './responses/recordings/recordings-for-range-response.interface';
-import { SnapshotPNGSpecificFrameUrlParameters } from './url-params/recordings/snapshot-png-specific-frame-url-params.interface';
+import {
+  SnapshotPNGSpecificFrameUrlParameters,
+} from './url-params/recordings/snapshot-png-specific-frame-url-params.interface';
 import { Timeline } from './timeline.enum';
 import { TimelineQueryParameters } from './query-params/timeline/timeline-query-parameters.interface';
 import { TimelineResponse } from './responses/timeline/timeline-response.interface';
@@ -55,17 +58,23 @@ import { DeleteReviewManyBody } from './body/reviews/delete-review-many-body.int
 import { MotionActivityForPeriodQueryParameters } from './query-params/reviews/motion-activity-for-period.interface';
 import { MotionActivityForPeriod } from './responses/reviews/motion-activity-for-period-response.interface';
 import { AudioActivityForPeriod } from './responses/reviews/audio-activity-for-period-response.interface';
-import { MetadataForPreviewsInRangeResponse } from './responses/preview/metadata-for-previews-in-range-response.interface';
+import {
+  MetadataForPreviewsInRangeResponse,
+} from './responses/preview/metadata-for-previews-in-range-response.interface';
 import { VodSpecificHourUrlParams } from './url-params/recordings/vod-specific-hour-url-params.interface';
 import { VodSpecificHourResponse } from './responses/recordings/vod-specific-hour-response.interface';
-import { VodSpecificHourWithTimezoneUrlParams } from './url-params/recordings/vod-specific-hour-with-timezone-url-params.interface';
-import { AudioActivityForPeriodQueryParameters } from './query-params/reviews/audio-activity-for-period-query-parameters.interface';
+import {
+  VodSpecificHourWithTimezoneUrlParams,
+} from './url-params/recordings/vod-specific-hour-with-timezone-url-params.interface';
+import {
+  AudioActivityForPeriodQueryParameters,
+} from './query-params/reviews/audio-activity-for-period-query-parameters.interface';
+import { RestartResponse } from './responses/app/restart.interface';
 
 /**
  * API Functions Mapping.
  */
-// GET
-export interface FrigateApiGetEndpointsMapping {
+interface ManagementAndInformationGetMethods {
   // Management && Information
   [ManagementAndInformation.Config]: {
     urlParams: undefined;
@@ -94,6 +103,9 @@ export interface FrigateApiGetEndpointsMapping {
     queryParams: undefined;
     response: any; // TODO: Use Camera with PTZ info to see possible response type
   };
+}
+
+interface MediaGetMethods {
   // Camera Media
   [Media.MJPEGDebugStream]: {
     urlParams: CameraNameUrlParams;
@@ -125,6 +137,9 @@ export interface FrigateApiGetEndpointsMapping {
     queryParams: GridJPG;
     response: Uint8Array;
   };
+}
+
+interface EventsGetMethods {
   // Events
   [Events.Events]: {
     urlParams: undefined;
@@ -161,6 +176,9 @@ export interface FrigateApiGetEndpointsMapping {
     queryParams: SnapshotJPG;
     response: Uint8Array;
   };
+}
+
+interface PreviewsGetMethods {
   // Previews
   [Preview.GifFromEvent]: {
     urlParams: EventIdUrlParams;
@@ -182,12 +200,18 @@ export interface FrigateApiGetEndpointsMapping {
     queryParams: undefined;
     response: Uint8Array;
   };
+}
+
+interface ExportsGetMethods {
   // Exports
   [Exports.ListExports]: {
     urlParams: undefined;
     queryParams: undefined;
     response: ExportResponse[];
   };
+}
+
+interface RecordingsGetMethods {
   // Recordings
   [Recordings.VodSpecificHour]: {
     urlParams: VodSpecificHourUrlParams;
@@ -224,12 +248,18 @@ export interface FrigateApiGetEndpointsMapping {
     queryParams: undefined;
     response: Uint8Array;
   };
+}
+
+interface TimelineGetMethods {
   // Timeline
   [Timeline.Timeline]: {
     urlParams: undefined;
     queryParams: TimelineQueryParameters;
     response: TimelineResponse[];
   };
+}
+
+interface ReviewsGetMethods {
   // Reviews
   [Reviews.ListReviews]: {
     urlParams: undefined;
@@ -258,8 +288,18 @@ export interface FrigateApiGetEndpointsMapping {
   };
 }
 
-// POST
-export interface FrigateApiPostEndpointsMapping {
+// GET
+export interface FrigateApiGetEndpointsMapping
+  extends ManagementAndInformationGetMethods,
+    MediaGetMethods,
+    EventsGetMethods,
+    PreviewsGetMethods,
+    ExportsGetMethods,
+    RecordingsGetMethods,
+    TimelineGetMethods,
+    ReviewsGetMethods {}
+
+interface ManagementAndInformationPostMethods {
   // Management && Information
   [ManagementAndInformation.Restart]: {
     urlParams: undefined;
@@ -267,6 +307,9 @@ export interface FrigateApiPostEndpointsMapping {
     body: undefined;
     response: RestartResponse;
   };
+}
+
+interface EventsPostMethods {
   // Events
   [Events.IdRetain]: {
     urlParams: EventIdUrlParams;
@@ -298,6 +341,9 @@ export interface FrigateApiPostEndpointsMapping {
     body: CreateLabel;
     response: CreateLabelResponse;
   };
+}
+
+interface RecordingsPostMethods {
   // Recordings
   [Exports.ExportTimeRangeMP4ToDisk]: {
     urlParams: ExportTimeRangeMp4ToDiskUrlParams;
@@ -305,6 +351,9 @@ export interface FrigateApiPostEndpointsMapping {
     body?: ExportTimeRangeMp4Body;
     response: BasicResponse;
   };
+}
+
+interface ReviewsPostMethods {
   // Reviews
   [Reviews.MarkViewedMany]: {
     urlParams: undefined;
@@ -320,6 +369,13 @@ export interface FrigateApiPostEndpointsMapping {
   };
 }
 
+// POST
+export interface FrigateApiPostEndpointsMapping
+  extends ManagementAndInformationPostMethods,
+    EventsPostMethods,
+    RecordingsPostMethods,
+    ReviewsPostMethods {}
+
 // PUT
 export interface FrigateApiPutEndpointsMapping {
   [Events.EndEvent]: {
@@ -330,8 +386,7 @@ export interface FrigateApiPutEndpointsMapping {
   };
 }
 
-// DELETE
-export interface FrigateApiDeleteEndpointsMapping {
+interface EventsDeleteMethods {
   // Events
   [Events.ById]: {
     urlParams: EventIdUrlParams;
@@ -348,6 +403,9 @@ export interface FrigateApiDeleteEndpointsMapping {
     queryParams: undefined;
     response: BasicResponse;
   };
+}
+
+interface ReviewsDeleteMethods {
   // Reviews
   [Reviews.MarkReviewedById]: {
     urlParams: ReviewIdUrlParams;
@@ -355,6 +413,9 @@ export interface FrigateApiDeleteEndpointsMapping {
     response: BasicResponse;
   };
 }
+
+// DELETE
+export interface FrigateApiDeleteEndpointsMapping extends EventsDeleteMethods, ReviewsDeleteMethods {}
 
 // PATCH
 export interface FrigateApiPatchEndpointsMapping {

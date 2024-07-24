@@ -2,12 +2,20 @@
   "name": "@intruder-detection/frigate-http-api-typescript",
   "version": "0.14.14",
   "description": "Typescript client for the Frigate HTTP API",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
-  "files": ["dist/src/**"],
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "keywords": ["Frigate", "Frigate HTTP API", "Frigate HTTP API Nodejs", "Frigate HTTP API Typescript"],
+  "repository": {
+    "url": "https://github.com/intruder-detection/frigate-http-api-typescript"
+  },
+  "homepage": "https://intruder-detection.github.io/frigate-http-api-typescript",
   "scripts": {
+    "// DEBUG": "",
     "debug": "dotenv -- npx tsx --inspect-brk test/main.ts",
-    "build": "tsc"
+    "// BUILD": "",
+    "barrel": "barrelsby --delete --directory src -F -q",
+    "build": "npm run barrel && tsup"
   },
   "author": "Rui Alves",
   "license": "MIT",
@@ -16,6 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.14.2",
+    "barrelsby": "^2.8.1",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "dotenv-cli": "^7.4.1",
     "eslint": "^8.45.0",
@@ -26,7 +35,8 @@
     "prettier": "^3.3.1",
     "tsx": "^4.15.1",
     "typescript": "^5.4.5",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "tsup": "^8.2.2"
   },
   "directories": {
     "test": "test"
