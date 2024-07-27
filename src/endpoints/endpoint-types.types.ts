@@ -70,16 +70,32 @@ import {
   AudioActivityForPeriodQueryParameters,
 } from './query-params/reviews/audio-activity-for-period-query-parameters.interface';
 import { RestartResponse } from './responses/app/restart.interface';
+import { SaveConfigQueryParameters } from './query-params/app/save-config.interface';
 
 /**
  * API Functions Mapping.
  */
 interface ManagementAndInformationGetMethods {
   // Management && Information
-  [ManagementAndInformation.Config]: {
+  [ManagementAndInformation.GetConfig]: {
     urlParams: undefined;
     queryParams: undefined;
     response: ConfigResponse;
+  };
+  [ManagementAndInformation.ConfigRaw]: {
+    urlParams: undefined;
+    queryParams: undefined;
+    response: string;
+  };
+  [ManagementAndInformation.ConfigSchemaJSON]: {
+    urlParams: undefined;
+    queryParams: undefined;
+    response: JSON;
+  };
+  [ManagementAndInformation.SaveConfig]: {
+    urlParams: undefined;
+    queryParams: SaveConfigQueryParameters;
+    response: BasicResponse;
   };
   [ManagementAndInformation.Stats]: {
     urlParams: undefined;

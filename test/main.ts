@@ -24,7 +24,7 @@ const cameraNameUrlParams = {
 
 async function managementAndInformation() {
   // Management && Information
-  const config = await FrigateHTTPAPI.get(ManagementAndInformation.Config);
+  const config = await FrigateHTTPAPI.get(ManagementAndInformation.GetConfig);
   console.log(config.mqtt.client_id);
   const stats = await FrigateHTTPAPI.get(ManagementAndInformation.Stats);
   console.log(stats.cpu_usages);

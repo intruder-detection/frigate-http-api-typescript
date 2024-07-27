@@ -24,6 +24,59 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConfigResponse'
+  /api/config/raw:
+    get:
+      tags:
+        - Management & Information
+      summary: Get Configuration raw
+      description: The raw configuration file
+      responses:
+        '200':
+          description: Configuration response
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/config/schema.json:
+    get:
+      tags:
+        - Management & Information
+      summary: Get Configuration schema.json
+      description: The raw configuration file
+      responses:
+        '200':
+          description: Configuration response
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/config/save:
+    post:
+      tags:
+        - Management & Information
+      summary: Update Configuration
+      description: Set the configuration. Will restart if save_option is passed as 'restart'
+      parameters:
+        - name: save_option
+          in: query
+          required: false
+          description: Pass 'restart' or 'save_only' depending on your needs. If not provided 'save_only' will be used
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully updated configuration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                  success:
+                    type: boolean
+                    description: Success status
   /api/restart:
     post:
       tags:
