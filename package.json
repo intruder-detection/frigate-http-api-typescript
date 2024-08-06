@@ -23,6 +23,7 @@
     "barrel": "barrelsby --delete --directory src -F -q",
     "build": "npm run barrel && tsup"
   },
+  "type": "module",
   "author": "Rui Alves",
   "license": "MIT",
   "dependencies": {

@@ -5,9 +5,9 @@ import {
   FrigateApiPatchEndpointsMapping,
   FrigateApiPostEndpointsMapping,
   FrigateApiPutEndpointsMapping,
-} from './endpoints/endpoint-types.types.js';
-import { interpolateURLParams } from './utils/interpolate-url-params.utils.js';
-import { FrigateHttpApiConfiguration } from './config/frigate-http-api-configuration.interface.js';
+} from './endpoints/endpoint-types.types';
+import { interpolateURLParams } from './utils/interpolate-url-params.utils';
+import { FrigateHttpApiConfiguration } from './config/frigate-http-api-configuration.interface';
 
 export class FrigateHTTPAPI {
   // By default, this value is 'api', and there is no reason to change it at the moment
@@ -37,8 +37,8 @@ export class FrigateHTTPAPI {
   static getFrigateAPIURL(endpoint: string) {
     this.throwIfConfigNotSet();
     return endpoint.endsWith('index.m3u8')
-      // m3u8 endpoints are provided by ngix, and so, they don't have /api prefix
-      ? this.apiConfiguration.frigateHTTPAPIURL
+      ? // m3u8 endpoints are provided by ngix, and so, they don't have /api prefix
+        this.apiConfiguration.frigateHTTPAPIURL
       : `${this.apiConfiguration.frigateHTTPAPIURL}/${this.FRIGATE_API_PREFIX}`;
   }
 

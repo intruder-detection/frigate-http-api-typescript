@@ -376,6 +376,18 @@ async function exportsTests() {
 }
 
 async function recordings() {
+  // Recording
+  const m3u8VodForRangeURL =  FrigateHTTPAPI.getURL(Recordings.M3u8VodForRange, {
+    ...cameraNameUrlParams,
+    start_timestamp: new Date(Date.now() - 10 * 60 * 1000).getTime() / 1000,
+    end_timestamp: new Date().getTime() / 1000,
+  });
+  console.log(m3u8VodForRangeURL);
+  const m3u8VodForEvent =  FrigateHTTPAPI.getURL(Recordings.M3u8VodForEvent, {
+    event_id: defaultEventId,
+  });
+  console.log(m3u8VodForEvent);
+
   // Recordings.LiveStreamURLHour
   const vodSpecificHour = await FrigateHTTPAPI.get(
     Recordings.VodSpecificHour,
@@ -515,7 +527,7 @@ async function main() {
   // await events();
   // await previews();
   // await exportsTests();
-  // await recordings();
+  await recordings();
   // await timeline();
   // await reviews();
 }

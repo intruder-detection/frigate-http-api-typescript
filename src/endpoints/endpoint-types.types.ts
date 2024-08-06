@@ -244,7 +244,17 @@ interface RecordingsGetMethods {
     queryParams: undefined;
     response: VodSpecificHourResponse;
   };
+  [Recordings.M3u8VodForEvent]: {
+    urlParams: EventIdUrlParams;
+    queryParams: undefined;
+    response: VodSpecificHourResponse;
+  };
   [Recordings.VodForRange]: {
+    urlParams: VodInRangeUrlParams;
+    queryParams: undefined;
+    response: VodSpecificHourResponse[];
+  };
+  [Recordings.M3u8VodForRange]: {
     urlParams: VodInRangeUrlParams;
     queryParams: undefined;
     response: VodSpecificHourResponse[];
