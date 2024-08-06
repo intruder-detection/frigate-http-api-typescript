@@ -19,6 +19,7 @@ export * from './endpoints/body/exports/time-range-mp4.interface';
 export * from './endpoints/body/reviews/delete-review-many-body.interface';
 export * from './endpoints/body/reviews/mark-reviewed-many-body.interface';
 export * from './endpoints/query-params/app/ffprobe.interface';
+export * from './endpoints/query-params/app/save-config.interface';
 export * from './endpoints/query-params/events/events.interface';
 export * from './endpoints/query-params/events/id-plus.interface';
 export * from './endpoints/query-params/events/snapshot-clean-png.interface';

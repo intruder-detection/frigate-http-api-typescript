@@ -134,9 +134,13 @@ dist
 
 
 src
-.eslintrc.js
-frigate.yml
 test
-tsup.config.ts
+.eslintrc.js
 .prettierrc
+tsup.config.ts
 tsconfig.json
+node_modules
+scripts
+.idea
+.env
+frigate.yml
