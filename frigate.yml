@@ -1126,6 +1126,37 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/VodSpecificHourResponse'
+  /vod/{camera_name}/start/{start-timestamp}/end/{end-timestamp}/index.m3u8:
+    get:
+      tags:
+        - Recordings
+      summary: m3u8 for the given time range
+      description: HTTP Live Streaming Video on Demand URL for the camera with the specified time range. Can be viewed in an application like VLC.
+      parameters:
+        - name: camera_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: start-timestamp
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The start UNIX timestamp in seconds
+        - name: end-timestamp
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The end UNIX timestamp in seconds
+      responses:
+        '200':
+          description: m3u8 for the given time range
+          content:
+            application/json:
+              schema:
+                type: string
   /api/{camera_name}/recordings/summary:
     get:
       tags:
