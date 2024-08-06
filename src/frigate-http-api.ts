@@ -29,14 +29,17 @@ export class FrigateHTTPAPI {
     this.apiConfiguration = config;
   }
 
-  static get frigateAPIURL() {
-    this.throwIfConfigNotSet();
-    return `${this.apiConfiguration.frigateHTTPAPIURL}/${this.FRIGATE_API_PREFIX}`;
-  }
-
   static get defaultTimeout(): number {
     this.throwIfConfigNotSet();
     return this.apiConfiguration.defaultTimeout || 5000;
+  }
+
+  static getFrigateAPIURL(endpoint: string) {
+    this.throwIfConfigNotSet();
+    return endpoint.endsWith('index.m3u8')
+      // m3u8 endpoints are provided by ngix, and so, they don't have /api prefix
+      ? this.apiConfiguration.frigateHTTPAPIURL
+      : `${this.apiConfiguration.frigateHTTPAPIURL}/${this.FRIGATE_API_PREFIX}`;
   }
 
   static throwIfConfigNotSet() {
@@ -47,9 +50,21 @@ export class FrigateHTTPAPI {
     }
   }
 
-  static getURL(endpoint: string, urlParams?: { [key: string]: any }, queryParams?: { [key: string]: any }) {
+  static getURL<
+    E extends keyof (FrigateApiGetEndpointsMapping &
+      FrigateApiDeleteEndpointsMapping &
+      FrigateApiPatchEndpointsMapping &
+      FrigateApiPostEndpointsMapping &
+      FrigateApiPutEndpointsMapping),
+  >(
+    endpoint: E,
+    urlParams?: {
+      [key: string]: any;
+    },
+    queryParams?: { [key: string]: any },
+  ) {
     const endpointWithReplacedParams = interpolateURLParams(endpoint, urlParams);
-    return `${this.frigateAPIURL}/${endpointWithReplacedParams}${queryParams ? `?${this.queryStringify(queryParams as any)}` : ''}`;
+    return `${this.getFrigateAPIURL(endpointWithReplacedParams)}/${endpointWithReplacedParams}${queryParams ? `?${this.queryStringify(queryParams as any)}` : ''}`;
   }
 
   static async get<E extends keyof FrigateApiGetEndpointsMapping>(
